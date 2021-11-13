@@ -1,0 +1,20 @@
+<subject>
+  <component>
+    <name>dummy-test-package-crested</name>
+    <scm>https://src.fedoraproject.org/rpms/dummy-test-package-crested.git</scm>
+    <commit>f3120164f809b78afbf6e39e50b33e7ad0569858</commit>
+    <lookaside>https://src.fedoraproject.org/lookaside/pkgs/rpms/dummy-test-package-crested</lookaside>
+  </component>
+  <component>
+    <name>dummy-test-package-gloster</name>
+    <scm>https://src.fedoraproject.org/rpms/dummy-test-package-gloster.git</scm>
+    <commit>debb3f32a12125f5bfcb0e431193a0b7339ed6ff</commit>
+    <lookaside>https://src.fedoraproject.org/lookaside/pkgs/rpms/dummy-test-package-gloster</lookaside>
+  </component>
+  <component>
+    <name>dummy-test-package-rubino</name>
+    <scm>https://src.fedoraproject.org/rpms/dummy-test-package-rubino.git</scm>
+    <commit>699a8aa59667d44f3073717114cac6a300132e7c</commit>
+    <lookaside>https://src.fedoraproject.org/lookaside/pkgs/rpms/dummy-test-package-rubino</lookaside>
+  </component>
+</subject>

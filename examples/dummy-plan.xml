@@ -1,0 +1,19 @@
+<plan>
+  <macro>
+    <name>global_macro</name>
+    <value>this macro is defined for all builds</value>
+  </macro>
+  <phase>
+    <name>first-phase</name>
+    <macro>
+      <name>phase_specific_macro</name>
+      <value>this macro is defined builds of -gloster and -crested packages</value>
+    </macro>
+    <component>dummy-test-package-gloster</component>
+    <component>dummy-test-package-crested</component>
+  </phase>
+  <phase>
+    <name>second-phase</name>
+    <component>dummy-test-package-rubino</component>
+  </phase>
+</plan>
