@@ -97,10 +97,10 @@ An example Build Plan that consists of two phases called `first` and
     </plan>
 
 
-Test subject
+Test Subject
 ------------
 
-Test subject is a concrete set of dist-git repository commits which
+Test Subject is a concrete set of dist-git repository commits which
 are used as sources for building RPM packages.
 
 For each component that is part of a Build Plan, Test Subject
