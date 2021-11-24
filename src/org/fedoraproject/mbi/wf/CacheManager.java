@@ -18,6 +18,7 @@ package org.fedoraproject.mbi.wf;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 
 /**
  * @author Mikolaj Izdebski
@@ -64,7 +65,8 @@ public class CacheManager
     {
         Path cachePendingDir = cacheRootDir.resolve( "pending" );
         Files.createDirectories( cachePendingDir );
-        return Files.createTempDirectory( cachePendingDir, key );
+        return Files.createTempDirectory( cachePendingDir, key,
+                                          PosixFilePermissions.asFileAttribute( PosixFilePermissions.fromString( "rwxr-xr-x" ) ) );
     }
 
     public Path createWorkDir( String key )
