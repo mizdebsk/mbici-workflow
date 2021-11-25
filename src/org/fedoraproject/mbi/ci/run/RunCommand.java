@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.wf.CacheManager;
+import org.fedoraproject.mbi.wf.Throttle;
 import org.fedoraproject.mbi.wf.WorkflowExecutor;
 import org.fedoraproject.mbi.wf.model.Workflow;
 import org.fedoraproject.mbi.xml.Builder;
@@ -39,12 +40,22 @@ public class RunCommand
 
     private final Path workDir;
 
-    public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir )
+    private final int maxCheckoutTasks;
+
+    private final int maxSrpmTasks;
+
+    private final int maxRpmTasks;
+
+    public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
+                       int maxSrpmTasks, int maxRpmTasks )
     {
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
         this.cacheDir = cacheDir;
         this.workDir = workDir;
+        this.maxCheckoutTasks = maxCheckoutTasks;
+        this.maxSrpmTasks = maxSrpmTasks;
+        this.maxRpmTasks = maxRpmTasks;
     }
 
     @Override
@@ -53,7 +64,8 @@ public class RunCommand
     {
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
-        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager );
+        Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks );
+        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
     }
@@ -68,6 +80,12 @@ public class RunCommand
         private Path cacheDir;
 
         private Path workDir;
+
+        private Integer maxCheckoutTasks = 3;
+
+        private Integer maxSrpmTasks = 5;
+
+        private Integer maxRpmTasks = 2;
 
         public void setWorkflowPath( Path workflowPath )
         {
@@ -89,10 +107,26 @@ public class RunCommand
             this.workDir = workDir;
         }
 
+        public void setMaxCheckoutTasks( Integer maxCheckoutTasks )
+        {
+            this.maxCheckoutTasks = maxCheckoutTasks;
+        }
+
+        public void setMaxSrpmTasks( Integer maxSrpmTasks )
+        {
+            this.maxSrpmTasks = maxSrpmTasks;
+        }
+
+        public void setMaxRpmTasks( Integer maxRpmTasks )
+        {
+            this.maxRpmTasks = maxRpmTasks;
+        }
+
         @Override
         public RunCommand build()
         {
-            return new RunCommand( workflowPath, resultDir, cacheDir, workDir );
+            return new RunCommand( workflowPath, resultDir, cacheDir, workDir, maxCheckoutTasks, maxSrpmTasks,
+                                   maxRpmTasks );
         }
     }
 
@@ -103,5 +137,11 @@ public class RunCommand
         ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "cacheDir", x -> null, ArgsBuilder::setCacheDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "workDir", x -> null, ArgsBuilder::setWorkDir, Path::toString, Paths::get );
+        ENTITY.addAttribute( "maxCheckoutTasks", x -> null, ArgsBuilder::setMaxCheckoutTasks, Number::toString,
+                             Integer::parseInt );
+        ENTITY.addAttribute( "maxSrpmTasks", x -> null, ArgsBuilder::setMaxSrpmTasks, Number::toString,
+                             Integer::parseInt );
+        ENTITY.addAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
+                             Integer::parseInt );
     }
 }

@@ -45,16 +45,17 @@ public class WorkflowExecutor
 
     private final Logger logger = new Logger();
 
-    private final Throttle throttle = new Throttle();
+    private final Throttle throttle;
 
     private final Dumper dumper;
 
-    public WorkflowExecutor( Workflow wf, Path wfPath, CacheManager cacheManager )
+    public WorkflowExecutor( Workflow wf, Path wfPath, CacheManager cacheManager, Throttle throttle )
     {
         wf.getTasks().stream().forEach( workflowBuilder::addTask );
         newTasks = new LinkedHashSet<>( wf.getTasks() );
         dumper = new Dumper( wfPath );
         this.cacheManager = cacheManager;
+        this.throttle = throttle;
     }
 
     public CacheManager getCacheManager()

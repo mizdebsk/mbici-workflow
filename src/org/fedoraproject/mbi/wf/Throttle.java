@@ -27,15 +27,15 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-class Throttle
+public class Throttle
 {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 
-    public Throttle()
+    public Throttle( int maxCheckout, int maxSrpm, int maxRpm )
     {
-        semaphores.put( CheckoutTaskHandler.class.getName(), new Semaphore( 10 ) );
-        semaphores.put( RpmTaskHandler.class.getName(), new Semaphore( 20 ) );
-        semaphores.put( SrpmTaskHandler.class.getName(), new Semaphore( 50 ) );
+        semaphores.put( CheckoutTaskHandler.class.getName(), new Semaphore( maxCheckout ) );
+        semaphores.put( RpmTaskHandler.class.getName(), new Semaphore( maxRpm ) );
+        semaphores.put( SrpmTaskHandler.class.getName(), new Semaphore( maxSrpm ) );
     }
 
     public void acquireCapacity( Task task )
