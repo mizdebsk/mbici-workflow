@@ -137,11 +137,11 @@ public class RunCommand
         ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "cacheDir", x -> null, ArgsBuilder::setCacheDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "workDir", x -> null, ArgsBuilder::setWorkDir, Path::toString, Paths::get );
-        ENTITY.addAttribute( "maxCheckoutTasks", x -> null, ArgsBuilder::setMaxCheckoutTasks, Number::toString,
-                             Integer::parseInt );
-        ENTITY.addAttribute( "maxSrpmTasks", x -> null, ArgsBuilder::setMaxSrpmTasks, Number::toString,
-                             Integer::parseInt );
-        ENTITY.addAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
-                             Integer::parseInt );
+        ENTITY.addOptionalAttribute( "maxCheckoutTasks", x -> null, ArgsBuilder::setMaxCheckoutTasks, Number::toString,
+                                     Integer::parseInt );
+        ENTITY.addOptionalAttribute( "maxSrpmTasks", x -> null, ArgsBuilder::setMaxSrpmTasks, Number::toString,
+                                     Integer::parseInt );
+        ENTITY.addOptionalAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
+                                     Integer::parseInt );
     }
 }
