@@ -109,6 +109,11 @@ public class TaskExecution
         return workDir;
     }
 
+    public Path getResultDir()
+    {
+        return resultDir;
+    }
+
     private void deleteDirectoryIfExists( Path dir )
         throws IOException
     {

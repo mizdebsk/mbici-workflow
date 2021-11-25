@@ -69,8 +69,8 @@ public class SrpmTaskHandler
         Path specPath = findOneFile( sourcePath, ".spec" );
         Mock mock = new Mock();
         mock.run( task, "--buildsrpm", "--spec", specPath.toString(), "--sources", sourcePath.toString() );
-        Path srpmPath = findOneFile( task.getWorkDir(), ".src.rpm" );
-        am.copyArtifact( ArtifactType.SRPM, srpmPath );
+        Path srpmPath = findOneFile( task.getResultDir(), ".src.rpm" );
+        am.create( ArtifactType.SRPM, srpmPath.getFileName().toString() );
         TaskTermination.success( "Source RPM was built in mock" );
     }
 }

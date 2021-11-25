@@ -44,12 +44,12 @@ public class RpmTaskHandler
             mock.addMacro( param.getName(), param.getValue() );
         }
         mock.run( task, "--rebuild", srpmPath.toString() );
-        try ( var s = Files.find( task.getWorkDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
+        try ( var s = Files.find( task.getResultDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
             && !p.getFileName().toString().endsWith( ".src.rpm" ) && bfa.isRegularFile() ) )
         {
             for ( var it = s.iterator(); it.hasNext(); )
             {
-                am.copyArtifact( ArtifactType.RPM, it.next() );
+                am.create( ArtifactType.RPM, it.next().getFileName().toString() );
             }
         }
         catch ( IOException e )
