@@ -30,18 +30,18 @@ public class RepoTaskHandler
     implements TaskHandler
 {
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
-        for ( Path rpm : am.getDepArtifactsByType( ArtifactType.RPM, task ) )
+        ArtifactManager am = taskExecution.getArtifactManager();
+        for ( Path rpm : am.getDepArtifactsByType( ArtifactType.RPM, taskExecution ) )
         {
             am.symlinkArtifact( ArtifactType.RPM, rpm );
         }
 
         Path repodatataPath = am.create( ArtifactType.REPO, "repodata" );
-        Command createrepo = new Command( task, 30, "createrepo_c", repodatataPath.getParent().toString() );
-        createrepo.run();
+        Command createrepo = new Command( "createrepo_c", repodatataPath.getParent().toString() );
+        createrepo.run( taskExecution, 30 );
 
         TaskTermination.success( "Repo created successfully" );
     }

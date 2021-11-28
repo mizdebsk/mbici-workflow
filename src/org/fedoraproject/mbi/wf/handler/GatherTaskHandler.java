@@ -60,14 +60,14 @@ public class GatherTaskHandler
         }
     }
 
-    private void downloadPackages( TaskExecution task, List<String> packageNames, Map<String, String> repos )
+    private void downloadPackages( TaskExecution taskExecution, List<String> packageNames, Map<String, String> repos )
         throws TaskTermination
     {
-        Command dnf = new Command( task, 300, "fakeroot", "dnf" );
+        Command dnf = new Command( "fakeroot", "dnf" );
 
-        dnf.addArg( "--installroot", task.getWorkDir().toString() );
+        dnf.addArg( "--installroot", taskExecution.getWorkDir().toString() );
 
-        ArtifactManager am = task.getArtifactManager();
+        ArtifactManager am = taskExecution.getArtifactManager();
         Path dnfConfPath = am.getOrCreate( ArtifactType.CONFIG, "dnf.conf" );
         try ( BufferedWriter bw = Files.newBufferedWriter( dnfConfPath ) )
         {
@@ -93,22 +93,22 @@ public class GatherTaskHandler
             dnf.addArg( packageName );
         }
 
-        dnf.run();
+        dnf.run( taskExecution, 300 );
     }
 
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
+        ArtifactManager am = taskExecution.getArtifactManager();
         List<String> packageNames = new ArrayList<>();
         Map<String, String> repos = new LinkedHashMap<>();
-        parseTaskParameters( task.getTask(), packageNames, repos );
+        parseTaskParameters( taskExecution.getTask(), packageNames, repos );
 
-        downloadPackages( task, packageNames, repos );
+        downloadPackages( taskExecution, packageNames, repos );
 
         try ( Stream<Path> pathStream =
-            Files.find( task.getWorkDir().resolve( "var/cache/dnf" ), 10,
+            Files.find( taskExecution.getWorkDir().resolve( "var/cache/dnf" ), 10,
                         ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" ) && bfa.isRegularFile() ) )
         {
             for ( Iterator<Path> pathIterator = pathStream.iterator(); pathIterator.hasNext(); )
@@ -122,8 +122,8 @@ public class GatherTaskHandler
         }
 
         Path repodatataPath = am.create( ArtifactType.REPO, "repodata" );
-        Command createrepo = new Command( task, 30, "createrepo_c", repodatataPath.getParent().toString() );
-        createrepo.run();
+        Command createrepo = new Command( "createrepo_c", repodatataPath.getParent().toString() );
+        createrepo.run( taskExecution, 30 );
 
         TaskTermination.success( "Platform repo was downloaded successfully" );
     }

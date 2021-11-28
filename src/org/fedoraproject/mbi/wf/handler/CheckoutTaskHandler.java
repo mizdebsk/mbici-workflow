@@ -76,31 +76,31 @@ public class CheckoutTaskHandler
         }
     }
 
-    private void runGit( TaskExecution task, String... args )
+    private void runGit( TaskExecution taskExecution, String... args )
         throws TaskTermination
     {
-        Command cmd = new Command( task, 60, "git" );
-        cmd.addArg( "--git-dir", task.getWorkDir().resolve( "git" ).toString() );
-        cmd.addArg( args );
-        cmd.run();
+        Command git = new Command( "git" );
+        git.addArg( "--git-dir", taskExecution.getWorkDir().resolve( "git" ).toString() );
+        git.addArg( args );
+        git.run( taskExecution, 60 );
     }
 
-    public void handleTask0( TaskExecution task )
+    public void handleTask0( TaskExecution taskExecution )
         throws TaskTermination, IOException
     {
-        ArtifactManager am = task.getArtifactManager();
-        Path dgCache = task.getCacheManager().getDistGit( commit );
+        ArtifactManager am = taskExecution.getArtifactManager();
+        Path dgCache = taskExecution.getCacheManager().getDistGit( commit );
         am.symlinkArtifact( ArtifactType.CHECKOUT, dgCache );
         if ( Files.exists( dgCache ) )
         {
             TaskTermination.success( "Commit was found in dist-git cache" );
             return;
         }
-        Path workTree = task.getCacheManager().createPending( "checkout-" + commit );
-        runGit( task, "init", "--bare" );
-        runGit( task, "remote", "add", "-f", "origin", scm );
+        Path workTree = taskExecution.getCacheManager().createPending( "checkout-" + commit );
+        runGit( taskExecution, "init", "--bare" );
+        runGit( taskExecution, "remote", "add", "-f", "origin", scm );
         Files.createDirectories( workTree );
-        runGit( task, "--work-tree", workTree.toString(), "reset", "--hard", commit );
+        runGit( taskExecution, "--work-tree", workTree.toString(), "reset", "--hard", commit );
         for ( String line : Files.readAllLines( workTree.resolve( "sources" ) ) )
         {
             Pattern pattern = Pattern.compile( "^SHA512 \\(([^)]+)\\) = ([0-9a-f]{128})$" );
@@ -109,13 +109,13 @@ public class CheckoutTaskHandler
             {
                 String fileName = matcher.group( 1 );
                 String hash = matcher.group( 2 );
-                Path lasCache = task.getCacheManager().getLookaside( hash );
+                Path lasCache = taskExecution.getCacheManager().getLookaside( hash );
                 Path downloadPath = workTree.resolve( fileName );
                 if ( !Files.exists( lasCache ) )
                 {
                     //System.err.println( "Downloading " + fileName );
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
-                    Curl curl = new Curl( task );
+                    Curl curl = new Curl( taskExecution );
                     curl.downloadFile( url, downloadPath );
                     Files.move( downloadPath, lasCache );
                 }
@@ -127,13 +127,13 @@ public class CheckoutTaskHandler
     }
 
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        parseTaskParameters( task.getTask() );
+        parseTaskParameters( taskExecution.getTask() );
         try
         {
-            handleTask0( task );
+            handleTask0( taskExecution );
         }
         catch ( IOException e )
         {

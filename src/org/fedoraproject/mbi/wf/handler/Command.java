@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,21 +35,11 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 class Command
 {
-    private final TaskExecution task;
-
-    private final int timeoutSeconds;
-
     private final List<String> cmd = new ArrayList<>();
 
-    public Command( TaskExecution task, int timeoutSeconds, String... args )
+    public Command( String... args )
     {
-        this.task = task;
-        this.timeoutSeconds = timeoutSeconds;
-
-        for ( String arg : args )
-        {
-            cmd.add( arg );
-        }
+        addArg( args );
     }
 
     public void addArg( String... args )
@@ -59,14 +50,19 @@ class Command
         }
     }
 
-    public void run()
+    public List<String> getArgs()
+    {
+        return Collections.unmodifiableList( cmd );
+    }
+
+    public void run( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
         ProcessBuilder pb = new ProcessBuilder( cmd );
-        pb.directory( task.getWorkDir().toFile() );
+        pb.directory( taskExecution.getWorkDir().toFile() );
         pb.redirectInput( Paths.get( "/dev/null" ).toFile() );
-        pb.redirectOutput( getLog( task, "stdout.log" ) );
-        pb.redirectError( getLog( task, "stderr.log" ) );
+        pb.redirectOutput( getLog( taskExecution, "stdout.log" ) );
+        pb.redirectError( getLog( taskExecution, "stderr.log" ) );
         Process process;
         try
         {
@@ -100,10 +96,16 @@ class Command
         }
     }
 
-    public Redirect getLog( TaskExecution task, String fileName )
+    public void runRemote( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
-        ArtifactManager artifactManager = task.getArtifactManager();
+        run( taskExecution, timeoutSeconds );
+    }
+
+    public Redirect getLog( TaskExecution taskExecution, String fileName )
+        throws TaskTermination
+    {
+        ArtifactManager artifactManager = taskExecution.getArtifactManager();
         Path logPath = artifactManager.getOrCreate( ArtifactType.LOG, fileName );
         if ( Files.exists( logPath ) )
         {

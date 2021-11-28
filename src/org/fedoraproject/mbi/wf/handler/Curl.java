@@ -25,17 +25,17 @@ import org.fedoraproject.mbi.wf.TaskTermination;
  */
 class Curl
 {
-    private final TaskExecution task;
+    private final TaskExecution taskExecution;
 
-    public Curl( TaskExecution task )
+    public Curl( TaskExecution taskExecution )
     {
-        this.task = task;
+        this.taskExecution = taskExecution;
     }
 
     public void downloadFile( String url, Path targetPath )
         throws TaskTermination
     {
-        Command command = new Command( task, 120, "curl", "-f", "-L", "-o", targetPath.toString(), url );
-        command.run();
+        Command curl = new Command( "curl", "-f", "-L", "-o", targetPath.toString(), url );
+        curl.run( taskExecution, 120 );
     }
 }

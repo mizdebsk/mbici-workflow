@@ -35,16 +35,16 @@ class Mock
 {
     private Map<String, String> macros = new LinkedHashMap<>();
 
-    public void run( TaskExecution task, String... args )
+    public void run( TaskExecution taskExecution, String... mockArgs )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
+        ArtifactManager am = taskExecution.getArtifactManager();
 
         Path mockConfPath = am.create( ArtifactType.CONFIG, "mock.cfg" );
         try ( BufferedWriter bw = Files.newBufferedWriter( mockConfPath ) )
         {
-            bw.write( "config_opts['basedir'] = '" + task.getWorkDir() + "'\n" );
-            bw.write( "config_opts['cache_topdir'] = '" + task.getWorkDir() + "'\n" );
+            bw.write( "config_opts['basedir'] = '" + taskExecution.getWorkDir() + "'\n" );
+            bw.write( "config_opts['cache_topdir'] = '" + taskExecution.getWorkDir() + "'\n" );
             bw.write( "" );
             bw.write( "config_opts['rpmbuild_networking'] = False\n" );
             bw.write( "config_opts['use_host_resolv'] = False\n" );
@@ -78,7 +78,7 @@ class Mock
             bw.write( "metadata_expire=-1\n" );
 
             int priority = 0;
-            for ( Path repoPath : am.getDepArtifactsByType( ArtifactType.REPO, task ) )
+            for ( Path repoPath : am.getDepArtifactsByType( ArtifactType.REPO, taskExecution ) )
             {
                 String name = repoPath.getParent().getParent().getFileName().toString();
                 bw.write( "\n" );
@@ -101,11 +101,11 @@ class Mock
             am.create( ArtifactType.LOG, logName );
         }
 
-        Command cmd = new Command( task, 600, "mock" );
-        cmd.addArg( "-r", mockConfPath.toString() );
-        cmd.addArg( "--resultdir", task.getResultDir().toString() );
-        cmd.addArg( args );
-        cmd.run();
+        Command mock = new Command( "mock" );
+        mock.addArg( "-r", mockConfPath.toString() );
+        mock.addArg( "--resultdir", taskExecution.getResultDir().toString() );
+        mock.addArg( mockArgs );
+        mock.runRemote( taskExecution, 600 );
     }
 
     public void addMacro( String name, String value )
