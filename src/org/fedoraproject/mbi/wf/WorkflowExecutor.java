@@ -43,7 +43,7 @@ public class WorkflowExecutor
 
     private final Set<FinishedTask> unsuccessfullyFinishedTasks = new LinkedHashSet<>();
 
-    private final Logger logger = new Logger();
+    private final Logger logger;
 
     private final Throttle throttle;
 
@@ -55,6 +55,7 @@ public class WorkflowExecutor
         newTasks = new LinkedHashSet<>( wf.getTasks() );
         dumper = new Dumper( wfPath );
         this.cacheManager = cacheManager;
+        this.logger = new Logger( wf.getTasks().size() );
         this.throttle = throttle;
     }
 

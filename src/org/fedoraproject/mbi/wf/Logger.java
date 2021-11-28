@@ -22,37 +22,112 @@ import org.fedoraproject.mbi.wf.model.Task;
  */
 class Logger
 {
+    private static enum Color
+    {
+        RUNNING( "34" ), FAILED( "31" ), SUCCEEDED( "32" ), REUSED( "36" ), RESET( "" );
+
+        private Color( String s )
+        {
+            escapeCode = "\033[" + s + "m";
+        }
+
+        private final String escapeCode;
+
+        @Override
+        public String toString()
+        {
+            return escapeCode;
+        }
+    }
+
+    private final int taskCount;
+
+    private int nRunning;
+
+    private int nSucceeded;
+
+    private int nFailed;
+
+    private int len;
+
+    public Logger( int taskCount )
+    {
+        this.taskCount = taskCount;
+    }
+
+    private void log( Color color, Object... args )
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( '\r' );
+        sb.append( new String( new byte[len] ).replace( '\0', ' ' ) );
+        sb.append( '\r' );
+
+        sb.append( color );
+        for ( Object arg : args )
+        {
+            sb.append( arg.toString() );
+        }
+        sb.append( Color.RESET );
+        sb.append( '\n' );
+
+        len = sb.length();
+        sb.append( "[ Tasks: " );
+        if ( nRunning != 0 )
+        {
+            sb.append( "running: " ).append( Color.RUNNING ).append( nRunning ).append( Color.RESET ).append( ", " );
+        }
+        if ( nSucceeded != 0 )
+        {
+            sb.append( "succeeded: " ).append( Color.SUCCEEDED ).append( nSucceeded ).append( Color.RESET ).append( ", " );
+        }
+        if ( nFailed != 0 )
+        {
+            sb.append( "failed: " ).append( Color.FAILED ).append( nFailed ).append( Color.RESET ).append( ", " );
+        }
+        sb.append( "all: " ).append( taskCount ).append( " ]" );
+        len = sb.length() - len;
+
+        System.err.print( sb );
+    }
+
     public void logTaskRunning( Task task )
     {
-        System.err.println( "\033[34m" + task + " running" + "\033[m" );
+        nRunning++;
+        log( Color.RUNNING, task, " running" );
     }
 
     public void logTaskSucceeded( FinishedTask finishedTask )
     {
-        System.err.println( "\033[32m" + finishedTask.getTask() + " finished; outcome is "
-            + finishedTask.getResult().getOutcome() + ", reason: " + finishedTask.getResult().getOutcomeReason()
-            + "\033[m" );
+        nRunning--;
+        nSucceeded++;
+        log( Color.SUCCEEDED, finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(),
+             ", reason: ", finishedTask.getResult().getOutcomeReason() );
     }
 
     public void logTaskFailed( FinishedTask finishedTask )
     {
-        System.err.println( "\033[31m" + finishedTask.getTask() + " finished; outcome is "
-            + finishedTask.getResult().getOutcome() + ", reason: " + finishedTask.getResult().getOutcomeReason()
-            + "\033[m" );
+        nRunning--;
+        nFailed++;
+        log( Color.FAILED, finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(),
+             ", reason: ", finishedTask.getResult().getOutcomeReason() );
     }
 
     public void logTaskReused( FinishedTask finishedTask )
     {
-        System.err.println( "\033[36m" + finishedTask.getTask() + " cached result was reused" + "\033[m" );
+        nSucceeded++;
+        log( Color.REUSED, finishedTask.getTask(), " cached result was reused" );
     }
 
     public void logWorkflowSucceeded()
     {
-        System.err.println( "Workflow complete" );
+        log( Color.SUCCEEDED, "Workflow complete" );
+        System.err.println();
     }
 
     public void logWorkflowFailed()
     {
-        System.err.println( "Workflow INCOMPLETE" );
+        log( Color.FAILED, "Workflow INCOMPLETE" );
+        System.err.println();
     }
 }
