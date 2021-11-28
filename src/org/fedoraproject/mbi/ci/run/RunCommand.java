@@ -17,9 +17,11 @@ package org.fedoraproject.mbi.ci.run;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.wf.CacheManager;
+import org.fedoraproject.mbi.wf.Kubernetes;
 import org.fedoraproject.mbi.wf.Throttle;
 import org.fedoraproject.mbi.wf.WorkflowExecutor;
 import org.fedoraproject.mbi.wf.model.Workflow;
@@ -46,8 +48,10 @@ public class RunCommand
 
     private final int maxRpmTasks;
 
+    private final boolean kubernetes;
+
     public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
-                       int maxSrpmTasks, int maxRpmTasks )
+                       int maxSrpmTasks, int maxRpmTasks, boolean kubernetes )
     {
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
@@ -56,6 +60,7 @@ public class RunCommand
         this.maxCheckoutTasks = maxCheckoutTasks;
         this.maxSrpmTasks = maxSrpmTasks;
         this.maxRpmTasks = maxRpmTasks;
+        this.kubernetes = kubernetes;
     }
 
     @Override
@@ -65,7 +70,8 @@ public class RunCommand
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
         Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks );
-        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle );
+        Optional<Kubernetes> kube = kubernetes ? Optional.of( new Kubernetes() ) : Optional.empty();
+        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
     }
@@ -86,6 +92,8 @@ public class RunCommand
         private Integer maxSrpmTasks = 5;
 
         private Integer maxRpmTasks = 2;
+
+        private Boolean kubernetes = false;
 
         public void setWorkflowPath( Path workflowPath )
         {
@@ -122,11 +130,16 @@ public class RunCommand
             this.maxRpmTasks = maxRpmTasks;
         }
 
+        public void setKubernetes( String dummy )
+        {
+            kubernetes = true;
+        }
+
         @Override
         public RunCommand build()
         {
             return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
-                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks );
+                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, kubernetes );
         }
     }
 
@@ -143,5 +156,6 @@ public class RunCommand
                                      Integer::parseInt );
         ENTITY.addOptionalAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
                                      Integer::parseInt );
+        ENTITY.addOptionalAttribute( "kubernetes", x -> null, ArgsBuilder::setKubernetes );
     }
 }

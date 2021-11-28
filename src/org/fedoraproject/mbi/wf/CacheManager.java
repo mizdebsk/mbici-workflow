@@ -39,6 +39,21 @@ public class CacheManager
         this.workRootDir = workRootDir;
     }
 
+    public Path getResultRootDir()
+    {
+        return resultRootDir;
+    }
+
+    public Path getCacheRootDir()
+    {
+        return cacheRootDir;
+    }
+
+    public Path getWorkRootDir()
+    {
+        return workRootDir;
+    }
+
     public Path getResultDir( String taskId, String resultId )
     {
         return resultRootDir.resolve( taskId ).resolve( resultId );

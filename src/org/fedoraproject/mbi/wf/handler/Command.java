@@ -23,9 +23,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.fedoraproject.mbi.wf.ArtifactManager;
+import org.fedoraproject.mbi.wf.Kubernetes;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
@@ -42,12 +44,22 @@ class Command
         addArg( args );
     }
 
+    public Command( List<String> args )
+    {
+        addArg( args );
+    }
+
     public void addArg( String... args )
     {
         for ( String arg : args )
         {
             cmd.add( arg );
         }
+    }
+
+    public void addArg( List<String> args )
+    {
+        cmd.addAll( args );
     }
 
     public List<String> getArgs()
@@ -99,7 +111,16 @@ class Command
     public void runRemote( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
-        run( taskExecution, timeoutSeconds );
+        Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
+        if ( kubernetes.isPresent() )
+        {
+            Command kubectl = new Command( kubernetes.get().wrapCommand( taskExecution, cmd ) );
+            kubectl.run( taskExecution, 3600 );
+        }
+        else
+        {
+            run( taskExecution, timeoutSeconds );
+        }
     }
 
     public Redirect getLog( TaskExecution taskExecution, String fileName )

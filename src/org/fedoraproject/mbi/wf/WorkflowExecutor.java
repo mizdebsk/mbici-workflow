@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.fedoraproject.mbi.wf.model.Task;
@@ -49,7 +50,10 @@ public class WorkflowExecutor
 
     private final Dumper dumper;
 
-    public WorkflowExecutor( Workflow wf, Path wfPath, CacheManager cacheManager, Throttle throttle )
+    private final Optional<Kubernetes> kubernetes;
+
+    public WorkflowExecutor( Workflow wf, Path wfPath, CacheManager cacheManager, Throttle throttle,
+                             Optional<Kubernetes> kubernetes )
     {
         wf.getTasks().stream().forEach( workflowBuilder::addTask );
         newTasks = new LinkedHashSet<>( wf.getTasks() );
@@ -57,6 +61,7 @@ public class WorkflowExecutor
         this.cacheManager = cacheManager;
         this.logger = new Logger( wf.getTasks().size() );
         this.throttle = throttle;
+        this.kubernetes = kubernetes;
     }
 
     public CacheManager getCacheManager()
@@ -67,6 +72,11 @@ public class WorkflowExecutor
     public Throttle getThrottle()
     {
         return throttle;
+    }
+
+    public Optional<Kubernetes> getKubernetes()
+    {
+        return kubernetes;
     }
 
     public synchronized void stateChangeFromPendingToRunning( Task task )
