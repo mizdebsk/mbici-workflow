@@ -125,8 +125,8 @@ public class RunCommand
         @Override
         public RunCommand build()
         {
-            return new RunCommand( workflowPath, resultDir, cacheDir, workDir, maxCheckoutTasks, maxSrpmTasks,
-                                   maxRpmTasks );
+            return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
+                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks );
         }
     }
 

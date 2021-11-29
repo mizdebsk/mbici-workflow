@@ -95,7 +95,8 @@ public class GenerateCommand
         @Override
         public GenerateCommand build()
         {
-            return new GenerateCommand( planPath, platformPath, subjectPath, workflowPath );
+            return new GenerateCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
+                                        subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath() );
         }
     }
 

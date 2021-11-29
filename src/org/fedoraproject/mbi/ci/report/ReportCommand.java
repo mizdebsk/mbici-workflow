@@ -183,7 +183,9 @@ public class ReportCommand
         @Override
         public ReportCommand build()
         {
-            return new ReportCommand( planPath, platformPath, subjectPath, workflowPath, resultDir, reportDir );
+            return new ReportCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
+                                      subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(),
+                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath() );
         }
     }
 
