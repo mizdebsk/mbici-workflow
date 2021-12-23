@@ -113,7 +113,7 @@ public class CheckoutTaskHandler
                 Path downloadPath = workTree.resolve( fileName );
                 if ( !Files.exists( lasCache ) )
                 {
-                    System.err.println( "Downloading " + fileName );
+                    //System.err.println( "Downloading " + fileName );
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
                     Curl curl = new Curl( task );
                     curl.downloadFile( url, downloadPath );
