@@ -95,19 +95,16 @@ class Mock
             TaskTermination.error( "I/O error when writing mock config: " + e.getMessage() );
         }
 
+        for ( String logName : Arrays.asList( "build.log", "root.log", "hw_info.log", "state.log" ) )
+        {
+            am.create( ArtifactType.LOG, logName );
+        }
+
         Command cmd = new Command( task, 600, "mock" );
         cmd.addArg( "-r", mockConfPath.toString() );
         cmd.addArg( "--resultdir", task.getResultDir().toString() );
         cmd.addArg( args );
         cmd.run();
-
-        for ( String logName : Arrays.asList( "build.log", "root.log", "hw_info.log", "state.log" ) )
-        {
-            if ( Files.isRegularFile( task.getResultDir().resolve( logName ) ) )
-            {
-                am.create( ArtifactType.LOG, logName );
-            }
-        }
     }
 
     public void addMacro( String name, String value )
