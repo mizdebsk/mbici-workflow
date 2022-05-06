@@ -19,24 +19,38 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * @author Mikolaj Izdebski
  */
-class Report
+abstract class Report
 {
     private final StringBuilder sb = new StringBuilder();
 
-    public void add( CharSequence... content )
+    private static final String STATIC = "https://mbi-artifacts.s3.eu-central-1.amazonaws.com/static";
+
+    public static String link( String href, String text )
+    {
+        return "<a href='" + href + "'>" + text + "</a>";
+    }
+
+    public void addNoNL( CharSequence... content )
     {
         for ( CharSequence s : content )
         {
             sb.append( s );
         }
+    }
+
+    public void add( CharSequence... content )
+    {
+        addNoNL( content );
         sb.append( '\n' );
     }
 
-    public void addHeader()
+    public void header( String title )
     {
         add( "<!doctype html>" );
         add( "<html lang='en'>" );
@@ -45,10 +59,10 @@ class Report
         add( "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>" );
         add( "<meta charset='utf-8'>" );
         add( "<meta name='viewport' content='width=device-width, initial-scale=1'>" );
-        add( "<title>MBI &ndash; Test results</title>" );
-        add( "<link href='/static/fontawesome/css/all.min.css' type='text/css' rel='stylesheet'>" );
-        add( "<link href='/static/bootstrap/css/bootstrap.min.css' type='text/css' rel='stylesheet'>" );
-        add( "<link href='/static/custom.css' rel='stylesheet'>" );
+        add( "<title>MBI &ndash; ", title, "</title>" );
+        add( "<link href='", STATIC, "/fontawesome/css/all.min.css' type='text/css' rel='stylesheet'>" );
+        add( "<link href='", STATIC, "/bootstrap/css/bootstrap.min.css' type='text/css' rel='stylesheet'>" );
+        add( "<link href='", STATIC, "/custom.css' rel='stylesheet'>" );
         add( "</head>" );
 
         add( "<body>" );
@@ -67,19 +81,64 @@ class Report
         add( "</svg>" );
 
         add( "<a class='navbar-brand' href='/'>CI Test Results</a>" );
-        add( "<div class='collapse navbar-collapse'></div>" );
+        add( "<div class='collapse navbar-collapse'>" );
+        add( "<ul class='navbar-nav me-auto mb-2 mb-md-0'>" );
+        add( "<li class='nav-item'><a class='nav-link' href='result.html'>Outcome</a></li>" );
+        add( "<li class='nav-item'><a class='nav-link' href='platform.html'>Platform</a></li>" );
+        add( "<li class='nav-item'><a class='nav-link' href='subject.html'>Subject</a></li>" );
+        add( "<li class='nav-item'><a class='nav-link' href='plan.html'>Plan</a></li>" );
+        add( "</ul>" );
+        add( "</div>" );
+
         add( "</div>" );
         add( "</nav>" );
         add( "<main class='container'>" );
-        add( "<h2>Test results</h2>" );
+        add( "<h2>", title, "</h2>" );
     }
 
-    public void addFooter()
+    public void footer()
     {
         add( "</main>" );
-        add( "<script src='/static/bootstrap/js/bootstrap.bundle.min.js'></script>" );
+        add( "<script src='", STATIC, "/bootstrap/js/bootstrap.bundle.min.js'></script>" );
         add( "</body>" );
         add( "</html>" );
+    }
+
+    public void wrap( String tag, String... content )
+    {
+        addNoNL( "<" + tag + ">" );
+        addNoNL( content );
+        add( "</" + tag + ">" );
+    }
+
+    public void para( String... content )
+    {
+        wrap( "p", content );
+    }
+
+    public void item( String... content )
+    {
+        wrap( "li", content );
+    }
+
+    public void subtitle( String s )
+    {
+        add( "<h4>", s, "</h4>" );
+    }
+
+    public <T> void list( String s1, String s2, Collection<T> col, Function<T, String> s )
+    {
+        if ( col.isEmpty() )
+        {
+            para( s2 );
+        }
+        else
+        {
+            add( s1 );
+            add( "<ul>" );
+            col.stream().map( s ).forEach( this::item );
+            add( "</ul>" );
+        }
     }
 
     public void write( Path path )
@@ -90,4 +149,6 @@ class Report
             writer.write( sb.toString() );
         }
     }
+
+    public abstract void body();
 }

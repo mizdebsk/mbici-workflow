@@ -18,8 +18,6 @@ package org.fedoraproject.mbi.ci.report;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
@@ -74,7 +72,7 @@ public class ReportCommand
         Plan plan = Plan.readFromXML( planPath );
         Platform platform = Platform.readFromXML( platformPath );
         Subject subject = Subject.readFromXML( subjectPath );
-        Workflow wf = Workflow.readFromXML( workflowPath );
+        Workflow workflow = Workflow.readFromXML( workflowPath );
 
         System.err.println( "Publishing platform.xml" );
         platform.writeToXML( reportDir.resolve( "platform.xml" ) );
@@ -83,54 +81,48 @@ public class ReportCommand
         System.err.println( "Publishing subject.xml" );
         subject.writeToXML( reportDir.resolve( "subject.xml" ) );
         System.err.println( "Publishing workflow.xml" );
-        wf.writeToXML( reportDir.resolve( "workflow.xml" ) );
+        workflow.writeToXML( reportDir.resolve( "workflow.xml" ) );
 
-        List<Result> failed = wf.getResults().stream() //
-                                .filter( result -> result.getOutcome() != TaskOutcome.SUCCESS ) //
-                                .collect( Collectors.toList() );
-
-        Report report = new Report();
-        report.addHeader();
-
-        if ( !failed.isEmpty() )
+        for ( Result result : workflow.getResults() )
         {
-            report.add( "<p>Test <strong>FAILED</strong></p>" );
-            report.add( "<ul>" );
-            for ( Result result : failed )
+            if ( result.getOutcome() == TaskOutcome.SUCCESS )
             {
-                report.add( "<li><strong>", result.getTaskId(), "</strong>" );
-                report.add( "<br/>Reason: ", result.getOutcomeReason(), "<br/>(" );
-                for ( Artifact artifact : result.getArtifacts() )
-                {
-                    Path subDir = reportDir.resolve( result.getTaskId() );
-                    if ( artifact.getType() == ArtifactType.LOG )
-                    {
-                        Files.createDirectories( subDir );
-                        report.add( "<a href='", result.getTaskId(), "/", artifact.getName(), "'>",
-                                    artifact.getName() + "</a>" );
-                        System.err.println( "Publishing " + result.getTaskId() + "/" + artifact.getName() );
-                        Files.copy( cacheManager.getResultDir( result.getTaskId(),
-                                                               result.getId() ).resolve( artifact.getName() ),
-                                    subDir.resolve( artifact.getName() ) );
-                    }
-                }
-                report.add( ")</li>" );
+                // Skip publishing logs for successful tasks to conserve space
+                continue;
             }
-            report.add( "</ul>" );
-        }
-        else if ( wf.getResults().size() == wf.getTasks().size() )
-        {
-            report.add( "<p>Test <strong>PASSED</strong></p>" );
-        }
-        else
-        {
-            report.add( "<p>Test is still running. Results will appear here once the test finishes.</p>" );
+            for ( Artifact artifact : result.getArtifacts() )
+            {
+                Path subDir = reportDir.resolve( result.getTaskId() );
+                if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
+                {
+                    Files.createDirectories( subDir );
+                    System.err.println( "Publishing " + result.getTaskId() + "/" + artifact.getName() );
+                    Files.copy( cacheManager.getResultDir( result.getTaskId(),
+                                                           result.getId() ).resolve( artifact.getName() ),
+                                subDir.resolve( artifact.getName() ) );
+                }
+            }
         }
 
-        report.addFooter();
-
+        Report resultsReport = new ResultsReport( workflow );
+        resultsReport.body();
         System.err.println( "Publishing result.html" );
-        report.write( reportDir.resolve( "result.html" ) );
+        resultsReport.write( reportDir.resolve( "result.html" ) );
+
+        Report platformReport = new PlatformReport( platform );
+        platformReport.body();
+        System.err.println( "Publishing platform.html" );
+        platformReport.write( reportDir.resolve( "platform.html" ) );
+
+        Report subjectReport = new SubjectReport( subject );
+        subjectReport.body();
+        System.err.println( "Publishing subject.html" );
+        subjectReport.write( reportDir.resolve( "subject.html" ) );
+
+        Report planReport = new PlanReport( plan );
+        planReport.body();
+        System.err.println( "Publishing plan.html" );
+        planReport.write( reportDir.resolve( "plan.html" ) );
 
         System.err.println( "REPORT COMPLETE" );
     }
