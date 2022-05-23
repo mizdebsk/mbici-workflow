@@ -93,7 +93,7 @@ public class GatherTaskHandler
             dnf.addArg( packageName );
         }
 
-        dnf.run( taskExecution, 300 );
+        dnf.run( taskExecution, 600 );
     }
 
     @Override
