@@ -40,12 +40,15 @@ public class GenerateCommand
 
     private final Path workflowPath;
 
-    public GenerateCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath )
+    private final boolean validate;
+
+    public GenerateCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath, boolean validate )
     {
         this.planPath = planPath;
         this.platformPath = platformPath;
         this.subjectPath = subjectPath;
         this.workflowPath = workflowPath;
+        this.validate = validate;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class GenerateCommand
         Subject subject = Subject.readFromXML( subjectPath );
 
         WorkflowFactory wff = new WorkflowFactory();
-        Workflow wfd = wff.createFromPlan( platform, plan, subject );
+        Workflow wfd = wff.createFromPlan( platform, plan, subject, validate );
         wfd.writeToXML( workflowPath );
     }
 
@@ -71,6 +74,8 @@ public class GenerateCommand
         private Path subjectPath;
 
         private Path workflowPath;
+
+        private boolean validate;
 
         public void setPlanPath( Path planPath )
         {
@@ -92,11 +97,16 @@ public class GenerateCommand
             this.workflowPath = workflowPath;
         }
 
+        public void setValidate( String dummy )
+        {
+            validate = true;
+        }
+
         @Override
         public GenerateCommand build()
         {
             return new GenerateCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
-                                        subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath() );
+                                        subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(), validate );
         }
     }
 
@@ -107,5 +117,6 @@ public class GenerateCommand
         ENTITY.addAttribute( "platform", x -> null, ArgsBuilder::setPlatformPath, Path::toString, Paths::get );
         ENTITY.addAttribute( "subject", x -> null, ArgsBuilder::setSubjectPath, Path::toString, Paths::get );
         ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
+        ENTITY.addOptionalAttribute( "validate", x -> null, ArgsBuilder::setValidate );
     }
 }

@@ -48,10 +48,12 @@ public class RunCommand
 
     private final int maxRpmTasks;
 
+    private final int maxValidateTasks;
+
     private final boolean kubernetes;
 
     public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
-                       int maxSrpmTasks, int maxRpmTasks, boolean kubernetes )
+                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, boolean kubernetes )
     {
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
@@ -60,6 +62,7 @@ public class RunCommand
         this.maxCheckoutTasks = maxCheckoutTasks;
         this.maxSrpmTasks = maxSrpmTasks;
         this.maxRpmTasks = maxRpmTasks;
+        this.maxValidateTasks = maxValidateTasks;
         this.kubernetes = kubernetes;
     }
 
@@ -69,7 +72,7 @@ public class RunCommand
     {
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
-        Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks );
+        Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
         Optional<Kubernetes> kube = kubernetes ? Optional.of( new Kubernetes() ) : Optional.empty();
         WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube );
         Workflow wf = wfe.execute();
@@ -92,6 +95,8 @@ public class RunCommand
         private Integer maxSrpmTasks = 5;
 
         private Integer maxRpmTasks = 2;
+
+        private Integer maxValidateTasks = 4;
 
         private Boolean kubernetes = false;
 
@@ -130,6 +135,11 @@ public class RunCommand
             this.maxRpmTasks = maxRpmTasks;
         }
 
+        public void setMaxValidateTasks( Integer maxValidateTasks )
+        {
+            this.maxValidateTasks = maxValidateTasks;
+        }
+
         public void setKubernetes( String dummy )
         {
             kubernetes = true;
@@ -139,7 +149,8 @@ public class RunCommand
         public RunCommand build()
         {
             return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
-                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, kubernetes );
+                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks,
+                                   maxValidateTasks, kubernetes );
         }
     }
 
@@ -155,6 +166,8 @@ public class RunCommand
         ENTITY.addOptionalAttribute( "maxSrpmTasks", x -> null, ArgsBuilder::setMaxSrpmTasks, Number::toString,
                                      Integer::parseInt );
         ENTITY.addOptionalAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
+                                     Integer::parseInt );
+        ENTITY.addOptionalAttribute( "maxValidateTasks", x -> null, ArgsBuilder::setMaxValidateTasks, Number::toString,
                                      Integer::parseInt );
         ENTITY.addOptionalAttribute( "kubernetes", x -> null, ArgsBuilder::setKubernetes );
     }

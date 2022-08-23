@@ -26,6 +26,7 @@ import org.fedoraproject.mbi.wf.handler.GatherTaskHandler;
 import org.fedoraproject.mbi.wf.handler.RepoTaskHandler;
 import org.fedoraproject.mbi.wf.handler.RpmTaskHandler;
 import org.fedoraproject.mbi.wf.handler.SrpmTaskHandler;
+import org.fedoraproject.mbi.wf.handler.ValidateTaskHandler;
 import org.fedoraproject.mbi.wf.model.Task;
 import org.fedoraproject.mbi.wf.model.TaskBuilder;
 import org.fedoraproject.mbi.wf.model.WorkflowBuilder;
@@ -44,6 +45,8 @@ class TaskFactory
     private static final String CHECKOUT_HANDLER = CheckoutTaskHandler.class.getName();
 
     private static final String REPO_HANDLER = RepoTaskHandler.class.getName();
+
+    private static final String VALIDATE_HANDLER = ValidateTaskHandler.class.getName();
 
     private final WorkflowBuilder workflowBuilder;
 
@@ -138,6 +141,20 @@ class TaskFactory
         {
             task.addParameter( macro.getName(), macro.getValue() );
         }
+
+        Task taskDescriptor = task.build();
+        workflowBuilder.addTask( taskDescriptor );
+        return taskDescriptor;
+    }
+
+    public Task createValidateTask( String component, String phase, Task checkout, Task srpm, Task rpm )
+    {
+        TaskBuilder task = new TaskBuilder();
+        task.setId( component + "-" + phase + "-validate" );
+        task.setHandler( VALIDATE_HANDLER );
+        task.addDependency( checkout.getId() );
+        task.addDependency( srpm.getId() );
+        task.addDependency( rpm.getId() );
 
         Task taskDescriptor = task.build();
         workflowBuilder.addTask( taskDescriptor );

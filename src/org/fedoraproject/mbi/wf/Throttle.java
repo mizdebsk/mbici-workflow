@@ -22,6 +22,7 @@ import java.util.concurrent.Semaphore;
 import org.fedoraproject.mbi.wf.handler.CheckoutTaskHandler;
 import org.fedoraproject.mbi.wf.handler.RpmTaskHandler;
 import org.fedoraproject.mbi.wf.handler.SrpmTaskHandler;
+import org.fedoraproject.mbi.wf.handler.ValidateTaskHandler;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**
@@ -31,11 +32,12 @@ public class Throttle
 {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 
-    public Throttle( int maxCheckout, int maxSrpm, int maxRpm )
+    public Throttle( int maxCheckout, int maxSrpm, int maxRpm, int maxValidate )
     {
         semaphores.put( CheckoutTaskHandler.class.getName(), new Semaphore( maxCheckout ) );
         semaphores.put( RpmTaskHandler.class.getName(), new Semaphore( maxRpm ) );
         semaphores.put( SrpmTaskHandler.class.getName(), new Semaphore( maxSrpm ) );
+        semaphores.put( ValidateTaskHandler.class.getName(), new Semaphore( maxValidate ) );
     }
 
     public void acquireCapacity( Task task )
