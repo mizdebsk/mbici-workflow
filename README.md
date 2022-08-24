@@ -4,8 +4,8 @@ MBICI Workflow
 MBICI implements Continuous Integration (CI) for Maven Bootstrap
 Initiative (MBI).
 
-MBICI Workflow is an RPM package build engine that is used for
-continuously testing bootstrapping of Maven RPM packages.
+MBICI Workflow is an RPM package build and test engine that is used
+for continuously testing bootstrapping of Maven RPM packages.
 
 
 Runtime dependencies
@@ -23,6 +23,12 @@ Workflow:
 * `nosync` - for making `mock` run faster
 * `createrepo_c` - for creating YUM repositories out of built RPM
   packages
+
+Optional dependencies:
+
+* `kubectl` - for executing tasks on Kubernetes cluster
+* `tmt` - for executing tests plans on built packages
+* `podman` - for running tests in containers
 
 
 Quick Start
@@ -190,6 +196,9 @@ Usage
   * `-workflow <path>` - path where generated Workflow should be
     written
 
+  * `-validate` - incude validation tasks in generated Workflow
+    (running the Workflow will require `tmt` and `podman`)
+
 * `mbici-wf run` - execute Workflow and update it in-place
 
   Parameters:
@@ -204,6 +213,9 @@ Usage
 
   * `-workDir <path>` - path to a directory under which temporary
     working directories for tasks are created
+
+  * `-kubernetes` - build SRPM and RPM packages on external Kubernetes
+    cluster instead of local machine (requires `kubectl`)
 
 * `mbici-wf report` - generate a simple HTML report describing given
   Workflow
