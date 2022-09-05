@@ -50,10 +50,10 @@ public class RunCommand
 
     private final int maxValidateTasks;
 
-    private final boolean kubernetes;
+    private final String kubernetesNamespace;
 
     public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
-                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, boolean kubernetes )
+                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, String kubernetesNamespace )
     {
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
@@ -63,7 +63,7 @@ public class RunCommand
         this.maxSrpmTasks = maxSrpmTasks;
         this.maxRpmTasks = maxRpmTasks;
         this.maxValidateTasks = maxValidateTasks;
-        this.kubernetes = kubernetes;
+        this.kubernetesNamespace = kubernetesNamespace;
     }
 
     @Override
@@ -73,7 +73,8 @@ public class RunCommand
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
         Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
-        Optional<Kubernetes> kube = kubernetes ? Optional.of( new Kubernetes() ) : Optional.empty();
+        Optional<Kubernetes> kube =
+            kubernetesNamespace != null ? Optional.of( new Kubernetes( kubernetesNamespace ) ) : Optional.empty();
         WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
@@ -98,7 +99,7 @@ public class RunCommand
 
         private Integer maxValidateTasks = 4;
 
-        private Boolean kubernetes = false;
+        private String kubernetesNamespace;
 
         public void setWorkflowPath( Path workflowPath )
         {
@@ -140,9 +141,9 @@ public class RunCommand
             this.maxValidateTasks = maxValidateTasks;
         }
 
-        public void setKubernetes( String dummy )
+        public void setKubernetes( String kubernetesNamespace )
         {
-            kubernetes = true;
+            this.kubernetesNamespace = kubernetesNamespace;
         }
 
         @Override
@@ -150,7 +151,7 @@ public class RunCommand
         {
             return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
                                    workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks,
-                                   maxValidateTasks, kubernetes );
+                                   maxValidateTasks, kubernetesNamespace );
         }
     }
 
@@ -169,6 +170,6 @@ public class RunCommand
                                      Integer::parseInt );
         ENTITY.addOptionalAttribute( "maxValidateTasks", x -> null, ArgsBuilder::setMaxValidateTasks, Number::toString,
                                      Integer::parseInt );
-        ENTITY.addOptionalAttribute( "kubernetes", x -> null, ArgsBuilder::setKubernetes );
+        ENTITY.addOptionalAttribute( "kubernetesNamespace", x -> null, ArgsBuilder::setKubernetes );
     }
 }

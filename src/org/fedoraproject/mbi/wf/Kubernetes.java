@@ -25,8 +25,6 @@ import org.fedoraproject.mbi.wf.model.Task;
  */
 public class Kubernetes
 {
-    private static final String NAMESPACE = "mbici";
-
     private static final String CONTAINER_IMAGE = "quay.io/mizdebsk/mock:prod";
 
     private static final String CACHE_VOLUME_CLAIM_NAME = "mbici-cache";
@@ -50,6 +48,13 @@ public class Kubernetes
     private static final String RPM_MEM_REQUEST = "1Gi";
 
     private static final String RPM_MEM_LIMIT = "4Gi";
+
+    private final String namespace;
+
+    public Kubernetes( String namespace )
+    {
+        this.namespace = namespace;
+    }
 
     public List<String> wrapCommand( TaskExecution taskExecution, List<String> command )
         throws TaskTermination
@@ -139,7 +144,7 @@ public class Kubernetes
         kubectl.add( "kubectl" );
         kubectl.add( "run" );
         kubectl.add( podName );
-        kubectl.add( "--namespace=" + NAMESPACE );
+        kubectl.add( "--namespace=" + namespace );
         kubectl.add( "--quiet" );
         kubectl.add( "--attach" );
         kubectl.add( "--wait" );
