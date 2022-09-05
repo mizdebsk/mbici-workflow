@@ -16,8 +16,10 @@
 package org.fedoraproject.mbi.wf.handler;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,16 +115,28 @@ public class CheckoutTaskHandler
                 Path downloadPath = workTree.resolve( fileName );
                 if ( !Files.exists( lasCache ) )
                 {
-                    //System.err.println( "Downloading " + fileName );
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
                     Curl curl = new Curl( taskExecution );
                     curl.downloadFile( url, downloadPath );
-                    Files.move( downloadPath, lasCache );
+                    Files.move( downloadPath, lasCache, StandardCopyOption.ATOMIC_MOVE,
+                                StandardCopyOption.REPLACE_EXISTING );
                 }
                 Files.createLink( downloadPath, lasCache );
             }
         }
-        Files.move( workTree, dgCache );
+
+        try
+        {
+            Files.move( workTree, dgCache, StandardCopyOption.ATOMIC_MOVE );
+        }
+        catch ( FileAlreadyExistsException e )
+        {
+            // Checkout was completed by a concurrent task, lets reuse its results
+            // TODO: remove workTree - don't leave garbage behind
+            TaskTermination.success( "Commit was found in dist-git cache" );
+            return;
+        }
+
         TaskTermination.success( "Commit was checked out from SCM" );
     }
 
