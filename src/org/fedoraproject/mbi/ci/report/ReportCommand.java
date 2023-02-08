@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public class ReportCommand
 
             try ( Writer writer = Files.newBufferedWriter( tmtPath ) )
             {
-                writer.write( "- name: /overwiew" + "\n" );
+                writer.write( "- name: /overview" + "\n" );
                 writer.write( "  result: " + ( failed.isEmpty() ? "pass" : "fail" ) + "\n" );
                 writer.write( "  log:" + "\n" );
                 writer.write( "    - data/test/output.txt" + "\n" );
