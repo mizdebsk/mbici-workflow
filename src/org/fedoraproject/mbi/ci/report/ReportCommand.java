@@ -71,7 +71,10 @@ public class ReportCommand
     public void run()
         throws Exception
     {
-        Files.createDirectory( reportDir );
+        if ( !tmt )
+        {
+            Files.createDirectory( reportDir );
+        }
 
         CacheManager cacheManager = new CacheManager( resultDir, null, null );
 
