@@ -124,7 +124,7 @@ public class ReportCommand
                 writer.write( "  result: " + ( failed.isEmpty() ? "pass" : "fail" ) + "\n" );
                 writer.write( "  log:" + "\n" );
                 writer.write( "    - data/test/output.txt" + "\n" );
-                writer.write( "    - data/test/data/report/result.html" + "\n" );
+                writer.write( "    - data/test/data/result.html" + "\n" );
 
                 for ( Result result : workflow.getResults() )
                 {
@@ -138,7 +138,7 @@ public class ReportCommand
                     {
                         if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
                         {
-                            writer.write( "    - data/test/data/report/" + result.getTaskId() + "/" + artifact.getName()
+                            writer.write( "    - data/test/data/" + result.getTaskId() + "/" + artifact.getName()
                                 + "\n" );
                         }
                     }
