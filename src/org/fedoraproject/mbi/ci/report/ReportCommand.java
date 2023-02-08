@@ -137,6 +137,18 @@ public class ReportCommand
                         + "\n" );
                     writer.write( "  log:" + "\n" );
 
+                    writer.write( "    - data/test/data/" + result.getTaskId() + "/testout.log" + "\n" );
+                    try ( Writer rw =
+                        Files.newBufferedWriter( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) ) )
+                    {
+                        rw.write( "Task: " + result.getTaskId() + "\n" );
+                        rw.write( "Time started: " + result.getTimeStarted() + "\n" );
+                        rw.write( "Time finished: " + result.getTimeFinished() + "\n" );
+                        rw.write( "Outcome: " + result.getOutcome() + "\n" );
+                        rw.write( "Outcome reason: " + result.getOutcomeReason() + "\n" );
+                        rw.write( "More details are available in log files." + "\n" );
+                    }
+
                     for ( Artifact artifact : result.getArtifacts() )
                     {
                         if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
