@@ -53,13 +53,13 @@ public class WorkflowExecutor
     private final Optional<Kubernetes> kubernetes;
 
     public WorkflowExecutor( Workflow wf, Path wfPath, CacheManager cacheManager, Throttle throttle,
-                             Optional<Kubernetes> kubernetes )
+                             Optional<Kubernetes> kubernetes, boolean batchMode )
     {
         wf.getTasks().stream().forEach( workflowBuilder::addTask );
         newTasks = new LinkedHashSet<>( wf.getTasks() );
         dumper = new Dumper( wfPath );
         this.cacheManager = cacheManager;
-        this.logger = new Logger( wf.getTasks().size() );
+        this.logger = batchMode ? new BatchLogger() : new InteractiveLogger( wf.getTasks().size() );
         this.throttle = throttle;
         this.kubernetes = kubernetes;
     }

@@ -52,8 +52,11 @@ public class RunCommand
 
     private final String kubernetesNamespace;
 
+    private final boolean batchMode;
+
     public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
-                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, String kubernetesNamespace )
+                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, String kubernetesNamespace,
+                       boolean batchMode )
     {
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
@@ -64,6 +67,7 @@ public class RunCommand
         this.maxRpmTasks = maxRpmTasks;
         this.maxValidateTasks = maxValidateTasks;
         this.kubernetesNamespace = kubernetesNamespace;
+        this.batchMode = batchMode;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class RunCommand
         Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
         Optional<Kubernetes> kube =
             kubernetesNamespace != null ? Optional.of( new Kubernetes( kubernetesNamespace ) ) : Optional.empty();
-        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube );
+        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube, batchMode );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
     }
@@ -100,6 +104,8 @@ public class RunCommand
         private Integer maxValidateTasks = 4;
 
         private String kubernetesNamespace;
+
+        private Boolean batchMode = false;
 
         public void setWorkflowPath( Path workflowPath )
         {
@@ -146,12 +152,17 @@ public class RunCommand
             this.kubernetesNamespace = kubernetesNamespace;
         }
 
+        public void setBatchMode( String dummy )
+        {
+            this.batchMode = true;
+        }
+
         @Override
         public RunCommand build()
         {
             return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
                                    workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks,
-                                   maxValidateTasks, kubernetesNamespace );
+                                   maxValidateTasks, kubernetesNamespace, batchMode );
         }
     }
 
@@ -171,5 +182,6 @@ public class RunCommand
         ENTITY.addOptionalAttribute( "maxValidateTasks", x -> null, ArgsBuilder::setMaxValidateTasks, Number::toString,
                                      Integer::parseInt );
         ENTITY.addOptionalAttribute( "kubernetesNamespace", x -> null, ArgsBuilder::setKubernetes );
+        ENTITY.addOptionalAttribute( "batch", x -> null, ArgsBuilder::setBatchMode );
     }
 }
