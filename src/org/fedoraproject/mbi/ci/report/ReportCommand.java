@@ -15,9 +15,12 @@
  */
 package org.fedoraproject.mbi.ci.report;
 
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
@@ -50,8 +53,10 @@ public class ReportCommand
 
     private final Path reportDir;
 
+    private final boolean tmt;
+
     public ReportCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath, Path resultDir,
-                          Path reportDir )
+                          Path reportDir, boolean tmt )
     {
         this.planPath = planPath;
         this.platformPath = platformPath;
@@ -59,6 +64,7 @@ public class ReportCommand
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
         this.reportDir = reportDir;
+        this.tmt = tmt;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class ReportCommand
 
         for ( Result result : workflow.getResults() )
         {
-            if ( result.getOutcome() == TaskOutcome.SUCCESS )
+            if ( !tmt && result.getOutcome() == TaskOutcome.SUCCESS )
             {
                 // Skip publishing logs for successful tasks to conserve space
                 continue;
@@ -100,6 +106,42 @@ public class ReportCommand
                     Files.copy( cacheManager.getResultDir( result.getTaskId(),
                                                            result.getId() ).resolve( artifact.getName() ),
                                 subDir.resolve( artifact.getName() ) );
+                }
+            }
+        }
+
+        if ( tmt )
+        {
+            Path tmtPath = reportDir.resolve( "results.yaml" );
+
+            List<Result> failed = workflow.getResults().stream() //
+                                          .filter( result -> result.getOutcome() != TaskOutcome.SUCCESS ) //
+                                          .collect( Collectors.toList() );
+
+            try ( Writer writer = Files.newBufferedWriter( tmtPath ) )
+            {
+                writer.write( "- name: /overwiew" + "\n" );
+                writer.write( "  result: " + ( failed.isEmpty() ? "pass" : "fail" ) + "\n" );
+                writer.write( "  log:" + "\n" );
+                writer.write( "    - data/test/output.txt" + "\n" );
+                writer.write( "    - data/test/data/report/result.html" + "\n" );
+
+                for ( Result result : workflow.getResults() )
+                {
+                    writer.write( "- name: /task/" + result.getTaskId() + "\n" );
+                    writer.write( "  result: " + ( result.getOutcome() == TaskOutcome.SUCCESS ? "pass"
+                                    : result.getOutcome() == TaskOutcome.FAILURE ? "fail" : "error" )
+                        + "\n" );
+                    writer.write( "  log:" + "\n" );
+
+                    for ( Artifact artifact : result.getArtifacts() )
+                    {
+                        if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
+                        {
+                            writer.write( "    - data/test/data/report/" + result.getTaskId() + "/" + artifact.getName()
+                                + "\n" );
+                        }
+                    }
                 }
             }
         }
@@ -142,6 +184,8 @@ public class ReportCommand
 
         private Path reportDir;
 
+        private boolean tmt;
+
         public void setPlanPath( Path planPath )
         {
             this.planPath = planPath;
@@ -172,12 +216,17 @@ public class ReportCommand
             this.reportDir = reportDir;
         }
 
+        public void setTmt( String dummy )
+        {
+            this.tmt = true;
+        }
+
         @Override
         public ReportCommand build()
         {
             return new ReportCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
                                       subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(),
-                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath() );
+                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath(), tmt );
         }
     }
 
@@ -190,5 +239,6 @@ public class ReportCommand
         ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
         ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "reportDir", x -> null, ArgsBuilder::setReportDir, Path::toString, Paths::get );
+        ENTITY.addOptionalAttribute( "tmt", x -> null, ArgsBuilder::setTmt );
     }
 }
