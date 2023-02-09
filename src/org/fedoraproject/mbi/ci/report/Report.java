@@ -141,14 +141,18 @@ abstract class Report
         }
     }
 
-    public void write( Path path )
+    protected abstract void body();
+
+    public void publish( Path path )
         throws IOException
     {
+        body();
+
+        System.err.println( "Publishing " + path.getFileName() );
+
         try ( Writer writer = Files.newBufferedWriter( path ) )
         {
             writer.write( sb.toString() );
         }
     }
-
-    public abstract void body();
 }

@@ -15,12 +15,9 @@
  */
 package org.fedoraproject.mbi.ci.report;
 
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
@@ -71,10 +68,7 @@ public class ReportCommand
     public void run()
         throws Exception
     {
-        if ( !tmt )
-        {
-            Files.createDirectory( reportDir );
-        }
+        Files.createDirectories( reportDir );
 
         CacheManager cacheManager = new CacheManager( resultDir, null, null );
 
@@ -94,14 +88,20 @@ public class ReportCommand
 
         for ( Result result : workflow.getResults() )
         {
-            if ( !tmt && result.getOutcome() == TaskOutcome.SUCCESS )
+            Path subDir = reportDir.resolve( result.getTaskId() );
+
+            if ( tmt )
             {
-                // Skip publishing logs for successful tasks to conserve space
+                Files.createDirectories( subDir );
+                new TmtTestoutReport( result ).publish( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) );
+            }
+            else if ( result.getOutcome() == TaskOutcome.SUCCESS )
+            {
+                // When not in tmt mode, skip publishing logs for successful tasks to conserve space
                 continue;
             }
             for ( Artifact artifact : result.getArtifacts() )
             {
-                Path subDir = reportDir.resolve( result.getTaskId() );
                 if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
                 {
                     Files.createDirectories( subDir );
@@ -113,73 +113,15 @@ public class ReportCommand
             }
         }
 
+        new ResultsReport( workflow ).publish( reportDir.resolve( "result.html" ) );
+        new PlatformReport( platform ).publish( reportDir.resolve( "platform.html" ) );
+        new SubjectReport( subject ).publish( reportDir.resolve( "subject.html" ) );
+        new PlanReport( plan ).publish( reportDir.resolve( "plan.html" ) );
+
         if ( tmt )
         {
-            Path tmtPath = reportDir.resolve( "results.yaml" );
-
-            List<Result> failed = workflow.getResults().stream() //
-                                          .filter( result -> result.getOutcome() != TaskOutcome.SUCCESS ) //
-                                          .collect( Collectors.toList() );
-
-            try ( Writer writer = Files.newBufferedWriter( tmtPath ) )
-            {
-                writer.write( "- name: /overview" + "\n" );
-                writer.write( "  result: " + ( failed.isEmpty() ? "pass" : "fail" ) + "\n" );
-                writer.write( "  log:" + "\n" );
-                writer.write( "    - data/test/output.txt" + "\n" );
-                writer.write( "    - data/test/data/result.html" + "\n" );
-
-                for ( Result result : workflow.getResults() )
-                {
-                    writer.write( "- name: /task/" + result.getTaskId() + "\n" );
-                    writer.write( "  result: " + ( result.getOutcome() == TaskOutcome.SUCCESS ? "pass"
-                                    : result.getOutcome() == TaskOutcome.FAILURE ? "fail" : "error" )
-                        + "\n" );
-                    writer.write( "  log:" + "\n" );
-
-                    writer.write( "    - data/test/data/" + result.getTaskId() + "/testout.log" + "\n" );
-                    try ( Writer rw =
-                        Files.newBufferedWriter( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) ) )
-                    {
-                        rw.write( "Task: " + result.getTaskId() + "\n" );
-                        rw.write( "Time started: " + result.getTimeStarted() + "\n" );
-                        rw.write( "Time finished: " + result.getTimeFinished() + "\n" );
-                        rw.write( "Outcome: " + result.getOutcome() + "\n" );
-                        rw.write( "Outcome reason: " + result.getOutcomeReason() + "\n" );
-                        rw.write( "More details are available in log files." + "\n" );
-                    }
-
-                    for ( Artifact artifact : result.getArtifacts() )
-                    {
-                        if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
-                        {
-                            writer.write( "    - data/test/data/" + result.getTaskId() + "/" + artifact.getName()
-                                + "\n" );
-                        }
-                    }
-                }
-            }
+            new TmtResultsReport( workflow ).publish( reportDir.resolve( "results.yaml" ) );
         }
-
-        Report resultsReport = new ResultsReport( workflow );
-        resultsReport.body();
-        System.err.println( "Publishing result.html" );
-        resultsReport.write( reportDir.resolve( "result.html" ) );
-
-        Report platformReport = new PlatformReport( platform );
-        platformReport.body();
-        System.err.println( "Publishing platform.html" );
-        platformReport.write( reportDir.resolve( "platform.html" ) );
-
-        Report subjectReport = new SubjectReport( subject );
-        subjectReport.body();
-        System.err.println( "Publishing subject.html" );
-        subjectReport.write( reportDir.resolve( "subject.html" ) );
-
-        Report planReport = new PlanReport( plan );
-        planReport.body();
-        System.err.println( "Publishing plan.html" );
-        planReport.write( reportDir.resolve( "plan.html" ) );
 
         System.err.println( "REPORT COMPLETE" );
     }
