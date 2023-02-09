@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.mbi.ci.report;
 
+import java.time.Duration;
+
 import org.fedoraproject.mbi.wf.model.Artifact;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
 import org.fedoraproject.mbi.wf.model.Result;
@@ -58,8 +60,14 @@ public class TmtResultsReport
                 case FAILURE -> "fail";
                 case ERROR -> "error";
             };
+
+            Duration duration = Duration.between( result.getTimeStarted(), result.getTimeFinished() );
+            String durationString = String.format( "%d:%02d:%02d", duration.toHours(), //
+                                                   duration.toMinutesPart(), duration.toSecondsPart() );
+
             add( "- name: /task/" + result.getTaskId() );
             add( "  result: " + tmtOutcome );
+            add( "  duration: " + durationString );
             add( "  log:" );
 
             add( "    - data/test/data/" + result.getTaskId() + "/testout.log" );
