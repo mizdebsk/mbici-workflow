@@ -15,7 +15,10 @@
  */
 package org.fedoraproject.mbi.ci.report;
 
+import org.fedoraproject.mbi.wf.FinishedTask;
+import org.fedoraproject.mbi.wf.model.Parameter;
 import org.fedoraproject.mbi.wf.model.Result;
+import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * Produces testout.log file with compact description of test result.
@@ -25,21 +28,42 @@ import org.fedoraproject.mbi.wf.model.Result;
 public class TmtTestoutReport
     extends Report
 {
-    private final Result result;
+    private final FinishedTask finishedTask;
 
-    public TmtTestoutReport( Result result )
+    public TmtTestoutReport( FinishedTask finishedTask )
     {
-        this.result = result;
+        this.finishedTask = finishedTask;
     }
 
     @Override
     public void body()
     {
-        add( "Task: " + result.getTaskId() );
+        Task task = finishedTask.getTask();
+        Result result = finishedTask.getResult();
+
+        add( "Task ID: " + result.getTaskId() );
+        add( "Result ID: " + result.getId() );
         add( "Time started: " + result.getTimeStarted() );
         add( "Time finished: " + result.getTimeFinished() );
         add( "Outcome: " + result.getOutcome() );
         add( "Outcome reason: " + result.getOutcomeReason() );
         add( "More details are available in log files." );
+
+        add( "" );
+        add( "Task handler: " + task.getHandler() );
+
+        add( "" );
+        add( "Task parameters:" );
+        for ( Parameter param : task.getParameters() )
+        {
+            add( "  " + param.getName() + ": " + param.getValue() );
+        }
+
+        add( "" );
+        add( "Task dependencies:" );
+        for ( String dep : task.getDependencies() )
+        {
+            add( "  " + dep );
+        }
     }
 }

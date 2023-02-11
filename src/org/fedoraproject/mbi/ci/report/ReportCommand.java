@@ -18,15 +18,21 @@ package org.fedoraproject.mbi.ci.report;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
 import org.fedoraproject.mbi.wf.CacheManager;
+import org.fedoraproject.mbi.wf.FinishedTask;
 import org.fedoraproject.mbi.wf.model.Artifact;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
 import org.fedoraproject.mbi.wf.model.Result;
+import org.fedoraproject.mbi.wf.model.Task;
 import org.fedoraproject.mbi.wf.model.TaskOutcome;
 import org.fedoraproject.mbi.wf.model.Workflow;
 import org.fedoraproject.mbi.xml.Builder;
@@ -86,14 +92,30 @@ public class ReportCommand
         System.err.println( "Publishing workflow.xml" );
         workflow.writeToXML( reportDir.resolve( "workflow.xml" ) );
 
+        Map<String, Task> tasksById = new LinkedHashMap<>();
+        for ( Task task : workflow.getTasks() )
+        {
+            tasksById.put( task.getId(), task );
+        }
+
+        List<FinishedTask> finishedTasks = new ArrayList<>();
         for ( Result result : workflow.getResults() )
         {
+            Task task = tasksById.get( result.getTaskId() );
+            FinishedTask finishedTask =
+                new FinishedTask( task, result, cacheManager.getResultDir( task.getId(), result.getId() ) );
+            finishedTasks.add( finishedTask );
+        }
+
+        for ( FinishedTask finishedTask : finishedTasks )
+        {
+            Result result = finishedTask.getResult();
             Path subDir = reportDir.resolve( result.getTaskId() );
 
             if ( full )
             {
                 Files.createDirectories( subDir );
-                new TmtTestoutReport( result ).publish( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) );
+                new TmtTestoutReport( finishedTask ).publish( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) );
             }
             else if ( result.getOutcome() == TaskOutcome.SUCCESS )
             {
@@ -106,8 +128,7 @@ public class ReportCommand
                 {
                     Files.createDirectories( subDir );
                     System.err.println( "Publishing " + result.getTaskId() + "/" + artifact.getName() );
-                    Files.copy( cacheManager.getResultDir( result.getTaskId(),
-                                                           result.getId() ).resolve( artifact.getName() ),
+                    Files.copy( finishedTask.getResultDir().resolve( artifact.getName() ),
                                 subDir.resolve( artifact.getName() ) );
                 }
             }
