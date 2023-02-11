@@ -50,10 +50,10 @@ public class ReportCommand
 
     private final Path reportDir;
 
-    private final boolean tmt;
+    private final boolean full;
 
     public ReportCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath, Path resultDir,
-                          Path reportDir, boolean tmt )
+                          Path reportDir, boolean full )
     {
         this.planPath = planPath;
         this.platformPath = platformPath;
@@ -61,7 +61,7 @@ public class ReportCommand
         this.workflowPath = workflowPath;
         this.resultDir = resultDir;
         this.reportDir = reportDir;
-        this.tmt = tmt;
+        this.full = full;
     }
 
     @Override
@@ -90,14 +90,14 @@ public class ReportCommand
         {
             Path subDir = reportDir.resolve( result.getTaskId() );
 
-            if ( tmt )
+            if ( full )
             {
                 Files.createDirectories( subDir );
                 new TmtTestoutReport( result ).publish( reportDir.resolve( result.getTaskId() ).resolve( "testout.log" ) );
             }
             else if ( result.getOutcome() == TaskOutcome.SUCCESS )
             {
-                // When not in tmt mode, skip publishing logs for successful tasks to conserve space
+                // When not in full report mode, skip publishing logs for successful tasks to conserve space.
                 continue;
             }
             for ( Artifact artifact : result.getArtifacts() )
@@ -118,7 +118,7 @@ public class ReportCommand
         new SubjectReport( subject ).publish( reportDir.resolve( "subject.html" ) );
         new PlanReport( plan ).publish( reportDir.resolve( "plan.html" ) );
 
-        if ( tmt )
+        if ( full )
         {
             new TmtResultsReport( workflow ).publish( reportDir.resolve( "results.yaml" ) );
         }
@@ -141,7 +141,7 @@ public class ReportCommand
 
         private Path reportDir;
 
-        private boolean tmt;
+        private boolean full;
 
         public void setPlanPath( Path planPath )
         {
@@ -173,9 +173,9 @@ public class ReportCommand
             this.reportDir = reportDir;
         }
 
-        public void setTmt( String dummy )
+        public void setFull( String dummy )
         {
-            this.tmt = true;
+            this.full = true;
         }
 
         @Override
@@ -183,7 +183,7 @@ public class ReportCommand
         {
             return new ReportCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
                                       subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(),
-                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath(), tmt );
+                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath(), full );
         }
     }
 
@@ -196,6 +196,6 @@ public class ReportCommand
         ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
         ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
         ENTITY.addAttribute( "reportDir", x -> null, ArgsBuilder::setReportDir, Path::toString, Paths::get );
-        ENTITY.addOptionalAttribute( "tmt", x -> null, ArgsBuilder::setTmt );
+        ENTITY.addOptionalAttribute( "full", x -> null, ArgsBuilder::setFull );
     }
 }
