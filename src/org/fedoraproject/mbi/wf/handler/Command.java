@@ -37,6 +37,8 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 class Command
 {
+    private Path workDir;
+
     private final List<String> cmd = new ArrayList<>();
 
     public Command( String... args )
@@ -67,11 +69,16 @@ class Command
         return Collections.unmodifiableList( cmd );
     }
 
+    public void setWorkDir( Path workDir )
+    {
+        this.workDir = workDir;
+    }
+
     public void run( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
         ProcessBuilder pb = new ProcessBuilder( cmd );
-        pb.directory( taskExecution.getWorkDir().toFile() );
+        pb.directory( ( workDir != null ? workDir : taskExecution.getWorkDir() ).toFile() );
         pb.redirectInput( Paths.get( "/dev/null" ).toFile() );
         pb.redirectOutput( getLog( taskExecution, "stdout.log" ) );
         pb.redirectError( getLog( taskExecution, "stderr.log" ) );

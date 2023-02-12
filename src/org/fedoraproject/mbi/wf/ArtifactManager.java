@@ -94,38 +94,6 @@ public class ArtifactManager
         return artifact;
     }
 
-    public void copyArtifact( ArtifactType type, Path sourcePath )
-        throws TaskTermination
-    {
-        String name = sourcePath.getFileName().toString();
-        Path artifact = create( type, name );
-
-        try
-        {
-            Files.copy( sourcePath, artifact );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error when copying artifact " + artifact + ": " + e.getMessage() );
-        }
-    }
-
-    public void moveArtifact( ArtifactType type, Path sourcePath )
-        throws TaskTermination
-    {
-        String name = sourcePath.getFileName().toString();
-        Path artifact = create( type, name );
-
-        try
-        {
-            Files.move( sourcePath, artifact );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error when moving artifact " + artifact + ": " + e.getMessage() );
-        }
-    }
-
     public void symlinkArtifact( ArtifactType type, Path sourcePath )
         throws TaskTermination
     {

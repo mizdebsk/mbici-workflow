@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
@@ -60,70 +58,68 @@ public class GatherTaskHandler
         }
     }
 
-    private void downloadPackages( TaskExecution taskExecution, List<String> packageNames, Map<String, String> repos )
+    private void writeDnfConfig( Path dnfConfPath, Map<String, String> repos )
         throws TaskTermination
     {
-        Command dnf = new Command( "fakeroot", "dnf" );
-
-        dnf.addArg( "--installroot", taskExecution.getWorkDir().toString() );
-
-        ArtifactManager am = taskExecution.getArtifactManager();
-        Path dnfConfPath = am.getOrCreate( ArtifactType.CONFIG, "dnf.conf" );
         try ( BufferedWriter bw = Files.newBufferedWriter( dnfConfPath ) )
         {
             bw.write( "[main]\n" );
-            bw.write( "assumeyes=1\n" );
-            bw.write( "reposdir=/\n" );
             bw.write( "gpgcheck=0\n" );
+            bw.write( "reposdir=/\n" );
+            bw.write( "install_weak_deps=0\n" );
+
+            for ( var repo : repos.entrySet() )
+            {
+                bw.write( "\n" );
+                bw.write( "[" + repo.getKey() + "]\n" );
+                bw.write( "name=" + repo.getKey() + "\n" );
+                bw.write( "baseurl=" + repo.getValue() + "\n" );
+            }
         }
         catch ( IOException e )
         {
             TaskTermination.error( "I/O error when writing DNF config: " + e.getMessage() );
         }
-        dnf.addArg( "-c", dnfConfPath.toString() );
+    }
 
-        for ( var repo : repos.entrySet() )
-        {
-            dnf.addArg( "--repofrompath", repo.getKey() + "," + repo.getValue() );
-        }
-
-        dnf.addArg( "install", "--downloadonly" );
-        for ( String packageName : packageNames )
-        {
-            dnf.addArg( packageName );
-        }
-
+    private void downloadPackages( TaskExecution taskExecution, List<String> packageNames, Path downloadDir,
+                                   Path dnfConfPath )
+        throws TaskTermination
+    {
+        Command dnf = new Command( "dnf" );
+        dnf.addArg( "--installroot", taskExecution.getWorkDir().toString() );
+        dnf.addArg( "--config", dnfConfPath.toString() );
+        dnf.addArg( "download", "--resolve", "--alldeps" );
+        dnf.addArg( packageNames );
+        dnf.setWorkDir( downloadDir );
         dnf.run( taskExecution, 600 );
+    }
+
+    private void createRepo( TaskExecution taskExecution, Path repoPath )
+        throws TaskTermination
+    {
+        Command createrepo = new Command( "createrepo_c", repoPath.toString() );
+        createrepo.run( taskExecution, 30 );
     }
 
     @Override
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = taskExecution.getArtifactManager();
         List<String> packageNames = new ArrayList<>();
         Map<String, String> repos = new LinkedHashMap<>();
         parseTaskParameters( taskExecution.getTask(), packageNames, repos );
 
-        downloadPackages( taskExecution, packageNames, repos );
+        ArtifactManager artifactManager = taskExecution.getArtifactManager();
+        Path dnfConfPath = artifactManager.create( ArtifactType.CONFIG, "dnf.conf" );
+        Path repodataPath = artifactManager.create( ArtifactType.REPO, "repodata" );
+        Path repoPath = repodataPath.getParent();
 
-        try ( Stream<Path> pathStream =
-            Files.find( taskExecution.getWorkDir().resolve( "var/cache/dnf" ), 10,
-                        ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" ) && bfa.isRegularFile() ) )
-        {
-            for ( Iterator<Path> pathIterator = pathStream.iterator(); pathIterator.hasNext(); )
-            {
-                am.copyArtifact( ArtifactType.RPM, pathIterator.next() );
-            }
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error when copying gathered RPM packages to result dir: " + e.getMessage() );
-        }
+        writeDnfConfig( dnfConfPath, repos );
 
-        Path repodatataPath = am.create( ArtifactType.REPO, "repodata" );
-        Command createrepo = new Command( "createrepo_c", repodatataPath.getParent().toString() );
-        createrepo.run( taskExecution, 30 );
+        downloadPackages( taskExecution, packageNames, repoPath, dnfConfPath );
+
+        createRepo( taskExecution, repoPath );
 
         TaskTermination.success( "Platform repo was downloaded successfully" );
     }
