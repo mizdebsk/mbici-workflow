@@ -82,18 +82,6 @@ public class ArtifactManager
         return resultDir.resolve( artifact.getName() );
     }
 
-    public Path getOrCreate( ArtifactType type, String name )
-    {
-        Path artifact = getByName( name );
-
-        if ( artifact == null )
-        {
-            artifact = create( type, name );
-        }
-
-        return artifact;
-    }
-
     public void symlinkArtifact( ArtifactType type, Path sourcePath )
         throws TaskTermination
     {

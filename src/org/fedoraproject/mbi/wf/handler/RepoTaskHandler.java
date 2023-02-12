@@ -40,8 +40,10 @@ public class RepoTaskHandler
         }
 
         Path repodatataPath = am.create( ArtifactType.REPO, "repodata" );
-        Command createrepo = new Command( "createrepo_c", repodatataPath.getParent().toString() );
-        createrepo.run( taskExecution, 30 );
+        Path repoPath = repodatataPath.getParent();
+
+        Createrepo createrepo = new Createrepo( taskExecution );
+        createrepo.run( repoPath );
 
         TaskTermination.success( "Repo created successfully" );
     }

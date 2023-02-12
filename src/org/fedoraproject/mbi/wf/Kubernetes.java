@@ -18,6 +18,7 @@ package org.fedoraproject.mbi.wf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fedoraproject.mbi.wf.handler.Command;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**
@@ -56,7 +57,7 @@ public class Kubernetes
         this.namespace = namespace;
     }
 
-    public List<String> wrapCommand( TaskExecution taskExecution, List<String> command )
+    public Command wrapCommand( TaskExecution taskExecution, List<String> command )
         throws TaskTermination
     {
         Task task = taskExecution.getTask();
@@ -140,19 +141,21 @@ public class Kubernetes
         pod.append( "  }" );
         pod.append( "}" );
 
-        List<String> kubectl = new ArrayList<>();
-        kubectl.add( "kubectl" );
-        kubectl.add( "run" );
-        kubectl.add( podName );
-        kubectl.add( "--namespace=" + namespace );
-        kubectl.add( "--quiet" );
-        kubectl.add( "--attach" );
-        kubectl.add( "--wait" );
-        kubectl.add( "--pod-running-timeout=" + POD_RUNNING_TIMEOUT );
-        kubectl.add( "--rm" );
-        kubectl.add( "--restart=Never" );
-        kubectl.add( "--image=" + CONTAINER_IMAGE );
-        kubectl.add( "--overrides=" + pod.toString() );
+        List<String> args = new ArrayList<>();
+        args.add( "run" );
+        args.add( podName );
+        args.add( "--namespace=" + namespace );
+        args.add( "--quiet" );
+        args.add( "--attach" );
+        args.add( "--wait" );
+        args.add( "--pod-running-timeout=" + POD_RUNNING_TIMEOUT );
+        args.add( "--rm" );
+        args.add( "--restart=Never" );
+        args.add( "--image=" + CONTAINER_IMAGE );
+        args.add( "--overrides=" + pod.toString() );
+
+        Command kubectl = new Command( "kubectl" );
+        kubectl.addArg( args );
         return kubectl;
     }
 

@@ -87,19 +87,13 @@ public class GatherTaskHandler
         throws TaskTermination
     {
         Command dnf = new Command( "dnf" );
+        dnf.addArg( "--releasever", "dummy" );
         dnf.addArg( "--installroot", taskExecution.getWorkDir().toString() );
         dnf.addArg( "--config", dnfConfPath.toString() );
         dnf.addArg( "download", "--resolve", "--alldeps" );
         dnf.addArg( packageNames );
         dnf.setWorkDir( downloadDir );
         dnf.run( taskExecution, 600 );
-    }
-
-    private void createRepo( TaskExecution taskExecution, Path repoPath )
-        throws TaskTermination
-    {
-        Command createrepo = new Command( "createrepo_c", repoPath.toString() );
-        createrepo.run( taskExecution, 30 );
     }
 
     @Override
@@ -119,7 +113,8 @@ public class GatherTaskHandler
 
         downloadPackages( taskExecution, packageNames, repoPath, dnfConfPath );
 
-        createRepo( taskExecution, repoPath );
+        Createrepo createrepo = new Createrepo( taskExecution );
+        createrepo.run( repoPath );
 
         TaskTermination.success( "Platform repo was downloaded successfully" );
     }

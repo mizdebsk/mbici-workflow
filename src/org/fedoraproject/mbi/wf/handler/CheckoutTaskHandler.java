@@ -78,10 +78,11 @@ public class CheckoutTaskHandler
         }
     }
 
-    private void runGit( TaskExecution taskExecution, String... args )
+    private void runGit( String logName, TaskExecution taskExecution, String... args )
         throws TaskTermination
     {
         Command git = new Command( "git" );
+        git.setName( logName );
         git.addArg( "--git-dir", taskExecution.getWorkDir().resolve( "git" ).toString() );
         git.addArg( args );
         git.run( taskExecution, 60 );
@@ -99,10 +100,10 @@ public class CheckoutTaskHandler
             return;
         }
         Path workTree = taskExecution.getCacheManager().createPending( "checkout-" + commit );
-        runGit( taskExecution, "init", "--bare" );
-        runGit( taskExecution, "remote", "add", "-f", "origin", scm );
+        runGit( "git-init", taskExecution, "init", "--bare" );
+        runGit( "git-fetch", taskExecution, "remote", "add", "--fetch", "origin", scm );
         Files.createDirectories( workTree );
-        runGit( taskExecution, "--work-tree", workTree.toString(), "reset", "--hard", commit );
+        runGit( "git-reset", taskExecution, "--work-tree", workTree.toString(), "reset", "--hard", commit );
         for ( String line : Files.readAllLines( workTree.resolve( "sources" ) ) )
         {
             Pattern pattern = Pattern.compile( "^SHA512 \\(([^)]+)\\) = ([0-9a-f]{128})$" );
