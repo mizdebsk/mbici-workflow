@@ -92,7 +92,7 @@ public class GatherTaskHandler
         dnf.addArg( "download", "--resolve", "--alldeps" );
         dnf.addArg( packageNames );
         dnf.setWorkDir( downloadDir );
-        dnf.run( taskExecution, 600 );
+        dnf.runRemote( taskExecution, 600 );
     }
 
     @Override

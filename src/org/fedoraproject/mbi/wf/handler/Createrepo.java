@@ -37,6 +37,6 @@ class Createrepo
     {
         Command createrepo = new Command( "createrepo_c", repoPath.toString() );
         createrepo.setName( "createrepo" );
-        createrepo.run( taskExecution, 30 );
+        createrepo.runRemote( taskExecution, 30 );
     }
 }
