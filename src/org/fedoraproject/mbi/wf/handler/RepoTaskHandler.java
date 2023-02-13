@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -35,8 +34,7 @@ public class RepoTaskHandler
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = taskExecution.getArtifactManager();
-        Path repoPath = am.create( ArtifactType.REPO, "repo" );
+        Path repoPath = taskExecution.addArtifact( ArtifactType.REPO, "repo" );
         try
         {
             Files.createDirectories( repoPath );
@@ -46,7 +44,7 @@ public class RepoTaskHandler
             TaskTermination.error( "I/O error when creating directory " + repoPath + ": " + e.getMessage() );
         }
 
-        for ( Path rpmPath : am.getDepArtifactsByType( ArtifactType.RPM, taskExecution ) )
+        for ( Path rpmPath : taskExecution.getDependencyArtifacts( ArtifactType.RPM ) )
         {
             Path rpmLinkPath = repoPath.resolve( rpmPath.getFileName() );
 

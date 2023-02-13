@@ -128,8 +128,7 @@ public class ReportCommand
                 {
                     Files.createDirectories( subDir );
                     System.err.println( "Publishing " + result.getTaskId() + "/" + artifact.getName() );
-                    Files.copy( finishedTask.getResultDir().resolve( artifact.getName() ),
-                                subDir.resolve( artifact.getName() ) );
+                    Files.copy( finishedTask.getArtifact( artifact ), subDir.resolve( artifact.getName() ) );
                 }
             }
         }

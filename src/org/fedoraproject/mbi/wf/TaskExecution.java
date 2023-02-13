@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,15 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.fedoraproject.mbi.wf.model.Artifact;
+import org.fedoraproject.mbi.wf.model.ArtifactType;
 import org.fedoraproject.mbi.wf.model.Parameter;
 import org.fedoraproject.mbi.wf.model.Result;
 import org.fedoraproject.mbi.wf.model.Task;
@@ -48,9 +51,9 @@ public class TaskExecution
 
     private final String resultId;
 
-    private final ArtifactManager artifactManager;
-
     private final Path resultDir;
+
+    private final List<Artifact> artifacts = new ArrayList<>();
 
     private Path workDir;
 
@@ -87,17 +90,11 @@ public class TaskExecution
         }
 
         this.resultDir = wfe.getCacheManager().getResultDir( task.getId(), resultId );
-        this.artifactManager = new ArtifactManager( resultDir );
     }
 
     public Task getTask()
     {
         return task;
-    }
-
-    public ArtifactManager getArtifactManager()
-    {
-        return artifactManager;
     }
 
     public List<FinishedTask> getDependencies()
@@ -113,6 +110,50 @@ public class TaskExecution
     public Path getResultDir()
     {
         return resultDir;
+    }
+
+    public List<Path> getDependencyArtifacts( ArtifactType type )
+        throws TaskTermination
+    {
+        List<Path> artifacts = new ArrayList<>();
+
+        for ( FinishedTask dependency : getDependencies() )
+        {
+            for ( Artifact dependencyArtifact : dependency.getResult().getArtifacts() )
+            {
+                if ( dependencyArtifact.getType().equals( type ) )
+                {
+                    artifacts.add( dependency.getArtifact( dependencyArtifact ) );
+                }
+            }
+        }
+
+        if ( artifacts.isEmpty() )
+        {
+            TaskTermination.error( task + " was expected to have a dependency artifact of type " + type );
+        }
+
+        return artifacts;
+    }
+
+    public Path getDependencyArtifact( ArtifactType type )
+        throws TaskTermination
+    {
+        List<Path> artifacts = getDependencyArtifacts( type );
+
+        if ( artifacts.size() > 1 )
+        {
+            TaskTermination.error( task + " was expected to have only one dependency artifact of type " + type );
+        }
+
+        return artifacts.iterator().next();
+    }
+
+    public Path addArtifact( ArtifactType type, String name )
+    {
+        Artifact artifact = new Artifact( type, name );
+        artifacts.add( artifact );
+        return resultDir.resolve( artifact.getName() );
     }
 
     private void deleteDirectoryIfExists( Path dir )
@@ -213,8 +254,8 @@ public class TaskExecution
             TaskTermination termination = handleTask();
             LocalDateTime timeFinished = LocalDateTime.now();
 
-            Result result = new Result( resultId, task.getId(), artifactManager.getArtifacts(),
-                                        termination.getOutcome(), termination.getMessage(), timeStarted, timeFinished );
+            Result result = new Result( resultId, task.getId(), artifacts, termination.getOutcome(),
+                                        termination.getMessage(), timeStarted, timeFinished );
             if ( result.getOutcome() == TaskOutcome.SUCCESS )
             {
                 try

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -33,23 +32,23 @@ public class RpmTaskHandler
     implements TaskHandler
 {
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
-        Path srpmPath = am.getDepArtifactsByType( ArtifactType.SRPM, task ).iterator().next();
+        Path srpmPath = taskExecution.getDependencyArtifact( ArtifactType.SRPM );
         Mock mock = new Mock();
-        for ( Parameter param : task.getTask().getParameters() )
+        for ( Parameter param : taskExecution.getTask().getParameters() )
         {
             mock.addMacro( param.getName(), param.getValue() );
         }
-        mock.run( task, "--rebuild", srpmPath.toString() );
-        try ( var s = Files.find( task.getResultDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
-            && !p.getFileName().toString().endsWith( ".src.rpm" ) && bfa.isRegularFile() ) )
+        mock.run( taskExecution, "--rebuild", srpmPath.toString() );
+        try ( var s =
+            Files.find( taskExecution.getResultDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
+                && !p.getFileName().toString().endsWith( ".src.rpm" ) && bfa.isRegularFile() ) )
         {
             for ( var it = s.iterator(); it.hasNext(); )
             {
-                am.create( ArtifactType.RPM, it.next().getFileName().toString() );
+                taskExecution.addArtifact( ArtifactType.RPM, it.next().getFileName().toString() );
             }
         }
         catch ( IOException e )

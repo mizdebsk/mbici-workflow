@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -104,12 +103,10 @@ public class GatherTaskHandler
         Map<String, String> repos = new LinkedHashMap<>();
         parseTaskParameters( taskExecution.getTask(), packageNames, repos );
 
-        ArtifactManager artifactManager = taskExecution.getArtifactManager();
-
-        Path dnfConfPath = artifactManager.create( ArtifactType.CONFIG, "dnf.conf" );
+        Path dnfConfPath = taskExecution.addArtifact( ArtifactType.CONFIG, "dnf.conf" );
         writeDnfConfig( dnfConfPath, repos );
 
-        Path repoPath = artifactManager.create( ArtifactType.REPO, "repo" );
+        Path repoPath = taskExecution.addArtifact( ArtifactType.REPO, "repo" );
         try
         {
             Files.createDirectories( repoPath );

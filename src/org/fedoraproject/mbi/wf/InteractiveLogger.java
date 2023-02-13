@@ -20,7 +20,8 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-class InteractiveLogger implements Logger
+class InteractiveLogger
+    implements Logger
 {
     private static enum Color
     {

@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -35,16 +34,15 @@ public class ValidateTaskHandler
     private static final String PLAN_NAME = "/plans/javapackages";
 
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
-        Path sourceDir = am.getDepArtifactsByType( ArtifactType.CHECKOUT, task ).iterator().next();
-        Path srpm = am.getDepArtifactsByType( ArtifactType.SRPM, task ).iterator().next();
-        List<Path> rpms = am.getDepArtifactsByType( ArtifactType.RPM, task );
+        Path sourceDir = taskExecution.getDependencyArtifact( ArtifactType.CHECKOUT );
+        Path srpm = taskExecution.getDependencyArtifact( ArtifactType.SRPM );
+        List<Path> rpms = taskExecution.getDependencyArtifacts( ArtifactType.RPM );
 
-        Path tmtWorkDir = task.getWorkDir().resolve( "tmt" );
-        Path testArtifactsDir = task.getWorkDir().resolve( "test-artifacts" );
+        Path tmtWorkDir = taskExecution.getWorkDir().resolve( "tmt" );
+        Path testArtifactsDir = taskExecution.getWorkDir().resolve( "test-artifacts" );
 
         try
         {
@@ -80,7 +78,7 @@ public class ValidateTaskHandler
             // TODO add html or junit report
             tmt.addArg( "report" );
             tmt.addArg( "-vvv" );
-            tmt.run( task, 120 );
+            tmt.run( taskExecution, 120 );
 
             TaskTermination.success( "Validation was successful" );
         }

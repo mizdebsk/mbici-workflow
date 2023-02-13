@@ -23,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -91,10 +90,9 @@ public class CheckoutTaskHandler
     public void handleTask0( TaskExecution taskExecution )
         throws TaskTermination, IOException
     {
-        ArtifactManager am = taskExecution.getArtifactManager();
         Path dgCache = taskExecution.getCacheManager().getDistGit( commit );
 
-        Path artifact = am.create( ArtifactType.CHECKOUT, "checkout" );
+        Path artifact = taskExecution.addArtifact( ArtifactType.CHECKOUT, "checkout" );
         try
         {
             Files.createSymbolicLink( artifact, dgCache );

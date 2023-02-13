@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
@@ -38,9 +37,7 @@ class Mock
     public void run( TaskExecution taskExecution, String... mockArgs )
         throws TaskTermination
     {
-        ArtifactManager am = taskExecution.getArtifactManager();
-
-        Path mockConfPath = am.create( ArtifactType.CONFIG, "mock.cfg" );
+        Path mockConfPath = taskExecution.addArtifact( ArtifactType.CONFIG, "mock.cfg" );
         try ( BufferedWriter bw = Files.newBufferedWriter( mockConfPath ) )
         {
             bw.write( "config_opts['basedir'] = '" + taskExecution.getWorkDir() + "'\n" );
@@ -78,12 +75,13 @@ class Mock
             bw.write( "metadata_expire=-1\n" );
 
             int priority = 0;
-            for ( Path repoPath : am.getDepArtifactsByType( ArtifactType.REPO, taskExecution ) )
+            for ( Path repoPath : taskExecution.getDependencyArtifacts( ArtifactType.REPO ) )
             {
-                String name = repoPath.getParent().getFileName().toString();
+                // FIXME find a better way to determine repo name
+                Path repoName = repoPath.getParent().getParent().getFileName();
                 bw.write( "\n" );
-                bw.write( "[" + name + "]\n" );
-                bw.write( "name=" + name + "\n" );
+                bw.write( "[" + repoName + "]\n" );
+                bw.write( "name=" + repoName + "\n" );
                 bw.write( "baseurl=" + repoPath + "\n" );
                 bw.write( "priority=" + ++priority + "\n" );
                 bw.write( "module_hotfixes=1\n" );
@@ -98,7 +96,7 @@ class Mock
 
         for ( String logName : Arrays.asList( "build.log", "root.log", "hw_info.log", "state.log" ) )
         {
-            am.create( ArtifactType.LOG, logName );
+            taskExecution.addArtifact( ArtifactType.LOG, logName );
         }
 
         Command mock = new Command( "mock" );

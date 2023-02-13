@@ -17,6 +17,7 @@ package org.fedoraproject.mbi.wf;
 
 import java.nio.file.Path;
 
+import org.fedoraproject.mbi.wf.model.Artifact;
 import org.fedoraproject.mbi.wf.model.Result;
 import org.fedoraproject.mbi.wf.model.Task;
 
@@ -48,8 +49,8 @@ public class FinishedTask
         return result;
     }
 
-    public Path getResultDir()
+    public Path getArtifact( Artifact artifact )
     {
-        return resultDir;
+        return resultDir.resolve( artifact.getName() );
     }
 }

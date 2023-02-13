@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.Kubernetes;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -83,8 +82,7 @@ public class Command
     public void run( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
-        ArtifactManager artifactManager = taskExecution.getArtifactManager();
-        Path logPath = artifactManager.create( ArtifactType.LOG, name + ".log" );
+        Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );
 
         try ( BufferedWriter bw = Files.newBufferedWriter( logPath, StandardOpenOption.CREATE_NEW ) )
         {

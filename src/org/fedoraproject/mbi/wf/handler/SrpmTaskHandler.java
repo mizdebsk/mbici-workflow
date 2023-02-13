@@ -20,7 +20,6 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.fedoraproject.mbi.wf.ArtifactManager;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
@@ -61,16 +60,15 @@ public class SrpmTaskHandler
     }
 
     @Override
-    public void handleTask( TaskExecution task )
+    public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        ArtifactManager am = task.getArtifactManager();
-        Path sourcePath = am.getDepArtifactsByType( ArtifactType.CHECKOUT, task ).iterator().next();
+        Path sourcePath = taskExecution.getDependencyArtifact( ArtifactType.CHECKOUT );
         Path specPath = findOneFile( sourcePath, ".spec" );
         Mock mock = new Mock();
-        mock.run( task, "--buildsrpm", "--spec", specPath.toString(), "--sources", sourcePath.toString() );
-        Path srpmPath = findOneFile( task.getResultDir(), ".src.rpm" );
-        am.create( ArtifactType.SRPM, srpmPath.getFileName().toString() );
+        mock.run( taskExecution, "--buildsrpm", "--spec", specPath.toString(), "--sources", sourcePath.toString() );
+        Path srpmPath = findOneFile( taskExecution.getResultDir(), ".src.rpm" );
+        taskExecution.addArtifact( ArtifactType.SRPM, srpmPath.getFileName().toString() );
         TaskTermination.success( "Source RPM was built in mock" );
     }
 }
