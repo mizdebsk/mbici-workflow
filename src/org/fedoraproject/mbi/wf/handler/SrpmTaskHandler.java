@@ -24,6 +24,7 @@ import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
+import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,6 +32,14 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
 public class SrpmTaskHandler
     implements TaskHandler
 {
+    public SrpmTaskHandler( Task task )
+    {
+        if ( !task.getParameters().isEmpty() )
+        {
+            throw new IllegalArgumentException( getClass().getName() + " does not take any parameters" );
+        }
+    }
+
     private Path findOneFile( Path baseDir, String extension )
         throws TaskTermination
     {

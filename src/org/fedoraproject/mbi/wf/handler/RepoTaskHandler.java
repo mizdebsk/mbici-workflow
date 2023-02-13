@@ -23,6 +23,7 @@ import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
+import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,6 +31,14 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
 public class RepoTaskHandler
     implements TaskHandler
 {
+    public RepoTaskHandler( Task task )
+    {
+        if ( !task.getParameters().isEmpty() )
+        {
+            throw new IllegalArgumentException( getClass().getName() + " does not take any parameters" );
+        }
+    }
+
     @Override
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination

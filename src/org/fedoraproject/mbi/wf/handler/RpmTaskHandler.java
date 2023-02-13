@@ -18,12 +18,14 @@ package org.fedoraproject.mbi.wf.handler;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
 import org.fedoraproject.mbi.wf.model.Parameter;
+import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,13 +33,20 @@ import org.fedoraproject.mbi.wf.model.Parameter;
 public class RpmTaskHandler
     implements TaskHandler
 {
+    private final List<Parameter> macros;
+
+    public RpmTaskHandler( Task task )
+    {
+        macros = task.getParameters();
+    }
+
     @Override
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
         Path srpmPath = taskExecution.getDependencyArtifact( ArtifactType.SRPM );
         Mock mock = new Mock();
-        for ( Parameter param : taskExecution.getTask().getParameters() )
+        for ( Parameter param : macros )
         {
             mock.addMacro( param.getName(), param.getValue() );
         }

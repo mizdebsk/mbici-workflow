@@ -24,6 +24,7 @@ import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskHandler;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
+import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -32,6 +33,14 @@ public class ValidateTaskHandler
     implements TaskHandler
 {
     private static final String PLAN_NAME = "/plans/javapackages";
+
+    public ValidateTaskHandler( Task task )
+    {
+        if ( !task.getParameters().isEmpty() )
+        {
+            throw new IllegalArgumentException( getClass().getName() + " does not take any parameters" );
+        }
+    }
 
     @Override
     public void handleTask( TaskExecution taskExecution )

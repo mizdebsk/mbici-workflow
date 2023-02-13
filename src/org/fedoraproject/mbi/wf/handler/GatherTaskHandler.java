@@ -37,8 +37,11 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class GatherTaskHandler
     implements TaskHandler
 {
-    private void parseTaskParameters( Task task, List<String> packageNames, Map<String, String> repos )
-        throws TaskTermination
+    private final List<String> packageNames = new ArrayList<>();
+
+    private final Map<String, String> repos = new LinkedHashMap<>();
+
+    public GatherTaskHandler( Task task )
     {
         for ( Parameter param : task.getParameters() )
         {
@@ -52,7 +55,7 @@ public class GatherTaskHandler
             }
             else
             {
-                throw TaskTermination.error( "Unknown gather task parameter: " + param.getName() );
+                throw new IllegalArgumentException( "Unknown gather task parameter: " + param.getName() );
             }
         }
     }
@@ -99,10 +102,6 @@ public class GatherTaskHandler
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        List<String> packageNames = new ArrayList<>();
-        Map<String, String> repos = new LinkedHashMap<>();
-        parseTaskParameters( taskExecution.getTask(), packageNames, repos );
-
         Path dnfConfPath = taskExecution.addArtifact( ArtifactType.CONFIG, "dnf.conf" );
         writeDnfConfig( dnfConfPath, repos );
 

@@ -203,7 +203,8 @@ public class TaskExecution
 
             try
             {
-                TaskHandler handler = (TaskHandler) Class.forName( task.getHandler() ).getConstructor().newInstance();
+                TaskHandler handler =
+                    (TaskHandler) Class.forName( task.getHandler() ).getConstructor( Task.class ).newInstance( task );
                 handler.handleTask( this );
                 throw TaskTermination.error( "Task did not set explicit outcome" );
             }

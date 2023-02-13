@@ -36,15 +36,17 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class CheckoutTaskHandler
     implements TaskHandler
 {
-    private String scm;
+    private final String scm;
 
-    private String commit;
+    private final String commit;
 
-    private String lookaside;
+    private final String lookaside;
 
-    private void parseTaskParameters( Task task )
-        throws TaskTermination
+    public CheckoutTaskHandler( Task task )
     {
+        String scm = null;
+        String commit = null;
+        String lookaside = null;
         for ( Parameter param : task.getParameters() )
         {
             switch ( param.getName() )
@@ -59,22 +61,26 @@ public class CheckoutTaskHandler
                     lookaside = param.getValue();
                     break;
                 default:
-                    throw TaskTermination.fail( "Unknown gather task parameter: " + param.getName() );
+                    throw new IllegalArgumentException( "Unknown checkout task parameter: " + param.getName() );
             }
         }
 
         if ( scm == null )
         {
-            TaskTermination.fail( "Mandatory parameter scm was not provided" );
+            throw new IllegalArgumentException( "Mandatory parameter scm was not provided" );
         }
         if ( commit == null )
         {
-            TaskTermination.fail( "Mandatory parameter commit was not provided" );
+            throw new IllegalArgumentException( "Mandatory parameter commit was not provided" );
         }
         if ( lookaside == null )
         {
-            TaskTermination.fail( "Mandatory parameter lookaside was not provided" );
+            throw new IllegalArgumentException( "Mandatory parameter lookaside was not provided" );
         }
+
+        this.scm = scm;
+        this.commit = commit;
+        this.lookaside = lookaside;
     }
 
     private void runGit( String logName, TaskExecution taskExecution, String... args )
@@ -153,7 +159,6 @@ public class CheckoutTaskHandler
     public void handleTask( TaskExecution taskExecution )
         throws TaskTermination
     {
-        parseTaskParameters( taskExecution.getTask() );
         try
         {
             handleTask0( taskExecution );
