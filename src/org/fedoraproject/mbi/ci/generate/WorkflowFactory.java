@@ -16,6 +16,7 @@
 package org.fedoraproject.mbi.ci.generate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,9 +44,10 @@ class WorkflowFactory
         Map<String, Task> checkouts = new LinkedHashMap<>();
 
         Task gather = taskFactory.createGatherTask( platform );
+        Task gatherRepo = taskFactory.createRepoTask( "platform", Collections.singletonList( gather ) );
 
         LinkedList<Task> repos = new LinkedList<>();
-        repos.add( gather );
+        repos.add( gatherRepo );
 
         for ( Phase phase : plan.getPhases() )
         {
@@ -59,7 +61,7 @@ class WorkflowFactory
                     SubjectComponent componentSubject = subject.getSubjectComponent( component );
                     Task checkout = taskFactory.createCheckoutTask( componentSubject );
                     checkouts.put( component, checkout );
-                    srpm = taskFactory.createSrpmTask( component, checkout, gather );
+                    srpm = taskFactory.createSrpmTask( component, checkout, gatherRepo );
                     srpms.put( component, srpm );
                 }
 

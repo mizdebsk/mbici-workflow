@@ -106,19 +106,21 @@ public class GatherTaskHandler
         Path dnfConfPath = taskExecution.addArtifact( ArtifactType.CONFIG, "dnf.conf" );
         writeDnfConfig( dnfConfPath, repos );
 
-        Path repoPath = taskExecution.addArtifact( ArtifactType.REPO, "repo" );
-        try
+        downloadPackages( taskExecution, packageNames, taskExecution.getResultDir(), dnfConfPath );
+
+        try ( var s =
+            Files.find( taskExecution.getResultDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
+                && !p.getFileName().toString().endsWith( ".src.rpm" ) && bfa.isRegularFile() ) )
         {
-            Files.createDirectories( repoPath );
+            for ( var it = s.iterator(); it.hasNext(); )
+            {
+                taskExecution.addArtifact( ArtifactType.RPM, it.next().getFileName().toString() );
+            }
         }
         catch ( IOException e )
         {
-            TaskTermination.error( "I/O error when creating directory " + repoPath + ": " + e.getMessage() );
+            throw TaskTermination.error( "I/O error when looknig for RPM files: " + e.getMessage() );
         }
-        downloadPackages( taskExecution, packageNames, repoPath, dnfConfPath );
-
-        Createrepo createrepo = new Createrepo( taskExecution );
-        createrepo.run( repoPath );
 
         TaskTermination.success( "Platform repo was downloaded successfully" );
     }
