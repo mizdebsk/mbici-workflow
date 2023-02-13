@@ -56,8 +56,8 @@ class Mock
             bw.write( "config_opts['plugin_conf']['tmpfs_enable'] = True\n" );
             bw.write( "config_opts['plugin_conf']['tmpfs_opts']['required_ram_mb'] = 2048\n" );
             bw.write( "config_opts['plugin_conf']['tmpfs_opts']['max_fs_size'] = '4g'\n" );
-            //bw.write( "config_opts['nosync'] = True\n" );
-            //bw.write( "config_opts['nosync_force'] = True\n" );
+            // bw.write( "config_opts['nosync'] = True\n" );
+            // bw.write( "config_opts['nosync_force'] = True\n" );
             bw.write( "config_opts['root'] = 'mock-chroot'\n" );
             bw.write( "config_opts['target_arch'] = 'x86_64'\n" );
             bw.write( "config_opts['chroot_setup_cmd'] = 'install shadow-utils rpm-build'\n" );
@@ -80,11 +80,11 @@ class Mock
             int priority = 0;
             for ( Path repoPath : am.getDepArtifactsByType( ArtifactType.REPO, taskExecution ) )
             {
-                String name = repoPath.getParent().getParent().getFileName().toString();
+                String name = repoPath.getParent().getFileName().toString();
                 bw.write( "\n" );
                 bw.write( "[" + name + "]\n" );
                 bw.write( "name=" + name + "\n" );
-                bw.write( "baseurl=" + repoPath.getParent() + "\n" );
+                bw.write( "baseurl=" + repoPath + "\n" );
                 bw.write( "priority=" + ++priority + "\n" );
                 bw.write( "module_hotfixes=1\n" );
             }

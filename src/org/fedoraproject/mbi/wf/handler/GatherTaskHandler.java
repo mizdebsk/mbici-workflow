@@ -105,12 +105,19 @@ public class GatherTaskHandler
         parseTaskParameters( taskExecution.getTask(), packageNames, repos );
 
         ArtifactManager artifactManager = taskExecution.getArtifactManager();
-        Path dnfConfPath = artifactManager.create( ArtifactType.CONFIG, "dnf.conf" );
-        Path repodataPath = artifactManager.create( ArtifactType.REPO, "repodata" );
-        Path repoPath = repodataPath.getParent();
 
+        Path dnfConfPath = artifactManager.create( ArtifactType.CONFIG, "dnf.conf" );
         writeDnfConfig( dnfConfPath, repos );
 
+        Path repoPath = artifactManager.create( ArtifactType.REPO, "repo" );
+        try
+        {
+            Files.createDirectories( repoPath );
+        }
+        catch ( IOException e )
+        {
+            TaskTermination.error( "I/O error when creating directory " + repoPath + ": " + e.getMessage() );
+        }
         downloadPackages( taskExecution, packageNames, repoPath, dnfConfPath );
 
         Createrepo createrepo = new Createrepo( taskExecution );

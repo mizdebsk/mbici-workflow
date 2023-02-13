@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.mbi.wf.handler;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.fedoraproject.mbi.wf.ArtifactManager;
@@ -34,13 +36,29 @@ public class RepoTaskHandler
         throws TaskTermination
     {
         ArtifactManager am = taskExecution.getArtifactManager();
-        for ( Path rpm : am.getDepArtifactsByType( ArtifactType.RPM, taskExecution ) )
+        Path repoPath = am.create( ArtifactType.REPO, "repo" );
+        try
         {
-            am.symlinkArtifact( ArtifactType.RPM, rpm );
+            Files.createDirectories( repoPath );
+        }
+        catch ( IOException e )
+        {
+            TaskTermination.error( "I/O error when creating directory " + repoPath + ": " + e.getMessage() );
         }
 
-        Path repodatataPath = am.create( ArtifactType.REPO, "repodata" );
-        Path repoPath = repodatataPath.getParent();
+        for ( Path rpmPath : am.getDepArtifactsByType( ArtifactType.RPM, taskExecution ) )
+        {
+            Path rpmLinkPath = repoPath.resolve( rpmPath.getFileName() );
+
+            try
+            {
+                Files.createSymbolicLink( rpmLinkPath, rpmPath );
+            }
+            catch ( IOException e )
+            {
+                TaskTermination.error( "I/O error when creating symbolic link " + rpmLinkPath + ": " + e.getMessage() );
+            }
+        }
 
         Createrepo createrepo = new Createrepo( taskExecution );
         createrepo.run( repoPath );

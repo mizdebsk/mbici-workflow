@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.mbi.wf;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,21 +78,5 @@ public class ArtifactManager
         Artifact artifact = new Artifact( type, name );
         artifacts.add( artifact );
         return resultDir.resolve( artifact.getName() );
-    }
-
-    public void symlinkArtifact( ArtifactType type, Path sourcePath )
-        throws TaskTermination
-    {
-        String name = sourcePath.getFileName().toString();
-        Path artifact = create( type, name );
-
-        try
-        {
-            Files.createSymbolicLink( artifact, sourcePath );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error when linking artifact " + artifact + ": " + e.getMessage() );
-        }
     }
 }

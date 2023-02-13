@@ -93,7 +93,17 @@ public class CheckoutTaskHandler
     {
         ArtifactManager am = taskExecution.getArtifactManager();
         Path dgCache = taskExecution.getCacheManager().getDistGit( commit );
-        am.symlinkArtifact( ArtifactType.CHECKOUT, dgCache );
+
+        Path artifact = am.create( ArtifactType.CHECKOUT, "checkout" );
+        try
+        {
+            Files.createSymbolicLink( artifact, dgCache );
+        }
+        catch ( IOException e )
+        {
+            TaskTermination.error( "I/O error when linking artifact " + artifact + ": " + e.getMessage() );
+        }
+
         if ( Files.exists( dgCache ) )
         {
             TaskTermination.success( "Commit was found in dist-git cache" );
