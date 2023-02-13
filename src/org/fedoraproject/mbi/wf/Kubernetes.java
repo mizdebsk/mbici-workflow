@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fedoraproject.mbi.wf.handler.Command;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**
@@ -58,7 +57,7 @@ public class Kubernetes
         this.namespace = namespace;
     }
 
-    public Command wrapCommand( TaskExecution taskExecution, List<String> command, Path workingDir )
+    public List<String> wrapCommand( TaskExecution taskExecution, List<String> command, Path workingDir )
         throws TaskTermination
     {
         Task task = taskExecution.getTask();
@@ -144,6 +143,7 @@ public class Kubernetes
         pod.append( "}" );
 
         List<String> args = new ArrayList<>();
+        args.add( "kubectl" );
         args.add( "run" );
         args.add( podName );
         args.add( "--namespace=" + namespace );
@@ -156,9 +156,7 @@ public class Kubernetes
         args.add( "--image=" + CONTAINER_IMAGE );
         args.add( "--overrides=" + pod.toString() );
 
-        Command kubectl = new Command( "kubectl" );
-        kubectl.addArg( args );
-        return kubectl;
+        return args;
     }
 
 }

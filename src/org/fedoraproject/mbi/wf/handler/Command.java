@@ -79,14 +79,26 @@ public class Command
         this.name = name;
     }
 
-    public void run( TaskExecution taskExecution, int timeoutSeconds )
+    private void runImpl( TaskExecution taskExecution, int timeoutSeconds, boolean remote )
         throws TaskTermination
     {
+        Path wd = workDir != null ? workDir : taskExecution.getWorkDir();
+
+        Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
+        remote &= kubernetes.isPresent();
+
+        List<String> actualCommand = cmd;
+        if ( remote )
+        {
+            actualCommand = kubernetes.get().wrapCommand( taskExecution, cmd, wd );
+        }
+
         Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );
 
         try ( BufferedWriter bw = Files.newBufferedWriter( logPath, StandardOpenOption.CREATE_NEW ) )
         {
-            bw.write( "Running command: " + String.join( " ", cmd ) + "\n\n" );
+            String intro = remote ? "Running remote command on Kubernetes" : "Running local command";
+            bw.write( intro + ": " + String.join( " ", cmd ) + "\n\n" );
         }
         catch ( IOException e )
         {
@@ -95,8 +107,8 @@ public class Command
         }
 
         Redirect logRedirect = Redirect.appendTo( logPath.toFile() );
-        ProcessBuilder pb = new ProcessBuilder( cmd );
-        pb.directory( ( workDir != null ? workDir : taskExecution.getWorkDir() ).toFile() );
+        ProcessBuilder pb = new ProcessBuilder( actualCommand );
+        pb.directory( wd.toFile() );
         pb.redirectInput( Paths.get( "/dev/null" ).toFile() );
         pb.redirectOutput( logRedirect );
         pb.redirectError( logRedirect );
@@ -145,19 +157,15 @@ public class Command
         }
     }
 
+    public void run( TaskExecution taskExecution, int timeoutSeconds )
+        throws TaskTermination
+    {
+        runImpl( taskExecution, timeoutSeconds, false );
+    }
+
     public void runRemote( TaskExecution taskExecution, int timeoutSeconds )
         throws TaskTermination
     {
-        Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
-        if ( kubernetes.isPresent() )
-        {
-            Command kubectl = kubernetes.get().wrapCommand( taskExecution, cmd,
-                                                            workDir != null ? workDir : taskExecution.getWorkDir() );
-            kubectl.run( taskExecution, 3600 );
-        }
-        else
-        {
-            run( taskExecution, timeoutSeconds );
-        }
+        runImpl( taskExecution, timeoutSeconds, true );
     }
 }
