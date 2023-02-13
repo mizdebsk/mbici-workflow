@@ -151,7 +151,8 @@ public class Command
         Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
         if ( kubernetes.isPresent() )
         {
-            Command kubectl = kubernetes.get().wrapCommand( taskExecution, cmd );
+            Command kubectl = kubernetes.get().wrapCommand( taskExecution, cmd,
+                                                            workDir != null ? workDir : taskExecution.getWorkDir() );
             kubectl.run( taskExecution, 3600 );
         }
         else
