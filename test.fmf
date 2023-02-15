@@ -6,6 +6,7 @@ require:
   - git-core
   - curl
   - dnf
+  - fakeroot
   - mock
   - nosync
   - createrepo_c

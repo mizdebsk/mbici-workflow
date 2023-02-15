@@ -18,6 +18,7 @@ Workflow:
 * `git-core` - for cloning dist-git repositories
 * `curl` - for downloading blobs from lookaside cache
 * `dnf` - for downloading platform RPMs
+* `fakeroot` - for running `dnf` with unprivileged user
 * `mock` - for running RPM builds
 * `nosync` - for making `mock` run faster
 * `createrepo_c` - for creating YUM repositories out of built RPM
