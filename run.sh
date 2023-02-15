@@ -11,8 +11,6 @@ echo === Memory info ===
 free -h
 echo
 
-export PATH="${PWD}/target:${PATH}"
-
 set -x
 
 mbici-wf generate \

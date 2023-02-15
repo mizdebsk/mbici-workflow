@@ -6,6 +6,8 @@ prepare:
   - how: install
     package: java-17-openjdk-devel
   - how: shell
-    script: ./build.sh
+    script: |
+      ./build.sh
+      cp -a target/mbici-wf /usr/local/bin/
 execute:
   how: tmt
