@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ class Curl
 {
     private final TaskExecution taskExecution;
 
+    private int counter;
+
     public Curl( TaskExecution taskExecution )
     {
         this.taskExecution = taskExecution;
@@ -36,6 +38,12 @@ class Curl
         throws TaskTermination
     {
         Command curl = new Command( "curl", "-f", "-L", "-o", targetPath.toString(), url );
+
+        if ( counter++ > 0 )
+        {
+            curl.setName( "curl-" + counter );
+        }
+
         curl.run( taskExecution, 120 );
     }
 }

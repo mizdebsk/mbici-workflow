@@ -96,6 +96,7 @@ public class CheckoutTaskHandler
     public void handleTask0( TaskExecution taskExecution )
         throws TaskTermination, IOException
     {
+        Curl curl = new Curl( taskExecution );
         Path dgCache = taskExecution.getCacheManager().getDistGit( commit );
 
         Path artifact = taskExecution.addArtifact( ArtifactType.CHECKOUT, "checkout" );
@@ -131,7 +132,6 @@ public class CheckoutTaskHandler
                 if ( !Files.exists( lasCache ) )
                 {
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
-                    Curl curl = new Curl( taskExecution );
                     curl.downloadFile( url, downloadPath );
                     Files.move( downloadPath, lasCache, StandardCopyOption.ATOMIC_MOVE,
                                 StandardCopyOption.REPLACE_EXISTING );
