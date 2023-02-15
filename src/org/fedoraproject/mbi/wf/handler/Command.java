@@ -38,8 +38,6 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 public class Command
 {
-    private Path workDir;
-
     private String name;
 
     private final List<String> cmd = new ArrayList<>();
@@ -69,11 +67,6 @@ public class Command
         return Collections.unmodifiableList( cmd );
     }
 
-    public void setWorkDir( Path workDir )
-    {
-        this.workDir = workDir;
-    }
-
     public void setName( String name )
     {
         this.name = name;
@@ -82,15 +75,13 @@ public class Command
     private void runImpl( TaskExecution taskExecution, int timeoutSeconds, boolean remote )
         throws TaskTermination
     {
-        Path wd = workDir != null ? workDir : taskExecution.getWorkDir();
-
         Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
         remote &= kubernetes.isPresent();
 
         List<String> actualCommand = cmd;
         if ( remote )
         {
-            actualCommand = kubernetes.get().wrapCommand( taskExecution, cmd, wd );
+            actualCommand = kubernetes.get().wrapCommand( taskExecution, cmd );
         }
 
         Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );
@@ -108,7 +99,6 @@ public class Command
 
         Redirect logRedirect = Redirect.appendTo( logPath.toFile() );
         ProcessBuilder pb = new ProcessBuilder( actualCommand );
-        pb.directory( wd.toFile() );
         pb.redirectInput( Paths.get( "/dev/null" ).toFile() );
         pb.redirectOutput( logRedirect );
         pb.redirectError( logRedirect );

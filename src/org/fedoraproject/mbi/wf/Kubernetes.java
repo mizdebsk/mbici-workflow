@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.mbi.wf;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class Kubernetes
         this.namespace = namespace;
     }
 
-    public List<String> wrapCommand( TaskExecution taskExecution, List<String> command, Path workingDir )
+    public List<String> wrapCommand( TaskExecution taskExecution, List<String> command )
         throws TaskTermination
     {
         Task task = taskExecution.getTask();
@@ -87,7 +86,6 @@ public class Kubernetes
             pod.append( ", \"" ).append( it.next() ).append( "\"" );
         }
         pod.append( "        ]," );
-        pod.append( "        \"workingDir\": \"" + workingDir + "\"," );
         pod.append( "        \"securityContext\": {" );
         pod.append( "          \"privileged\": true," );
         pod.append( "          \"runAsUser\": 18611" );
