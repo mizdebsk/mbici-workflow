@@ -116,7 +116,7 @@ public class CheckoutTaskHandler
         }
         Path workTree = taskExecution.getCacheManager().createPending( "checkout-" + commit );
         runGit( "git-init", taskExecution, "init", "--bare" );
-        runGit( "git-fetch", taskExecution, "remote", "add", "--fetch", "origin", scm );
+        runGit( "git-fetch", taskExecution, "-c", "http.version=HTTP/1.1", "remote", "add", "--fetch", "origin", scm );
         Files.createDirectories( workTree );
         runGit( "git-reset", taskExecution, "--work-tree", workTree.toString(), "reset", "--hard", commit );
         for ( String line : Files.readAllLines( workTree.resolve( "sources" ) ) )
