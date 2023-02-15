@@ -1,0 +1,11 @@
+duration: 6h
+test: ./run.sh
+result: custom
+require:
+  - java-17-openjdk
+  - git-core
+  - curl
+  - dnf
+  - mock
+  - nosync
+  - createrepo_c

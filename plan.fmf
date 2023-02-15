@@ -1,0 +1,11 @@
+discover:
+  how: fmf
+provision:
+  how: virtual
+prepare:
+  - how: install
+    package: java-17-openjdk-devel
+  - how: shell
+    script: ./build.sh
+execute:
+  how: tmt
