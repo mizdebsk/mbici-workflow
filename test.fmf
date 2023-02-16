@@ -1,5 +1,5 @@
 duration: 6h
-test: ./run.sh
+test: su - mbici -c ./run.sh
 result: custom
 require:
   - java-17-openjdk

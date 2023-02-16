@@ -9,5 +9,6 @@ prepare:
     script: |
       ./build.sh
       cp -a target/mbici-wf /usr/local/bin/
+      useradd -u 18611 -G mock mbici
 execute:
   how: tmt
