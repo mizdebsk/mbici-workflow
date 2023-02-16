@@ -4,7 +4,15 @@ provision:
   how: virtual
 prepare:
   - how: install
-    package: java-17-openjdk-devel
+    package:
+      - java-17-openjdk-devel
+      - git-core
+      - curl
+      - dnf
+      - fakeroot
+      - mock
+      - nosync
+      - createrepo_c
   - how: shell
     script: |
       ./build.sh
