@@ -1,5 +1,5 @@
 duration: 6h
 test: |
   chmod a+rwx ${TMT_TEST_DATA}
-  su mbici -c mbici-run
+  su - -w TMT_TEST_DATA,PLAN,PLATFORM,SUBJECT mbici -c mbici-run
 result: custom
