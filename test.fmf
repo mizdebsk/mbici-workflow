@@ -1,3 +1,5 @@
 duration: 6h
-test: su - mbici -c ./run.sh
+test: |
+  chmod a+rwx ${TMT_TEST_DATA}
+  su - mbici -c mbici-run
 result: custom
