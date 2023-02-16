@@ -37,7 +37,7 @@ class Curl
     public void downloadFile( String url, Path targetPath )
         throws TaskTermination
     {
-        Command curl = new Command( "curl", "-f", "-L", "-o", targetPath.toString(), url );
+        Command curl = new Command( "curl", "--http1.1", "-f", "-L", "-o", targetPath.toString(), url );
 
         if ( counter++ > 0 )
         {
