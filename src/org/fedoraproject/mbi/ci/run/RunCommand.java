@@ -75,7 +75,7 @@ public class RunCommand
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
         Throttle throttle = new ThrottleImpl( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
-        org.fedoraproject.mbi.wf.handler.Command.kubernetesNamespace = kubernetesNamespace;
+        org.fedoraproject.mbi.ci.tasks.Command.kubernetesNamespace = kubernetesNamespace;
         WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, batchMode );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );

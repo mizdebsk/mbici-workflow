@@ -19,11 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.fedoraproject.mbi.ci.tasks.CheckoutTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.RpmTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.SrpmTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.ValidateTaskHandler;
 import org.fedoraproject.mbi.wf.Throttle;
-import org.fedoraproject.mbi.wf.handler.CheckoutTaskHandler;
-import org.fedoraproject.mbi.wf.handler.RpmTaskHandler;
-import org.fedoraproject.mbi.wf.handler.SrpmTaskHandler;
-import org.fedoraproject.mbi.wf.handler.ValidateTaskHandler;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**

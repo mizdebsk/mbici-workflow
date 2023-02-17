@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.mbi.wf.handler;
+package org.fedoraproject.mbi.ci.tasks;
 
 import java.io.IOException;
 import java.nio.file.Files;
