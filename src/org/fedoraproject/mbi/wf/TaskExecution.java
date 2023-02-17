@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -281,10 +280,5 @@ public class TaskExecution
     public CacheManager getCacheManager()
     {
         return wfe.getCacheManager();
-    }
-
-    public Optional<Kubernetes> getKubernetes()
-    {
-        return wfe.getKubernetes();
     }
 }

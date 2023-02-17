@@ -17,11 +17,9 @@ package org.fedoraproject.mbi.ci.run;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.wf.CacheManager;
-import org.fedoraproject.mbi.wf.Kubernetes;
 import org.fedoraproject.mbi.wf.Throttle;
 import org.fedoraproject.mbi.wf.WorkflowExecutor;
 import org.fedoraproject.mbi.wf.model.Workflow;
@@ -77,9 +75,8 @@ public class RunCommand
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
         Throttle throttle = new ThrottleImpl( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
-        Optional<Kubernetes> kube =
-            kubernetesNamespace != null ? Optional.of( new Kubernetes( kubernetesNamespace ) ) : Optional.empty();
-        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube, batchMode );
+        org.fedoraproject.mbi.wf.handler.Command.kubernetesNamespace = kubernetesNamespace;
+        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, batchMode );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
     }

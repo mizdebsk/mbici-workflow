@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.mbi.wf;
+package org.fedoraproject.mbi.wf.handler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fedoraproject.mbi.wf.CacheManager;
+import org.fedoraproject.mbi.wf.TaskExecution;
+import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class Kubernetes
+class Kubernetes
 {
     private static final String CONTAINER_IMAGE = "quay.io/mizdebsk/mock:prod";
 

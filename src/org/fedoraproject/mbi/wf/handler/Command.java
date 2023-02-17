@@ -25,10 +25,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.fedoraproject.mbi.wf.Kubernetes;
 import org.fedoraproject.mbi.wf.TaskExecution;
 import org.fedoraproject.mbi.wf.TaskTermination;
 import org.fedoraproject.mbi.wf.model.ArtifactType;
@@ -38,6 +36,8 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 public class Command
 {
+    public static String kubernetesNamespace;
+
     private String name;
 
     private final List<String> cmd = new ArrayList<>();
@@ -75,13 +75,12 @@ public class Command
     private void runImpl( TaskExecution taskExecution, int timeoutSeconds, boolean remote )
         throws TaskTermination
     {
-        Optional<Kubernetes> kubernetes = taskExecution.getKubernetes();
-        remote &= kubernetes.isPresent();
+        remote &= kubernetesNamespace != null;
 
         List<String> actualCommand = cmd;
         if ( remote )
         {
-            actualCommand = kubernetes.get().wrapCommand( taskExecution, cmd );
+            actualCommand = new Kubernetes( kubernetesNamespace ).wrapCommand( taskExecution, cmd );
         }
 
         Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );
