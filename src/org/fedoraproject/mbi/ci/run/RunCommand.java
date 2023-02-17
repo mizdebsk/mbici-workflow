@@ -76,7 +76,7 @@ public class RunCommand
     {
         Workflow wfd = Workflow.readFromXML( workflowPath );
         CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
-        Throttle throttle = new Throttle( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
+        Throttle throttle = new ThrottleImpl( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
         Optional<Kubernetes> kube =
             kubernetesNamespace != null ? Optional.of( new Kubernetes( kubernetesNamespace ) ) : Optional.empty();
         WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, kube, batchMode );

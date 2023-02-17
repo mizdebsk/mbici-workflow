@@ -15,46 +15,14 @@
  */
 package org.fedoraproject.mbi.wf;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-
-import org.fedoraproject.mbi.wf.handler.CheckoutTaskHandler;
-import org.fedoraproject.mbi.wf.handler.RpmTaskHandler;
-import org.fedoraproject.mbi.wf.handler.SrpmTaskHandler;
-import org.fedoraproject.mbi.wf.handler.ValidateTaskHandler;
 import org.fedoraproject.mbi.wf.model.Task;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class Throttle
+public interface Throttle
 {
-    private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
+    void acquireCapacity( Task task );
 
-    public Throttle( int maxCheckout, int maxSrpm, int maxRpm, int maxValidate )
-    {
-        semaphores.put( CheckoutTaskHandler.class.getName(), new Semaphore( maxCheckout ) );
-        semaphores.put( RpmTaskHandler.class.getName(), new Semaphore( maxRpm ) );
-        semaphores.put( SrpmTaskHandler.class.getName(), new Semaphore( maxSrpm ) );
-        semaphores.put( ValidateTaskHandler.class.getName(), new Semaphore( maxValidate ) );
-    }
-
-    public void acquireCapacity( Task task )
-    {
-        Semaphore sema = semaphores.get( task.getHandler() );
-        if ( sema != null )
-        {
-            sema.acquireUninterruptibly();
-        }
-    }
-
-    public void releaseCapacity( Task task )
-    {
-        Semaphore sema = semaphores.get( task.getHandler() );
-        if ( sema != null )
-        {
-            sema.release();
-        }
-    }
+    void releaseCapacity( Task task );
 }
