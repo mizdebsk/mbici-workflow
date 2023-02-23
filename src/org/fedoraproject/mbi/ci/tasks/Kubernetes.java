@@ -50,7 +50,7 @@ class Kubernetes
 
     private static final String RPM_MEM_REQUEST = "1Gi";
 
-    private static final String RPM_MEM_LIMIT = "4Gi";
+    private static final String RPM_MEM_LIMIT = "6Gi";
 
     private final String namespace;
 
