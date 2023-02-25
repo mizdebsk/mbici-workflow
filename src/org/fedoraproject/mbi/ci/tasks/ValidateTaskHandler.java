@@ -32,6 +32,8 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class ValidateTaskHandler
     implements TaskHandler
 {
+    private static final int TMT_TIMEOUT = 600;
+
     private static final String PLAN_NAME = "/plans/javapackages";
 
     public ValidateTaskHandler( Task task )
@@ -87,7 +89,7 @@ public class ValidateTaskHandler
             // TODO add html or junit report
             tmt.addArg( "report" );
             tmt.addArg( "-vvv" );
-            tmt.run( taskExecution, 120 );
+            tmt.run( taskExecution, TMT_TIMEOUT );
 
             TaskTermination.success( "Validation was successful" );
         }

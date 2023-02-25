@@ -32,6 +32,8 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 class Mock
 {
+    private static final int MOCK_TIMEOUT = 1800;
+
     private Map<String, String> macros = new LinkedHashMap<>();
 
     public void run( TaskExecution taskExecution, String... mockArgs )
@@ -103,7 +105,7 @@ class Mock
         mock.addArg( "-r", mockConfPath.toString() );
         mock.addArg( "--resultdir", taskExecution.getResultDir().toString() );
         mock.addArg( mockArgs );
-        mock.runRemote( taskExecution, 600 );
+        mock.runRemote( taskExecution, MOCK_TIMEOUT );
     }
 
     public void addMacro( String name, String value )

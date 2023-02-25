@@ -37,6 +37,8 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class GatherTaskHandler
     implements TaskHandler
 {
+    private static final int GATHER_TIMEOUT = 600;
+
     private final List<String> packageNames = new ArrayList<>();
 
     private final Map<String, String> repos = new LinkedHashMap<>();
@@ -98,7 +100,7 @@ public class GatherTaskHandler
         dnf.addArg( "--downloadonly" );
         dnf.addArg( packageNames );
         dnf.setName( "dnf" );
-        dnf.runRemote( taskExecution, 600 );
+        dnf.runRemote( taskExecution, GATHER_TIMEOUT );
     }
 
     @Override

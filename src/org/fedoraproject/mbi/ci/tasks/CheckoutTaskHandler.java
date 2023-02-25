@@ -36,6 +36,8 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class CheckoutTaskHandler
     implements TaskHandler
 {
+    private static final int GIT_TIMEOUT = 300;
+
     private final String scm;
 
     private final String commit;
@@ -90,7 +92,7 @@ public class CheckoutTaskHandler
         git.setName( logName );
         git.addArg( "--git-dir", taskExecution.getWorkDir().resolve( "git" ).toString() );
         git.addArg( args );
-        git.run( taskExecution, 60 );
+        git.run( taskExecution, GIT_TIMEOUT );
     }
 
     public void handleTask0( TaskExecution taskExecution )

@@ -25,6 +25,8 @@ import org.fedoraproject.mbi.wf.TaskTermination;
  */
 class Curl
 {
+    private static final int CURL_TIMEOUT = 300;
+
     private final TaskExecution taskExecution;
 
     private int counter;
@@ -44,6 +46,6 @@ class Curl
             curl.setName( "curl-" + counter );
         }
 
-        curl.run( taskExecution, 120 );
+        curl.run( taskExecution, CURL_TIMEOUT );
     }
 }
