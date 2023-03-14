@@ -23,7 +23,7 @@ import org.fedoraproject.mbi.wf.model.Task;
 class InteractiveLogger
     implements Logger
 {
-    private static enum Color
+    private enum Color
     {
         RUNNING( "34" ), FAILED( "31" ), SUCCEEDED( "32" ), REUSED( "36" ), RESET( "" );
 

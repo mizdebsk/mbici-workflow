@@ -17,5 +17,5 @@ package org.fedoraproject.mbi.wf.model;
 
 public enum ArtifactType
 {
-    LOG, RPM, SRPM, REPO, CONFIG, CHECKOUT;
+    LOG, RPM, SRPM, REPO, CONFIG, CHECKOUT
 }

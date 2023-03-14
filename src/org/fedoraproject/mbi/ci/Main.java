@@ -131,7 +131,7 @@ public class Main
             {
                 if ( commandName.equals( entity.getTag() ) )
                 {
-                    if ( !argList.isEmpty() && argList.peek().equals( "-help" ) )
+                    if ( !argList.isEmpty() && "-help".equals( argList.peek() ) )
                     {
                         ArgParser.help( entity );
                         return;

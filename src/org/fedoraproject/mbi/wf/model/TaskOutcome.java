@@ -17,5 +17,5 @@ package org.fedoraproject.mbi.wf.model;
 
 public enum TaskOutcome
 {
-    SUCCESS, FAILURE, ERROR;
+    SUCCESS, FAILURE, ERROR
 }

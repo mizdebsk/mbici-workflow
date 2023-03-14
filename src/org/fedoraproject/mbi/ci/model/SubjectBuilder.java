@@ -26,7 +26,7 @@ import org.fedoraproject.mbi.xml.Builder;
 public class SubjectBuilder
     implements Builder<Subject>
 {
-    private List<SubjectComponent> subjectComponents = new ArrayList<>();
+    private final List<SubjectComponent> subjectComponents = new ArrayList<>();
 
     public void addSubjectComponent( SubjectComponent subjectComponent )
     {

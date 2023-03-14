@@ -34,7 +34,7 @@ class Mock
 {
     private static final int MOCK_TIMEOUT = 1800;
 
-    private Map<String, String> macros = new LinkedHashMap<>();
+    private final Map<String, String> macros = new LinkedHashMap<>();
 
     public void run( TaskExecution taskExecution, String... mockArgs )
         throws TaskTermination

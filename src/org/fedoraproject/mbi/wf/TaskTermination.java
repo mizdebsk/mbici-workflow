@@ -20,7 +20,7 @@ import org.fedoraproject.mbi.wf.model.TaskOutcome;
 /**
  * @author Mikolaj Izdebski
  */
-public class TaskTermination
+public final class TaskTermination
     extends Throwable
 {
     private static final long serialVersionUID = 1;
