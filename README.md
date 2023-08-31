@@ -159,7 +159,6 @@ An example Platform:
         <name>Everything</name>
         <url>https://ftp.icm.edu.pl/pub/Linux/dist/fedora/linux/development/rawhide/Everything/x86_64/os/</url>
       </repo>
-      <package>shadow-utils</package>
       <package>rpm-build</package>
       <package>glibc-minimal-langpack</package>
     </platform>

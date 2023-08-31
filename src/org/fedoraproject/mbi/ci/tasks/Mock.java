@@ -59,7 +59,7 @@ class Mock
             // bw.write( "config_opts['nosync_force'] = True\n" );
             bw.write( "config_opts['root'] = 'mock-chroot'\n" );
             bw.write( "config_opts['target_arch'] = 'x86_64'\n" );
-            bw.write( "config_opts['chroot_setup_cmd'] = 'install shadow-utils rpm-build'\n" );
+            bw.write( "config_opts['chroot_setup_cmd'] = 'install rpm-build'\n" );
             bw.write( "\n" );
             for ( var macro : macros.entrySet() )
             {
