@@ -49,8 +49,8 @@ public class TmtResultsReport
         add( "- name: /overview" );
         add( "  result: " + ( failed ? "fail" : "pass" ) );
         add( "  log:" );
-        add( "    - data/test/output.txt" );
-        add( "    - data/test/data/result.html" );
+        add( "    - ../output.txt" );
+        add( "    - result.html" );
 
         for ( Result result : workflow.getResults() )
         {
@@ -70,13 +70,13 @@ public class TmtResultsReport
             add( "  duration: " + durationString );
             add( "  log:" );
 
-            add( "    - data/test/data/" + result.getTaskId() + "/testout.log" );
+            add( "    - " + result.getTaskId() + "/testout.log" );
 
             for ( Artifact artifact : result.getArtifacts() )
             {
                 if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
                 {
-                    add( "    - data/test/data/" + result.getTaskId() + "/" + artifact.getName() );
+                    add( "    - " + result.getTaskId() + "/" + artifact.getName() );
                 }
             }
         }
