@@ -202,14 +202,9 @@ public class TaskExecution
 
             try
             {
-                TaskHandler handler =
-                    (TaskHandler) Class.forName( task.getHandler() ).getConstructor( Task.class ).newInstance( task );
+                TaskHandler handler = new TaskHandlerFactory().createTaskHandler( task );
                 handler.handleTask( this );
                 throw TaskTermination.error( "Task did not set explicit outcome" );
-            }
-            catch ( ReflectiveOperationException e )
-            {
-                throw TaskTermination.error( "Unable to handle task: " + e.getMessage() );
             }
             finally
             {
