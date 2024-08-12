@@ -17,8 +17,7 @@ Workflow:
 * JRE (Java Runtime Environment)
 * `git-core` - for cloning dist-git repositories
 * `curl` - for downloading blobs from lookaside cache
-* `dnf` - for downloading platform RPMs
-* `fakeroot` - for running `dnf` with unprivileged user
+* `dnf5` - for downloading platform RPMs
 * `mock` - for running RPM builds
 * `nosync` - for making `mock` run faster
 * `createrepo_c` - for creating YUM repositories out of built RPM

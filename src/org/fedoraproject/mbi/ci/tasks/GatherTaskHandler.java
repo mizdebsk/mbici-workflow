@@ -90,16 +90,15 @@ public class GatherTaskHandler
                                    Path dnfConfPath )
         throws TaskTermination
     {
-        Command dnf = new Command( "fakeroot", "dnf" );
+        Command dnf = new Command( "dnf5" );
         dnf.addArg( "--assumeyes" );
         dnf.addArg( "--releasever", "dummy" );
         dnf.addArg( "--installroot", taskExecution.getWorkDir().toString() );
         dnf.addArg( "--config", dnfConfPath.toString() );
-        dnf.addArg( "--downloaddir", downloadDir.toString() );
+        dnf.addArg( "--setopt", "destdir=" + downloadDir.toString() );
         dnf.addArg( "install" );
         dnf.addArg( "--downloadonly" );
         dnf.addArg( packageNames );
-        dnf.setName( "dnf" );
         dnf.runRemote( taskExecution, GATHER_TIMEOUT );
     }
 

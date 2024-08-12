@@ -8,8 +8,7 @@ prepare:
       - java-17-openjdk-devel
       - git-core
       - curl
-      - dnf
-      - fakeroot
+      - dnf5
       - mock
       - nosync
       - createrepo_c
