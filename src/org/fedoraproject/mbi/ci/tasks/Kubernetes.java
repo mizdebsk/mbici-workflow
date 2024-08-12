@@ -150,7 +150,6 @@ class Kubernetes
         args.add( "--namespace=" + namespace );
         args.add( "--quiet" );
         args.add( "--attach" );
-        args.add( "--wait" );
         args.add( "--pod-running-timeout=" + POD_RUNNING_TIMEOUT );
         args.add( "--rm" );
         args.add( "--restart=Never" );
