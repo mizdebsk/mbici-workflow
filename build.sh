@@ -18,8 +18,18 @@
 
 set -e
 
+native_image=false
+if [ "$1" = "--native" ]; then
+    native_image=true
+fi
+
 rm -rf target/
 javac -d target $(find src -name \*.java)
 jar -cfe target/mbici-wf.jar org.fedoraproject.mbi.ci.Main -C target org
-(echo '#!/usr/bin/java -jar' && cat target/mbici-wf.jar) >target/mbici-wf
-chmod +x target/mbici-wf
+
+if $native_image; then
+    $JAVA_HOME/bin/native-image -jar target/mbici-wf.jar -o target/mbici-wf
+else
+    (echo '#!/usr/bin/java -jar' && cat target/mbici-wf.jar) >target/mbici-wf
+    chmod +x target/mbici-wf
+fi
