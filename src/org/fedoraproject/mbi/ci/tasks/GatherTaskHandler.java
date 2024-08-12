@@ -37,7 +37,7 @@ import org.fedoraproject.mbi.wf.model.Task;
 public class GatherTaskHandler
     implements TaskHandler
 {
-    private static final int GATHER_TIMEOUT = 600;
+    private static final int GATHER_TIMEOUT = 1200;
 
     private final List<String> packageNames = new ArrayList<>();
 
