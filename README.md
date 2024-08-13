@@ -35,7 +35,7 @@ Quick Start
 
 Compile the sources and assemble binary executable `mbici-wf`:
 
-    ./build.sh
+    mvn clean verify
 
 Generate Workflow from example Build Plan, Platform and Test Subject:
 
