@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.mbi.ci;
+package org.fedoraproject.mbi.ci.run;
 
-import org.fedoraproject.mbi.ci.generate.GenerateCommand;
-import org.fedoraproject.mbi.ci.report.ReportCommand;
-import org.fedoraproject.mbi.ci.run.KubeRunCommand;
-import org.fedoraproject.mbi.ci.run.LocalRunCommand;
-
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command( name = "mbici-wf", subcommands = { //
-    GenerateCommand.class, //
-    LocalRunCommand.class, //
-    KubeRunCommand.class, //
-    ReportCommand.class, //
-}, mixinStandardHelpOptions = true )
-public class Main
+@Command( name = "run", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true )
+public class LocalRunCommand
+    extends AbstractRunCommand
 {
-    public static void main( String... args )
-    {
-        int exitCode = new CommandLine( new Main() ).execute( args );
-        System.exit( exitCode );
-    }
 }

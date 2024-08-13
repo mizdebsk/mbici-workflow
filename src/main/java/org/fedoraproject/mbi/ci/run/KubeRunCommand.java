@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.mbi.ci;
+package org.fedoraproject.mbi.ci.run;
 
-import org.fedoraproject.mbi.ci.generate.GenerateCommand;
-import org.fedoraproject.mbi.ci.report.ReportCommand;
-import org.fedoraproject.mbi.ci.run.KubeRunCommand;
-import org.fedoraproject.mbi.ci.run.LocalRunCommand;
-
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command( name = "mbici-wf", subcommands = { //
-    GenerateCommand.class, //
-    LocalRunCommand.class, //
-    KubeRunCommand.class, //
-    ReportCommand.class, //
-}, mixinStandardHelpOptions = true )
-public class Main
+@Command( name = "kube-run", description = "execute Workflow on Kubernetes cluster", mixinStandardHelpOptions = true )
+public class KubeRunCommand
+    extends AbstractRunCommand
 {
-    public static void main( String... args )
+    @Option( names = { "--namespace" }, description = "Kubernetes namespace" )
+    private String namespace;
+
+    @Override
+    public Integer call()
+        throws Exception
     {
-        int exitCode = new CommandLine( new Main() ).execute( args );
-        System.exit( exitCode );
+        org.fedoraproject.mbi.ci.tasks.Command.kubernetesNamespace = namespace;
+        return super.call();
     }
 }
