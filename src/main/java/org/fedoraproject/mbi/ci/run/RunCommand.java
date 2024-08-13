@@ -33,19 +33,19 @@ import picocli.CommandLine.Option;
 public class RunCommand
     implements Callable<Integer>
 {
-    @Option( names = { "-w", "--workflow" }, description = " path to Workflow" )
+    @Option( names = { "-w", "--workflow" }, required = true, description = " path to Workflow" )
     private Path workflowPath;
 
     @Option( names = { "-R",
-        "--result-dir" }, description = "path to a directory where task results and artifacts are written" )
+        "--result-dir" }, required = true, description = "path to a directory where task results and artifacts are written" )
     private Path resultDir;
 
     @Option( names = { "-C",
-        "--cache-dir" }, description = "path to a directory where dist-git commits and lookaside blobs are cached" )
+        "--cache-dir" }, required = true, description = "path to a directory where dist-git commits and lookaside blobs are cached" )
     private Path cacheDir;
 
     @Option( names = { "-W",
-        "--work-dir" }, description = "path to a directory under which temporary  working directories for tasks are created" )
+        "--work-dir" }, required = true, description = "path to a directory under which temporary working directories for tasks are created" )
     private Path workDir;
 
     @Option( names = { "--max-checkout-tasks" }, description = "limit number of parrallel git checkout tasks" )

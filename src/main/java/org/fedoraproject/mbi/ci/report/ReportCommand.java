@@ -45,23 +45,25 @@ import picocli.CommandLine.Option;
 public class ReportCommand
     implements Callable<Integer>
 {
-    @Option( names = { "-m", "--plan" }, description = "path to a Build Plan in XML format" )
+    @Option( names = { "-m", "--plan" }, required = true, description = "path to a Build Plan in XML format" )
     private Path planPath;
 
-    @Option( names = { "-p", "--platform" }, description = "path to a Platform in XML format" )
+    @Option( names = { "-p", "--platform" }, required = true, description = "path to a Platform in XML format" )
     private Path platformPath;
 
-    @Option( names = { "-s", "--subject" }, description = "path to a Test Subject in XML format" )
+    @Option( names = { "-s", "--subject" }, required = true, description = "path to a Test Subject in XML format" )
     private Path subjectPath;
 
-    @Option( names = { "-w", "--workflow" }, description = "path where generated Workflow should be written" )
+    @Option( names = { "-w",
+        "--workflow" }, required = true, description = "path where generated Workflow should be written" )
     private Path workflowPath;
 
-    @Option( names = { "-R", "--result-dir" }, description = "path to a directory with task results and artifacts" )
+    @Option( names = { "-R",
+        "--result-dir" }, required = true, description = "path to a directory with task results and artifacts" )
     private Path resultDir;
 
     @Option( names = { "-r",
-        "--report-dir" }, description = "path to a directory where generated report should be written" )
+        "--report-dir" }, required = true, description = "path to a directory where generated report should be written" )
     private Path reportDir;
 
     @Option( names = { "-t", "--tmt" }, description = "generate tmt results.yaml and include build logs" )
