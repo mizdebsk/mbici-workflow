@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2024 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,60 +16,59 @@
 package org.fedoraproject.mbi.ci.run;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.Callable;
 
-import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.wf.CacheManager;
 import org.fedoraproject.mbi.wf.Throttle;
 import org.fedoraproject.mbi.wf.WorkflowExecutor;
 import org.fedoraproject.mbi.wf.model.Workflow;
-import org.fedoraproject.mbi.xml.Builder;
-import org.fedoraproject.mbi.xml.Entity;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Command( name = "run", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true )
 public class RunCommand
-    extends Command
+    implements Callable<Integer>
 {
-    private final Path workflowPath;
+    @Option( names = { "-w", "--workflow" }, description = " path to Workflow" )
+    private Path workflowPath;
 
-    private final Path resultDir;
+    @Option( names = { "-R",
+        "--result-dir" }, description = "path to a directory where task results and artifacts are written" )
+    private Path resultDir;
 
-    private final Path cacheDir;
+    @Option( names = { "-C",
+        "--cache-dir" }, description = "path to a directory where dist-git commits and lookaside blobs are cached" )
+    private Path cacheDir;
 
-    private final Path workDir;
+    @Option( names = { "-W",
+        "--work-dir" }, description = "path to a directory under which temporary  working directories for tasks are created" )
+    private Path workDir;
 
-    private final int maxCheckoutTasks;
+    @Option( names = { "--max-checkout-tasks" }, description = "limit number of parrallel git checkout tasks" )
+    private Integer maxCheckoutTasks = 3;
 
-    private final int maxSrpmTasks;
+    @Option( names = { "--max-srpm-tasks" }, description = "limit number of parrallel SRPM build tasks" )
+    private Integer maxSrpmTasks = 5;
 
-    private final int maxRpmTasks;
+    @Option( names = { "--max-rpm-tasks" }, description = "limit number of parrallel RPM build tasks" )
+    private Integer maxRpmTasks = 2;
 
-    private final int maxValidateTasks;
+    @Option( names = { "--max-validate-tasks" }, description = "limit number of parrallel validation tasks" )
+    private Integer maxValidateTasks = 4;
 
-    private final String kubernetesNamespace;
+    @Option( names = {
+        "--kubernetes-ns" }, description = "build SRPM and RPM packages on external Kubernetes cluster instead of local machine" )
+    private String kubernetesNamespace;
 
-    private final boolean batchMode;
-
-    public RunCommand( Path workflowPath, Path resultDir, Path cacheDir, Path workDir, int maxCheckoutTasks,
-                       int maxSrpmTasks, int maxRpmTasks, int maxValidateTasks, String kubernetesNamespace,
-                       boolean batchMode )
-    {
-        this.workflowPath = workflowPath;
-        this.resultDir = resultDir;
-        this.cacheDir = cacheDir;
-        this.workDir = workDir;
-        this.maxCheckoutTasks = maxCheckoutTasks;
-        this.maxSrpmTasks = maxSrpmTasks;
-        this.maxRpmTasks = maxRpmTasks;
-        this.maxValidateTasks = maxValidateTasks;
-        this.kubernetesNamespace = kubernetesNamespace;
-        this.batchMode = batchMode;
-    }
+    @Option( names = { "-B", "--batch-mode" }, description = "Run in non-interactive mode" )
+    private boolean batchMode;
 
     @Override
-    public void run()
+    public Integer call()
         throws Exception
     {
         Workflow wfd = Workflow.readFromXML( workflowPath );
@@ -79,106 +78,6 @@ public class RunCommand
         WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, batchMode );
         Workflow wf = wfe.execute();
         wf.writeToXML( workflowPath );
-    }
-
-    private static class ArgsBuilder
-        implements Builder<RunCommand>
-    {
-        private Path workflowPath;
-
-        private Path resultDir;
-
-        private Path cacheDir;
-
-        private Path workDir;
-
-        private Integer maxCheckoutTasks = 3;
-
-        private Integer maxSrpmTasks = 5;
-
-        private Integer maxRpmTasks = 2;
-
-        private Integer maxValidateTasks = 4;
-
-        private String kubernetesNamespace;
-
-        private Boolean batchMode = false;
-
-        public void setWorkflowPath( Path workflowPath )
-        {
-            this.workflowPath = workflowPath;
-        }
-
-        public void setResultDir( Path resultDir )
-        {
-            this.resultDir = resultDir;
-        }
-
-        public void setCacheDir( Path cacheDir )
-        {
-            this.cacheDir = cacheDir;
-        }
-
-        public void setWorkDir( Path workDir )
-        {
-            this.workDir = workDir;
-        }
-
-        public void setMaxCheckoutTasks( Integer maxCheckoutTasks )
-        {
-            this.maxCheckoutTasks = maxCheckoutTasks;
-        }
-
-        public void setMaxSrpmTasks( Integer maxSrpmTasks )
-        {
-            this.maxSrpmTasks = maxSrpmTasks;
-        }
-
-        public void setMaxRpmTasks( Integer maxRpmTasks )
-        {
-            this.maxRpmTasks = maxRpmTasks;
-        }
-
-        public void setMaxValidateTasks( Integer maxValidateTasks )
-        {
-            this.maxValidateTasks = maxValidateTasks;
-        }
-
-        public void setKubernetes( String kubernetesNamespace )
-        {
-            this.kubernetesNamespace = kubernetesNamespace;
-        }
-
-        public void setBatchMode( String dummy )
-        {
-            this.batchMode = true;
-        }
-
-        @Override
-        public RunCommand build()
-        {
-            return new RunCommand( workflowPath.toAbsolutePath(), resultDir.toAbsolutePath(), cacheDir.toAbsolutePath(),
-                                   workDir.toAbsolutePath(), maxCheckoutTasks, maxSrpmTasks, maxRpmTasks,
-                                   maxValidateTasks, kubernetesNamespace, batchMode );
-        }
-    }
-
-    public static final Entity<RunCommand, ArgsBuilder> ENTITY = new Entity<>( "run", ArgsBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
-        ENTITY.addAttribute( "cacheDir", x -> null, ArgsBuilder::setCacheDir, Path::toString, Paths::get );
-        ENTITY.addAttribute( "workDir", x -> null, ArgsBuilder::setWorkDir, Path::toString, Paths::get );
-        ENTITY.addOptionalAttribute( "maxCheckoutTasks", x -> null, ArgsBuilder::setMaxCheckoutTasks, Number::toString,
-                                     Integer::parseInt );
-        ENTITY.addOptionalAttribute( "maxSrpmTasks", x -> null, ArgsBuilder::setMaxSrpmTasks, Number::toString,
-                                     Integer::parseInt );
-        ENTITY.addOptionalAttribute( "maxRpmTasks", x -> null, ArgsBuilder::setMaxRpmTasks, Number::toString,
-                                     Integer::parseInt );
-        ENTITY.addOptionalAttribute( "maxValidateTasks", x -> null, ArgsBuilder::setMaxValidateTasks, Number::toString,
-                                     Integer::parseInt );
-        ENTITY.addOptionalAttribute( "kubernetesNamespace", x -> null, ArgsBuilder::setKubernetes );
-        ENTITY.addOptionalAttribute( "batch", x -> null, ArgsBuilder::setBatchMode );
+        return 0;
     }
 }

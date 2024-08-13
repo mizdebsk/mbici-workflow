@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021-2023 Red Hat, Inc.
+ * Copyright (c) 2021-2024 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@ package org.fedoraproject.mbi.ci.report;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
@@ -35,43 +34,41 @@ import org.fedoraproject.mbi.wf.model.Result;
 import org.fedoraproject.mbi.wf.model.Task;
 import org.fedoraproject.mbi.wf.model.TaskOutcome;
 import org.fedoraproject.mbi.wf.model.Workflow;
-import org.fedoraproject.mbi.xml.Builder;
-import org.fedoraproject.mbi.xml.Entity;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Command( name = "report", description = "generate a simple HTML report describing given Workflow", mixinStandardHelpOptions = true )
 public class ReportCommand
-    extends Command
+    implements Callable<Integer>
 {
-    private final Path planPath;
+    @Option( names = { "-m", "--plan" }, description = "path to a Build Plan in XML format" )
+    private Path planPath;
 
-    private final Path platformPath;
+    @Option( names = { "-p", "--platform" }, description = "path to a Platform in XML format" )
+    private Path platformPath;
 
-    private final Path subjectPath;
+    @Option( names = { "-s", "--subject" }, description = "path to a Test Subject in XML format" )
+    private Path subjectPath;
 
-    private final Path workflowPath;
+    @Option( names = { "-w", "--workflow" }, description = "path where generated Workflow should be written" )
+    private Path workflowPath;
 
-    private final Path resultDir;
+    @Option( names = { "-R", "--result-dir" }, description = "path to a directory with task results and artifacts" )
+    private Path resultDir;
 
-    private final Path reportDir;
+    @Option( names = { "-r",
+        "--report-dir" }, description = "path to a directory where generated report should be written" )
+    private Path reportDir;
 
-    private final boolean full;
-
-    public ReportCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath, Path resultDir,
-                          Path reportDir, boolean full )
-    {
-        this.planPath = planPath;
-        this.platformPath = platformPath;
-        this.subjectPath = subjectPath;
-        this.workflowPath = workflowPath;
-        this.resultDir = resultDir;
-        this.reportDir = reportDir;
-        this.full = full;
-    }
+    @Option( names = { "-t", "--tmt" }, description = "generate tmt results.yaml and include build logs" )
+    private boolean full;
 
     @Override
-    public void run()
+    public Integer call()
         throws Exception
     {
         Files.createDirectories( reportDir );
@@ -144,78 +141,6 @@ public class ReportCommand
         }
 
         System.err.println( "REPORT COMPLETE" );
-    }
-
-    private static final class ArgsBuilder
-        implements Builder<ReportCommand>
-    {
-        private Path planPath;
-
-        private Path platformPath;
-
-        private Path subjectPath;
-
-        private Path workflowPath;
-
-        private Path resultDir;
-
-        private Path reportDir;
-
-        private boolean full;
-
-        public void setPlanPath( Path planPath )
-        {
-            this.planPath = planPath;
-        }
-
-        public void setPlatformPath( Path platformPath )
-        {
-            this.platformPath = platformPath;
-        }
-
-        public void setSubjectPath( Path subjectPath )
-        {
-            this.subjectPath = subjectPath;
-        }
-
-        public void setWorkflowPath( Path workflowPath )
-        {
-            this.workflowPath = workflowPath;
-        }
-
-        public void setResultDir( Path resultDir )
-        {
-            this.resultDir = resultDir;
-        }
-
-        public void setReportDir( Path reportDir )
-        {
-            this.reportDir = reportDir;
-        }
-
-        public void setFull( String dummy )
-        {
-            this.full = true;
-        }
-
-        @Override
-        public ReportCommand build()
-        {
-            return new ReportCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
-                                      subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(),
-                                      resultDir.toAbsolutePath(), reportDir.toAbsolutePath(), full );
-        }
-    }
-
-    public static final Entity<ReportCommand, ArgsBuilder> ENTITY = new Entity<>( "report", ArgsBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "plan", x -> null, ArgsBuilder::setPlanPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "platform", x -> null, ArgsBuilder::setPlatformPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "subject", x -> null, ArgsBuilder::setSubjectPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "resultDir", x -> null, ArgsBuilder::setResultDir, Path::toString, Paths::get );
-        ENTITY.addAttribute( "reportDir", x -> null, ArgsBuilder::setReportDir, Path::toString, Paths::get );
-        ENTITY.addOptionalAttribute( "full", x -> null, ArgsBuilder::setFull );
+        return 0;
     }
 }

@@ -40,28 +40,28 @@ Compile the sources and assemble binary executable `mbici-wf`:
 Generate Workflow from example Build Plan, Platform and Test Subject:
 
     ./target/mbici-wf generate \
-        -plan examples/dummy-plan.xml \
-        -platform examples/dummy-platform.xml \
-        -subject examples/dummy-subject.xml \
-        -workflow /tmp/mbici-wf.xml
+        --plan examples/dummy-plan.xml \
+        --platform examples/dummy-platform.xml \
+        --subject examples/dummy-subject.xml \
+        --workflow /tmp/mbici-wf.xml
 
 Execute generated workflow:
 
     ./target/mbici-wf run \
-        -workflow /tmp/mbici-wf.xml \
-        -resultDir /tmp/mbici-result \
-        -cacheDir /tmp/mbici-cache \
-        -workDir /tmp/mbici-work
+        --workflow /tmp/mbici-wf.xml \
+        --result-dir /tmp/mbici-result \
+        --cache-dir /tmp/mbici-cache \
+        --work-dir /tmp/mbici-work
 
 Generate a HTML report:
 
     ./target/mbici-wf report \
-        -plan examples/dummy-plan.xml
-        -platform examples/dummy-platform.xml \
-        -subject examples/dummy-subject.xml \
-        -workflow /tmp/mbici-wf.xml \
-        -resultDir /tmp/mbici-result \
-        -reportDir /tmp/mbici-report
+        --plan examples/dummy-plan.xml
+        --platform examples/dummy-platform.xml \
+        --subject examples/dummy-subject.xml \
+        --workflow /tmp/mbici-wf.xml \
+        --result-dir /tmp/mbici-result \
+        --report-dir /tmp/mbici-report
 
 
 Build Plan
@@ -185,34 +185,34 @@ Usage
 
   Parameters:
 
-  * `-plan <path>` - path to a Build Plan in XML format
+  * `--plan <path>` - path to a Build Plan in XML format
 
-  * `-platform <path>` - path to a Platform in XML format
+  * `--platform <path>` - path to a Platform in XML format
 
-  * `-subject <path>` - path to a Test Subject in XML format
+  * `--subject <path>` - path to a Test Subject in XML format
 
-  * `-workflow <path>` - path where generated Workflow should be
+  * `--workflow <path>` - path where generated Workflow should be
     written
 
-  * `-validate` - incude validation tasks in generated Workflow
+  * `--validate` - incude validation tasks in generated Workflow
     (running the Workflow will require `tmt` and `podman`)
 
 * `mbici-wf run` - execute Workflow and update it in-place
 
   Parameters:
 
-  * `-workflow <path>` - path to Workflow
+  * `--workflow <path>` - path to Workflow
 
-  * `-resultDir <path>` - path to a directory where task results and
+  * `--result-dir <path>` - path to a directory where task results and
     artifacts are written
 
-  * `-cacheDir <path>` - path to a directory where dist-git commits
+  * `--cache-dir <path>` - path to a directory where dist-git commits
     and lookaside blobs are cached
 
-  * `-workDir <path>` - path to a directory under which temporary
+  * `--work-dir <path>` - path to a directory under which temporary
     working directories for tasks are created
 
-  * `-kubernetes` - build SRPM and RPM packages on external Kubernetes
+  * `--kubernetes-ns` - build SRPM and RPM packages on external Kubernetes
     cluster instead of local machine (requires `kubectl`)
 
 * `mbici-wf report` - generate a simple HTML report describing given
@@ -220,18 +220,18 @@ Usage
 
   Parameters:
 
-  * `-plan <path>` - path to a Build Plan in XML format
+  * `--plan <path>` - path to a Build Plan in XML format
 
-  * `-platform <path>` - path to a Platform in XML format
+  * `--platform <path>` - path to a Platform in XML format
 
-  * `-subject <path>` - path to a Test Subject in XML format
+  * `--subject <path>` - path to a Test Subject in XML format
 
-  * `-workflow <path>` - path to Workflow
+  * `--workflow <path>` - path to Workflow
 
-  * `-resultDir <path>` - path to a directory where task results are
+  * `--result-dir <path>` - path to a directory where task results are
     stored
 
-  * `-reportDir <path>` - path to a directory where the report is
+  * `--report-dir <path>` - path to a directory where the report is
     written
 
 

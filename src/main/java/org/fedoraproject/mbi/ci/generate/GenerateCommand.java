@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2021 Red Hat, Inc.
+ * Copyright (c) 2021-2024 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,40 @@
 package org.fedoraproject.mbi.ci.generate;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.Callable;
 
-import org.fedoraproject.mbi.ci.Command;
 import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
 import org.fedoraproject.mbi.wf.model.Workflow;
-import org.fedoraproject.mbi.xml.Builder;
-import org.fedoraproject.mbi.xml.Entity;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Command( name = "generate", description = "generate Workflow from given Build Plan, Platform and Test Subject", mixinStandardHelpOptions = true )
 public class GenerateCommand
-    extends Command
+    implements Callable<Integer>
 {
-    private final Path planPath;
+    @Option( names = { "-m", "--plan" }, description = "path to a Build Plan in XML format" )
+    private Path planPath;
 
-    private final Path platformPath;
+    @Option( names = { "-p", "--platform" }, description = "path to a Platform in XML format" )
+    private Path platformPath;
 
-    private final Path subjectPath;
+    @Option( names = { "-s", "--subject" }, description = "path to a Test Subject in XML format" )
+    private Path subjectPath;
 
-    private final Path workflowPath;
+    @Option( names = { "-w", "--workflow" }, description = "path where generated Workflow should be written" )
+    private Path workflowPath;
 
-    private final boolean validate;
-
-    public GenerateCommand( Path planPath, Path platformPath, Path subjectPath, Path workflowPath, boolean validate )
-    {
-        this.planPath = planPath;
-        this.platformPath = platformPath;
-        this.subjectPath = subjectPath;
-        this.workflowPath = workflowPath;
-        this.validate = validate;
-    }
+    @Option( names = { "-t", "--validate" }, description = "incude validation tasks in generated Workflow" )
+    private boolean validate;
 
     @Override
-    public void run()
+    public Integer call()
         throws Exception
     {
         Plan plan = Plan.readFromXML( planPath );
@@ -62,61 +59,7 @@ public class GenerateCommand
         WorkflowFactory wff = new WorkflowFactory();
         Workflow wfd = wff.createFromPlan( platform, plan, subject, validate );
         wfd.writeToXML( workflowPath );
-    }
 
-    private static final class ArgsBuilder
-        implements Builder<GenerateCommand>
-    {
-        private Path planPath;
-
-        private Path platformPath;
-
-        private Path subjectPath;
-
-        private Path workflowPath;
-
-        private boolean validate;
-
-        public void setPlanPath( Path planPath )
-        {
-            this.planPath = planPath;
-        }
-
-        public void setPlatformPath( Path platformPath )
-        {
-            this.platformPath = platformPath;
-        }
-
-        public void setSubjectPath( Path subjectPath )
-        {
-            this.subjectPath = subjectPath;
-        }
-
-        public void setWorkflowPath( Path workflowPath )
-        {
-            this.workflowPath = workflowPath;
-        }
-
-        public void setValidate( String dummy )
-        {
-            validate = true;
-        }
-
-        @Override
-        public GenerateCommand build()
-        {
-            return new GenerateCommand( planPath.toAbsolutePath(), platformPath.toAbsolutePath(),
-                                        subjectPath.toAbsolutePath(), workflowPath.toAbsolutePath(), validate );
-        }
-    }
-
-    public static final Entity<GenerateCommand, ArgsBuilder> ENTITY = new Entity<>( "generate", ArgsBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "plan", x -> null, ArgsBuilder::setPlanPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "platform", x -> null, ArgsBuilder::setPlatformPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "subject", x -> null, ArgsBuilder::setSubjectPath, Path::toString, Paths::get );
-        ENTITY.addAttribute( "workflow", x -> null, ArgsBuilder::setWorkflowPath, Path::toString, Paths::get );
-        ENTITY.addOptionalAttribute( "validate", x -> null, ArgsBuilder::setValidate );
+        return 0;
     }
 }
