@@ -36,7 +36,7 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
  */
 public class Command
 {
-    public static String kubernetesNamespace;
+    public static Kubernetes kubernetes;
 
     private String name;
 
@@ -75,12 +75,12 @@ public class Command
     private void runImpl( TaskExecution taskExecution, int timeoutSeconds, boolean remote )
         throws TaskTermination
     {
-        remote &= kubernetesNamespace != null;
+        remote &= kubernetes != null;
 
         List<String> actualCommand = cmd;
         if ( remote )
         {
-            actualCommand = new Kubernetes( kubernetesNamespace ).wrapCommand( taskExecution, cmd );
+            actualCommand = kubernetes.wrapCommand( taskExecution, cmd );
         }
 
         Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );

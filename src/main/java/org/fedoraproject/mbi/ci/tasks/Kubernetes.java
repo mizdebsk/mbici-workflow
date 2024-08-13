@@ -26,37 +26,52 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-class Kubernetes
+public class Kubernetes
 {
-    private static final String CONTAINER_IMAGE = "quay.io/mizdebsk/mock:prod";
-
-    private static final String CACHE_VOLUME_CLAIM_NAME = "mbici-cache";
-
-    private static final String RESULT_VOLUME_CLAIM_NAME = "mbici-result";
-
-    private static final String POD_RUNNING_TIMEOUT = "30m";
-
-    private static final String SRPM_CPU_REQUEST = "500m";
-
-    private static final String SRPM_CPU_LIMIT = "2";
-
-    private static final String RPM_CPU_REQUEST = "1";
-
-    private static final String RPM_CPU_LIMIT = "4";
-
-    private static final String SRPM_MEM_REQUEST = "256Mi";
-
-    private static final String SRPM_MEM_LIMIT = "1Gi";
-
-    private static final String RPM_MEM_REQUEST = "1Gi";
-
-    private static final String RPM_MEM_LIMIT = "6Gi";
-
     private final String namespace;
 
-    public Kubernetes( String namespace )
+    private final String containerImage;
+
+    private final String cacheVolumeClaimName;
+
+    private final String resultVolumeClaimName;
+
+    private final String podRunningTimeout;
+
+    private final String srpmCpuRequest;
+
+    private final String srpmCpuLimit;
+
+    private final String rpmCpuRequest;
+
+    private final String rpmCpuLimit;
+
+    private final String srpmMemoryRequest;
+
+    private final String srpmMemoryLimit;
+
+    private final String rpmMemoryRequest;
+
+    private final String rpmMemoryLimit;
+
+    public Kubernetes( String namespace, String containerImage, String cacheVolumeClaimName,
+                       String resultVolumeClaimName, String podRunningTimeout, String srpmCpuRequest,
+                       String srpmCpuLimit, String rpmCpuRequest, String rpmCpuLimit, String srpmMemoryRequest,
+                       String srpmMemoryLimit, String rpmMemoryRequest, String rpmMemoryLimit )
     {
         this.namespace = namespace;
+        this.containerImage = containerImage;
+        this.cacheVolumeClaimName = cacheVolumeClaimName;
+        this.resultVolumeClaimName = resultVolumeClaimName;
+        this.podRunningTimeout = podRunningTimeout;
+        this.srpmCpuRequest = srpmCpuRequest;
+        this.srpmCpuLimit = srpmCpuLimit;
+        this.rpmCpuRequest = rpmCpuRequest;
+        this.rpmCpuLimit = rpmCpuLimit;
+        this.srpmMemoryRequest = srpmMemoryRequest;
+        this.srpmMemoryLimit = srpmMemoryLimit;
+        this.rpmMemoryRequest = rpmMemoryRequest;
+        this.rpmMemoryLimit = rpmMemoryLimit;
     }
 
     public List<String> wrapCommand( TaskExecution taskExecution, List<String> command )
@@ -68,10 +83,10 @@ class Kubernetes
         // Kubernetes doesn't allow underscore in Pod names
         String podName = task.getId().replace( '_', '-' );
 
-        String cpuRequest = task.getHandler().contains( "Srpm" ) ? SRPM_CPU_REQUEST : RPM_CPU_REQUEST;
-        String cpuLimit = task.getHandler().contains( "Srpm" ) ? SRPM_CPU_LIMIT : RPM_CPU_LIMIT;
-        String memRequest = task.getHandler().contains( "Srpm" ) ? SRPM_MEM_REQUEST : RPM_MEM_REQUEST;
-        String memLimit = task.getHandler().contains( "Srpm" ) ? SRPM_MEM_LIMIT : RPM_MEM_LIMIT;
+        String cpuRequest = task.getHandler().contains( "Srpm" ) ? srpmCpuRequest : rpmCpuRequest;
+        String cpuLimit = task.getHandler().contains( "Srpm" ) ? srpmCpuLimit : rpmCpuLimit;
+        String memRequest = task.getHandler().contains( "Srpm" ) ? srpmMemoryRequest : rpmMemoryRequest;
+        String memLimit = task.getHandler().contains( "Srpm" ) ? srpmMemoryLimit : rpmMemoryLimit;
 
         StringBuilder pod = new StringBuilder();
         pod.append( "{" );
@@ -79,7 +94,7 @@ class Kubernetes
         pod.append( "    \"containers\": [" );
         pod.append( "      {" );
         pod.append( "        \"name\": \"main\"," );
-        pod.append( "        \"image\": \"" ).append( CONTAINER_IMAGE ).append( "\"," );
+        pod.append( "        \"image\": \"" ).append( containerImage ).append( "\"," );
         pod.append( "        \"imagePullPolicy\": \"IfNotPresent\"," );
         pod.append( "        \"command\": [" );
         var it = command.iterator();
@@ -123,13 +138,13 @@ class Kubernetes
         pod.append( "      {" );
         pod.append( "        \"name\": \"cache\"," );
         pod.append( "        \"persistentVolumeClaim\": {" );
-        pod.append( "          \"claimName\": \"" ).append( CACHE_VOLUME_CLAIM_NAME ).append( "\"" );
+        pod.append( "          \"claimName\": \"" ).append( cacheVolumeClaimName ).append( "\"" );
         pod.append( "        }" );
         pod.append( "      }," );
         pod.append( "      {" );
         pod.append( "        \"name\": \"result\"," );
         pod.append( "        \"persistentVolumeClaim\": {" );
-        pod.append( "          \"claimName\": \"" ).append( RESULT_VOLUME_CLAIM_NAME ).append( "\"" );
+        pod.append( "          \"claimName\": \"" ).append( resultVolumeClaimName ).append( "\"" );
         pod.append( "        }" );
         pod.append( "      }," );
         pod.append( "      {" );
@@ -150,10 +165,10 @@ class Kubernetes
         args.add( "--namespace=" + namespace );
         args.add( "--quiet" );
         args.add( "--attach" );
-        args.add( "--pod-running-timeout=" + POD_RUNNING_TIMEOUT );
+        args.add( "--pod-running-timeout=" + podRunningTimeout );
         args.add( "--rm" );
         args.add( "--restart=Never" );
-        args.add( "--image=" + CONTAINER_IMAGE );
+        args.add( "--image=" + containerImage );
         args.add( "--overrides=" + pod.toString() );
 
         return args;
