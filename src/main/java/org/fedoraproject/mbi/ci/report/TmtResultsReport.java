@@ -24,8 +24,8 @@ import org.fedoraproject.mbi.wf.model.TaskOutcome;
 import org.fedoraproject.mbi.wf.model.Workflow;
 
 /**
- * Produces results.yaml file in format expected by tmt.
- * {@link https://tmt.readthedocs.io/en/stable/spec/tests.html#result}
+ * Produces results.yaml file in the <a href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format
+ * expected by tmt</a>.
  * 
  * @author Mikolaj Izdebski
  */
