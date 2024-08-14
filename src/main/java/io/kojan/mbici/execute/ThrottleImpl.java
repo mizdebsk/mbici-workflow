@@ -22,7 +22,6 @@ import java.util.concurrent.Semaphore;
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
-import io.kojan.mbici.tasks.ValidateTaskHandler;
 import io.kojan.workflow.Throttle;
 import io.kojan.workflow.model.Task;
 
@@ -32,11 +31,10 @@ import io.kojan.workflow.model.Task;
 class ThrottleImpl implements Throttle {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 
-    public ThrottleImpl(int maxCheckout, int maxSrpm, int maxRpm, int maxValidate) {
+    public ThrottleImpl(int maxCheckout, int maxSrpm, int maxRpm) {
         semaphores.put(CheckoutTaskHandler.class.getName(), new Semaphore(maxCheckout));
         semaphores.put(RpmTaskHandler.class.getName(), new Semaphore(maxRpm));
         semaphores.put(SrpmTaskHandler.class.getName(), new Semaphore(maxSrpm));
-        semaphores.put(ValidateTaskHandler.class.getName(), new Semaphore(maxValidate));
     }
 
     @Override

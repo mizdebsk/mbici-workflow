@@ -35,7 +35,7 @@ import io.kojan.workflow.model.WorkflowBuilder;
  * @author Mikolaj Izdebski
  */
 class WorkflowFactory {
-    public Workflow createFromPlan(Platform platform, Plan plan, Subject subject, boolean validate) {
+    public Workflow createFromPlan(Platform platform, Plan plan, Subject subject) {
         WorkflowBuilder workflowBuilder = new WorkflowBuilder();
         TaskFactory taskFactory = new TaskFactory(workflowBuilder);
         Map<String, Task> srpms = new LinkedHashMap<>();
@@ -63,10 +63,6 @@ class WorkflowFactory {
                 Task rpm = taskFactory.createRpmTask(component, phase.getName(), srpm, repos, plan.getMacros(),
                         phase.getMacros());
                 rpms.add(rpm);
-
-                if (validate) {
-                    taskFactory.createValidateTask(component, phase.getName(), checkouts.get(component), srpm, rpm);
-                }
             }
 
             Task repo = taskFactory.createRepoTask(phase.getName(), rpms);

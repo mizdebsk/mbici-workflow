@@ -26,8 +26,6 @@ Workflow:
 Optional dependencies:
 
 * `kubectl` - for executing tasks on Kubernetes cluster
-* `tmt` - for executing tests plans on built packages
-* `podman` - for running tests in containers
 
 
 Quick Start
@@ -193,9 +191,6 @@ Usage
 
   * `--workflow <path>` - path where generated Workflow should be
     written
-
-  * `--validate` - incude validation tasks in generated Workflow
-    (running the Workflow will require `tmt` and `podman`)
 
 * `mbici-wf run` - execute Workflow and update it in-place
 

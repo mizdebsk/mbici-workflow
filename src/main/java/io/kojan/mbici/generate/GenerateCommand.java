@@ -43,9 +43,6 @@ public class GenerateCommand implements Callable<Integer> {
             "--workflow"}, required = true, description = "path where generated Workflow should be written")
     private Path workflowPath;
 
-    @Option(names = {"-t", "--validate"}, description = "incude validation tasks in generated Workflow")
-    private boolean validate;
-
     @Override
     public Integer call() throws Exception {
         Plan plan = Plan.readFromXML(planPath);
@@ -53,7 +50,7 @@ public class GenerateCommand implements Callable<Integer> {
         Subject subject = Subject.readFromXML(subjectPath);
 
         WorkflowFactory wff = new WorkflowFactory();
-        Workflow wfd = wff.createFromPlan(platform, plan, subject, validate);
+        Workflow wfd = wff.createFromPlan(platform, plan, subject);
         wfd.writeToXML(workflowPath);
 
         return 0;

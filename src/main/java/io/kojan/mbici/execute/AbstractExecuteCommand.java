@@ -53,9 +53,6 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
     @Option(names = {"--max-rpm-tasks"}, description = "limit number of parrallel RPM build tasks")
     protected Integer maxRpmTasks = 2;
 
-    @Option(names = {"--max-validate-tasks"}, description = "limit number of parrallel validation tasks")
-    protected Integer maxValidateTasks = 4;
-
     @Option(names = {"-B", "--batch-mode"}, description = "Run in non-interactive mode")
     protected boolean batchMode;
 
@@ -64,7 +61,7 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         Workflow wfd = Workflow.readFromXML(workflowPath);
         TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl();
         CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
-        Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks);
+        Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, handlerFactory, cacheManager, throttle,
                 batchMode);
         Workflow wf = wfe.execute();

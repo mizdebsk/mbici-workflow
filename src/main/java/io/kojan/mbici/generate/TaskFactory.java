@@ -26,7 +26,6 @@ import io.kojan.mbici.tasks.GatherTaskHandler;
 import io.kojan.mbici.tasks.RepoTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
-import io.kojan.mbici.tasks.ValidateTaskHandler;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.TaskBuilder;
 import io.kojan.workflow.model.WorkflowBuilder;
@@ -40,7 +39,6 @@ class TaskFactory {
     private static final String GATHER_HANDLER = GatherTaskHandler.class.getName();
     private static final String CHECKOUT_HANDLER = CheckoutTaskHandler.class.getName();
     private static final String REPO_HANDLER = RepoTaskHandler.class.getName();
-    private static final String VALIDATE_HANDLER = ValidateTaskHandler.class.getName();
 
     private final WorkflowBuilder workflowBuilder;
 
@@ -123,19 +121,6 @@ class TaskFactory {
         for (Macro macro : phaseMacros) {
             task.addParameter(macro.getName(), macro.getValue());
         }
-
-        Task taskDescriptor = task.build();
-        workflowBuilder.addTask(taskDescriptor);
-        return taskDescriptor;
-    }
-
-    public Task createValidateTask(String component, String phase, Task checkout, Task srpm, Task rpm) {
-        TaskBuilder task = new TaskBuilder();
-        task.setId(component + "-" + phase + "-validate");
-        task.setHandler(VALIDATE_HANDLER);
-        task.addDependency(checkout.getId());
-        task.addDependency(srpm.getId());
-        task.addDependency(rpm.getId());
 
         Task taskDescriptor = task.build();
         workflowBuilder.addTask(taskDescriptor);

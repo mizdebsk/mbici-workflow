@@ -9,7 +9,6 @@ import io.kojan.mbici.tasks.GatherTaskHandler;
 import io.kojan.mbici.tasks.RepoTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
-import io.kojan.mbici.tasks.ValidateTaskHandler;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.model.Task;
@@ -27,7 +26,6 @@ class TaskHandlerFactoryImpl implements TaskHandlerFactory {
         registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
         registerHandler(RpmTaskHandler.class, RpmTaskHandler::new);
         registerHandler(SrpmTaskHandler.class, SrpmTaskHandler::new);
-        registerHandler(ValidateTaskHandler.class, ValidateTaskHandler::new);
     }
 
     @Override
