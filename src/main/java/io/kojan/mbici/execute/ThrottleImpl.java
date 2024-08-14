@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kojan.mbici.run;
+package io.kojan.mbici.execute;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

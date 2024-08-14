@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kojan.mbici.run;
+package io.kojan.mbici.execute;
 
 import io.kojan.mbici.tasks.Kubernetes;
 import picocli.CommandLine.Command;
@@ -22,8 +22,8 @@ import picocli.CommandLine.Option;
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "kube-run", description = "execute Workflow on Kubernetes cluster", mixinStandardHelpOptions = true)
-public class KubeRunCommand extends AbstractRunCommand {
+@Command(name = "kube-exec", description = "execute Workflow on Kubernetes cluster", mixinStandardHelpOptions = true)
+public class KubeExecuteCommand extends AbstractExecuteCommand {
     @Option(names = {"--namespace"}, description = "Kubernetes Namespace")
     private String namespace;
 

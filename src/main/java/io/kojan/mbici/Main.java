@@ -15,10 +15,10 @@
  */
 package io.kojan.mbici;
 
+import io.kojan.mbici.execute.KubeExecuteCommand;
+import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
-import io.kojan.mbici.run.KubeRunCommand;
-import io.kojan.mbici.run.LocalRunCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -27,8 +27,8 @@ import picocli.CommandLine.Command;
  */
 @Command(name = "mbici-wf", subcommands = { //
         GenerateCommand.class, //
-        LocalRunCommand.class, //
-        KubeRunCommand.class, //
+        LocalExecuteCommand.class, //
+        KubeExecuteCommand.class, //
         ReportCommand.class, //
 }, mixinStandardHelpOptions = true)
 public class Main {

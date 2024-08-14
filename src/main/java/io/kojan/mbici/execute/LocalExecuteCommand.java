@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kojan.mbici.run;
+package io.kojan.mbici.execute;
 
 import picocli.CommandLine.Command;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "run", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true)
-public class LocalRunCommand extends AbstractRunCommand {
+@Command(name = "execute", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true)
+public class LocalExecuteCommand extends AbstractExecuteCommand {
 }

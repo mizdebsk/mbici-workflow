@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.kojan.mbici.run;
+package io.kojan.mbici.execute;
 
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
 /**
  * @author Mikolaj Izdebski
  */
-abstract class AbstractRunCommand implements Callable<Integer> {
+abstract class AbstractExecuteCommand implements Callable<Integer> {
     @Option(names = {"-w", "--workflow"}, required = true, description = " path to Workflow")
     protected Path workflowPath;
 
