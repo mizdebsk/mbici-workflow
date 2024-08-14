@@ -18,12 +18,6 @@ package io.kojan.mbici.execute;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
-import io.kojan.mbici.tasks.CheckoutTaskHandler;
-import io.kojan.mbici.tasks.GatherTaskHandler;
-import io.kojan.mbici.tasks.RepoTaskHandler;
-import io.kojan.mbici.tasks.RpmTaskHandler;
-import io.kojan.mbici.tasks.SrpmTaskHandler;
-import io.kojan.mbici.tasks.ValidateTaskHandler;
 import io.kojan.workflow.CacheManager;
 import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.Throttle;
@@ -68,13 +62,7 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         Workflow wfd = Workflow.readFromXML(workflowPath);
-        TaskHandlerFactory handlerFactory = new TaskHandlerFactory();
-        handlerFactory.registerHandler(CheckoutTaskHandler.class, CheckoutTaskHandler::new);
-        handlerFactory.registerHandler(GatherTaskHandler.class, GatherTaskHandler::new);
-        handlerFactory.registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
-        handlerFactory.registerHandler(RpmTaskHandler.class, RpmTaskHandler::new);
-        handlerFactory.registerHandler(SrpmTaskHandler.class, SrpmTaskHandler::new);
-        handlerFactory.registerHandler(ValidateTaskHandler.class, ValidateTaskHandler::new);
+        TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl();
         CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks);
         WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, handlerFactory, cacheManager, throttle,
