@@ -18,10 +18,10 @@ package org.fedoraproject.mbi.ci.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fedoraproject.mbi.wf.CacheManager;
-import org.fedoraproject.mbi.wf.TaskExecution;
-import org.fedoraproject.mbi.wf.TaskTermination;
-import org.fedoraproject.mbi.wf.model.Task;
+import io.kojan.workflow.CacheManager;
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.Task;
 
 /**
  * @author Mikolaj Izdebski

@@ -21,8 +21,8 @@ import java.util.concurrent.Callable;
 import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
-import org.fedoraproject.mbi.wf.model.Workflow;
 
+import io.kojan.workflow.model.Workflow;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 

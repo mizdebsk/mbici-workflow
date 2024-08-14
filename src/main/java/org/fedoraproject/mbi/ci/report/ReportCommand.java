@@ -26,15 +26,15 @@ import java.util.concurrent.Callable;
 import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
-import org.fedoraproject.mbi.wf.CacheManager;
-import org.fedoraproject.mbi.wf.FinishedTask;
-import org.fedoraproject.mbi.wf.model.Artifact;
-import org.fedoraproject.mbi.wf.model.ArtifactType;
-import org.fedoraproject.mbi.wf.model.Result;
-import org.fedoraproject.mbi.wf.model.Task;
-import org.fedoraproject.mbi.wf.model.TaskOutcome;
-import org.fedoraproject.mbi.wf.model.Workflow;
 
+import io.kojan.workflow.CacheManager;
+import io.kojan.workflow.FinishedTask;
+import io.kojan.workflow.model.Artifact;
+import io.kojan.workflow.model.ArtifactType;
+import io.kojan.workflow.model.Result;
+import io.kojan.workflow.model.Task;
+import io.kojan.workflow.model.TaskOutcome;
+import io.kojan.workflow.model.Workflow;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 

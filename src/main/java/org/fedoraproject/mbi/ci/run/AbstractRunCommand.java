@@ -18,11 +18,18 @@ package org.fedoraproject.mbi.ci.run;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
-import org.fedoraproject.mbi.wf.CacheManager;
-import org.fedoraproject.mbi.wf.Throttle;
-import org.fedoraproject.mbi.wf.WorkflowExecutor;
-import org.fedoraproject.mbi.wf.model.Workflow;
+import org.fedoraproject.mbi.ci.tasks.CheckoutTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.GatherTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.RepoTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.RpmTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.SrpmTaskHandler;
+import org.fedoraproject.mbi.ci.tasks.ValidateTaskHandler;
 
+import io.kojan.workflow.CacheManager;
+import io.kojan.workflow.TaskHandlerFactory;
+import io.kojan.workflow.Throttle;
+import io.kojan.workflow.WorkflowExecutor;
+import io.kojan.workflow.model.Workflow;
 import picocli.CommandLine.Option;
 
 /**
@@ -62,9 +69,17 @@ abstract class AbstractRunCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         Workflow wfd = Workflow.readFromXML(workflowPath);
+        TaskHandlerFactory handlerFactory = new TaskHandlerFactory();
+        handlerFactory.registerHandler(CheckoutTaskHandler.class, CheckoutTaskHandler::new);
+        handlerFactory.registerHandler(GatherTaskHandler.class, GatherTaskHandler::new);
+        handlerFactory.registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
+        handlerFactory.registerHandler(RpmTaskHandler.class, RpmTaskHandler::new);
+        handlerFactory.registerHandler(SrpmTaskHandler.class, SrpmTaskHandler::new);
+        handlerFactory.registerHandler(ValidateTaskHandler.class, ValidateTaskHandler::new);
         CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks);
-        WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, cacheManager, throttle, batchMode);
+        WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, handlerFactory, cacheManager, throttle,
+                batchMode);
         Workflow wf = wfe.execute();
         wf.writeToXML(workflowPath);
         return 0;

@@ -15,10 +15,10 @@
  */
 package org.fedoraproject.mbi.ci.report;
 
-import org.fedoraproject.mbi.wf.FinishedTask;
-import org.fedoraproject.mbi.wf.model.Parameter;
-import org.fedoraproject.mbi.wf.model.Result;
-import org.fedoraproject.mbi.wf.model.Task;
+import io.kojan.workflow.FinishedTask;
+import io.kojan.workflow.model.Parameter;
+import io.kojan.workflow.model.Result;
+import io.kojan.workflow.model.Task;
 
 /**
  * Produces testout.log file with compact description of test result.

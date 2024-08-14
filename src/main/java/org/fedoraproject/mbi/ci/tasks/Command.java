@@ -27,9 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.fedoraproject.mbi.wf.TaskExecution;
-import org.fedoraproject.mbi.wf.TaskTermination;
-import org.fedoraproject.mbi.wf.model.ArtifactType;
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
 
 /**
  * @author Mikolaj Izdebski

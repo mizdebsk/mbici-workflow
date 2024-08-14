@@ -17,11 +17,11 @@ package org.fedoraproject.mbi.ci.report;
 
 import java.time.Duration;
 
-import org.fedoraproject.mbi.wf.model.Artifact;
-import org.fedoraproject.mbi.wf.model.ArtifactType;
-import org.fedoraproject.mbi.wf.model.Result;
-import org.fedoraproject.mbi.wf.model.TaskOutcome;
-import org.fedoraproject.mbi.wf.model.Workflow;
+import io.kojan.workflow.model.Artifact;
+import io.kojan.workflow.model.ArtifactType;
+import io.kojan.workflow.model.Result;
+import io.kojan.workflow.model.TaskOutcome;
+import io.kojan.workflow.model.Workflow;
 
 /**
  * Produces results.yaml file in the

@@ -27,9 +27,10 @@ import org.fedoraproject.mbi.ci.tasks.RepoTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.RpmTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.SrpmTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.ValidateTaskHandler;
-import org.fedoraproject.mbi.wf.model.Task;
-import org.fedoraproject.mbi.wf.model.TaskBuilder;
-import org.fedoraproject.mbi.wf.model.WorkflowBuilder;
+
+import io.kojan.workflow.model.Task;
+import io.kojan.workflow.model.TaskBuilder;
+import io.kojan.workflow.model.WorkflowBuilder;
 
 /**
  * @author Mikolaj Izdebski

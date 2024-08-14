@@ -23,8 +23,9 @@ import org.fedoraproject.mbi.ci.tasks.CheckoutTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.RpmTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.SrpmTaskHandler;
 import org.fedoraproject.mbi.ci.tasks.ValidateTaskHandler;
-import org.fedoraproject.mbi.wf.Throttle;
-import org.fedoraproject.mbi.wf.model.Task;
+
+import io.kojan.workflow.Throttle;
+import io.kojan.workflow.model.Task;
 
 /**
  * @author Mikolaj Izdebski

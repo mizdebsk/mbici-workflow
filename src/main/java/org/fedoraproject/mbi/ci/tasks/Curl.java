@@ -17,8 +17,8 @@ package org.fedoraproject.mbi.ci.tasks;
 
 import java.nio.file.Path;
 
-import org.fedoraproject.mbi.wf.TaskExecution;
-import org.fedoraproject.mbi.wf.TaskTermination;
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
 
 /**
  * @author Mikolaj Izdebski

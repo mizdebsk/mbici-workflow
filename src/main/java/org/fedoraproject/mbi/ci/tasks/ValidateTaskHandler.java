@@ -20,11 +20,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.fedoraproject.mbi.wf.TaskExecution;
-import org.fedoraproject.mbi.wf.TaskHandler;
-import org.fedoraproject.mbi.wf.TaskTermination;
-import org.fedoraproject.mbi.wf.model.ArtifactType;
-import org.fedoraproject.mbi.wf.model.Task;
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskHandler;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
+import io.kojan.workflow.model.Task;
 
 /**
  * @author Mikolaj Izdebski

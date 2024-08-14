@@ -27,9 +27,10 @@ import org.fedoraproject.mbi.ci.model.Plan;
 import org.fedoraproject.mbi.ci.model.Platform;
 import org.fedoraproject.mbi.ci.model.Subject;
 import org.fedoraproject.mbi.ci.model.SubjectComponent;
-import org.fedoraproject.mbi.wf.model.Task;
-import org.fedoraproject.mbi.wf.model.Workflow;
-import org.fedoraproject.mbi.wf.model.WorkflowBuilder;
+
+import io.kojan.workflow.model.Task;
+import io.kojan.workflow.model.Workflow;
+import io.kojan.workflow.model.WorkflowBuilder;
 
 /**
  * @author Mikolaj Izdebski

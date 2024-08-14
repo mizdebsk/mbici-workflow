@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.fedoraproject.mbi.wf.TaskExecution;
-import org.fedoraproject.mbi.wf.TaskTermination;
-import org.fedoraproject.mbi.wf.model.ArtifactType;
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
 
 /**
  * @author Mikolaj Izdebski
