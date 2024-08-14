@@ -64,6 +64,10 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, handlerFactory, cacheManager, throttle,
                 batchMode);
+        Dumper dumper = new Dumper(workflowPath);
+        dumper.setDaemon(true);
+        dumper.start();
+        wfe.addExecutionListener(dumper);
         Workflow wf = wfe.execute();
         wf.writeToXML(workflowPath);
         return 0;
