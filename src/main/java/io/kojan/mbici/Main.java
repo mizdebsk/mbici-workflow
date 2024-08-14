@@ -19,6 +19,7 @@ import io.kojan.mbici.execute.KubeExecuteCommand;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
+import io.kojan.mbici.subject.LocalSubjectCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -26,6 +27,7 @@ import picocli.CommandLine.Command;
  * @author Mikolaj Izdebski
  */
 @Command(name = "mbici-wf", subcommands = { //
+        LocalSubjectCommand.class, //
         GenerateCommand.class, //
         LocalExecuteCommand.class, //
         KubeExecuteCommand.class, //
