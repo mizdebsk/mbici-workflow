@@ -14,6 +14,12 @@ BuildRequires:  java-22-mandrel-devel
 BuildRequires:  maven
 BuildRequires:  rubygem-asciidoctor
 
+Requires:       git-core
+Requires:       curl
+Requires:       dnf5
+Requires:       mock
+Requires:       createrepo_c
+
 %description
 MBICI implements Continuous Integration (CI) for Maven Bootstrap
 Initiative (MBI).
