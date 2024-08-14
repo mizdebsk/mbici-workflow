@@ -14,12 +14,10 @@ Runtime dependencies
 The following external dependencies are required to run MBICI
 Workflow:
 
-* JRE (Java Runtime Environment)
 * `git-core` - for cloning dist-git repositories
 * `curl` - for downloading blobs from lookaside cache
 * `dnf5` - for downloading platform RPMs
 * `mock` - for running RPM builds
-* `nosync` - for making `mock` run faster
 * `createrepo_c` - for creating YUM repositories out of built RPM
   packages
 
