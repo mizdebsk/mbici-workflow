@@ -28,44 +28,34 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Workflow
-{
+public class Workflow {
     private final List<Task> tasks;
-
     private final List<Result> results;
 
-    public Workflow( List<Task> tasks, List<Result> results )
-    {
-        this.tasks = Collections.unmodifiableList( new ArrayList<>( tasks ) );
-        this.results = Collections.unmodifiableList( new ArrayList<>( results ) );
+    public Workflow(List<Task> tasks, List<Result> results) {
+        this.tasks = Collections.unmodifiableList(new ArrayList<>(tasks));
+        this.results = Collections.unmodifiableList(new ArrayList<>(results));
     }
 
-    public List<Task> getTasks()
-    {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public List<Result> getResults()
-    {
+    public List<Result> getResults() {
         return results;
     }
 
-    static final Entity<Workflow, WorkflowBuilder> ENTITY = new Entity<>( "workflow", WorkflowBuilder::new );
-    static
-    {
-        ENTITY.addRelationship( Task.ENTITY, Workflow::getTasks, WorkflowBuilder::addTask );
-        ENTITY.addRelationship( Result.ENTITY, Workflow::getResults, WorkflowBuilder::addResult );
+    static final Entity<Workflow, WorkflowBuilder> ENTITY = new Entity<>("workflow", WorkflowBuilder::new);
+    static {
+        ENTITY.addRelationship(Task.ENTITY, Workflow::getTasks, WorkflowBuilder::addTask);
+        ENTITY.addRelationship(Result.ENTITY, Workflow::getResults, WorkflowBuilder::addResult);
     }
 
-    public static Workflow readFromXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        return ENTITY.readFromXML( path );
+    public static Workflow readFromXML(Path path) throws IOException, XMLStreamException {
+        return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        ENTITY.writeToXML( path, this );
+    public void writeToXML(Path path) throws IOException, XMLStreamException {
+        ENTITY.writeToXML(path, this);
     }
 }

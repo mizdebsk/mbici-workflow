@@ -27,74 +27,53 @@ import org.fedoraproject.mbi.wf.model.Workflow;
 /**
  * @author Mikolaj Izdebski
  */
-public class Dumper
-    extends Thread
-{
+public class Dumper extends Thread {
     private final Path workflowPath;
-
     private Workflow queue;
-
     private boolean terminate;
 
-    public Dumper( Path workflowPath )
-    {
+    public Dumper(Path workflowPath) {
         this.workflowPath = workflowPath;
     }
 
-    private synchronized Workflow peek()
-        throws InterruptedException
-    {
-        while ( queue == null && !terminate )
-        {
+    private synchronized Workflow peek() throws InterruptedException {
+        while (queue == null && !terminate) {
             wait();
         }
-        try
-        {
+        try {
             return queue;
-        }
-        finally
-        {
+        } finally {
             queue = null;
         }
     }
 
-    public synchronized void terminate()
-    {
+    public synchronized void terminate() {
         terminate = true;
         notify();
     }
 
-    public synchronized void dumpEventually( Workflow wf )
-    {
+    public synchronized void dumpEventually(Workflow wf) {
         queue = wf;
         notify();
     }
 
     @Override
-    public void run()
-    {
-        try
-        {
-            for ( ;; )
-            {
+    public void run() {
+        try {
+            for (;;) {
                 Workflow wf = peek();
 
-                if ( wf != null )
-                {
-                    Path tempPath = workflowPath.getParent().resolve( "wf.xml.tmp" );
-                    wf.writeToXML( tempPath );
-                    Files.move( tempPath, workflowPath, StandardCopyOption.ATOMIC_MOVE,
-                                StandardCopyOption.REPLACE_EXISTING );
-                }
-                else
-                {
+                if (wf != null) {
+                    Path tempPath = workflowPath.getParent().resolve("wf.xml.tmp");
+                    wf.writeToXML(tempPath);
+                    Files.move(tempPath, workflowPath, StandardCopyOption.ATOMIC_MOVE,
+                            StandardCopyOption.REPLACE_EXISTING);
+                } else {
                     return;
                 }
             }
-        }
-        catch ( InterruptedException | IOException | XMLStreamException e )
-        {
-            throw new RuntimeException( e );
+        } catch (InterruptedException | IOException | XMLStreamException e) {
+            throw new RuntimeException(e);
         }
     }
 }

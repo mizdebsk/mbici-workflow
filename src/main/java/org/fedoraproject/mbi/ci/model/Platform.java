@@ -27,44 +27,34 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Platform
-{
+public class Platform {
     private final List<Repo> repos;
-
     private final List<String> packages;
 
-    public Platform( List<Repo> repos, List<String> packages )
-    {
-        this.repos = Collections.unmodifiableList( repos );
-        this.packages = Collections.unmodifiableList( packages );
+    public Platform(List<Repo> repos, List<String> packages) {
+        this.repos = Collections.unmodifiableList(repos);
+        this.packages = Collections.unmodifiableList(packages);
     }
 
-    public List<Repo> getRepos()
-    {
+    public List<Repo> getRepos() {
         return repos;
     }
 
-    public List<String> getPackages()
-    {
+    public List<String> getPackages() {
         return packages;
     }
 
-    static final Entity<Platform, PlatformBuilder> ENTITY = new Entity<>( "platform", PlatformBuilder::new );
-    static
-    {
-        ENTITY.addRelationship( Repo.ENTITY, Platform::getRepos, PlatformBuilder::addRepo );
-        ENTITY.addMultiAttribute( "package", Platform::getPackages, PlatformBuilder::addPackage );
+    static final Entity<Platform, PlatformBuilder> ENTITY = new Entity<>("platform", PlatformBuilder::new);
+    static {
+        ENTITY.addRelationship(Repo.ENTITY, Platform::getRepos, PlatformBuilder::addRepo);
+        ENTITY.addMultiAttribute("package", Platform::getPackages, PlatformBuilder::addPackage);
     }
 
-    public static Platform readFromXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        return ENTITY.readFromXML( path );
+    public static Platform readFromXML(Path path) throws IOException, XMLStreamException {
+        return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        ENTITY.writeToXML( path, this );
+    public void writeToXML(Path path) throws IOException, XMLStreamException {
+        ENTITY.writeToXML(path, this);
     }
 }

@@ -20,26 +20,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class ParameterBuilder
-    implements Builder<Parameter>
-{
+public class ParameterBuilder implements Builder<Parameter> {
     private String name;
-
     private String value;
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setValue( String value )
-    {
+    public void setValue(String value) {
         this.value = value;
     }
 
     @Override
-    public Parameter build()
-    {
-        return new Parameter( name, value );
+    public Parameter build() {
+        return new Parameter(name, value);
     }
 }

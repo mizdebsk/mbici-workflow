@@ -23,33 +23,25 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class PhaseBuilder
-    implements Builder<Phase>
-{
+public class PhaseBuilder implements Builder<Phase> {
     private String name;
-
     private final List<String> components = new ArrayList<>();
-
     private final List<Macro> macros = new ArrayList<>();
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void addComponent( String name )
-    {
-        components.add( name );
+    public void addComponent(String name) {
+        components.add(name);
     }
 
-    public void addMacro( Macro macro )
-    {
-        macros.add( macro );
+    public void addMacro(Macro macro) {
+        macros.add(macro);
     }
 
     @Override
-    public Phase build()
-    {
-        return new Phase( name, components, macros );
+    public Phase build() {
+        return new Phase(name, components, macros);
     }
 }

@@ -23,26 +23,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class PlanBuilder
-    implements Builder<Plan>
-{
+public class PlanBuilder implements Builder<Plan> {
     private final List<Phase> phases = new ArrayList<>();
-
     private final List<Macro> macros = new ArrayList<>();
 
-    public void addPhase( Phase phase )
-    {
-        phases.add( phase );
+    public void addPhase(Phase phase) {
+        phases.add(phase);
     }
 
-    public void addMacro( Macro macro )
-    {
-        macros.add( macro );
+    public void addMacro(Macro macro) {
+        macros.add(macro);
     }
 
     @Override
-    public Plan build()
-    {
-        return new Plan( phases, macros );
+    public Plan build() {
+        return new Plan(phases, macros);
     }
 }

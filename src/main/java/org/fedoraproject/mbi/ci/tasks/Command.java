@@ -34,127 +34,96 @@ import org.fedoraproject.mbi.wf.model.ArtifactType;
 /**
  * @author Mikolaj Izdebski
  */
-public class Command
-{
+public class Command {
     public static Kubernetes kubernetes;
 
     private String name;
-
     private final List<String> cmd = new ArrayList<>();
 
-    public Command( String name, String... args )
-    {
+    public Command(String name, String... args) {
         this.name = name;
-        addArg( name );
-        addArg( args );
+        addArg(name);
+        addArg(args);
     }
 
-    public void addArg( String... args )
-    {
-        for ( String arg : args )
-        {
-            cmd.add( arg );
+    public void addArg(String... args) {
+        for (String arg : args) {
+            cmd.add(arg);
         }
     }
 
-    public void addArg( List<String> args )
-    {
-        cmd.addAll( args );
+    public void addArg(List<String> args) {
+        cmd.addAll(args);
     }
 
-    public List<String> getArgs()
-    {
-        return Collections.unmodifiableList( cmd );
+    public List<String> getArgs() {
+        return Collections.unmodifiableList(cmd);
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    private void runImpl( TaskExecution taskExecution, int timeoutSeconds, boolean remote )
-        throws TaskTermination
-    {
+    private void runImpl(TaskExecution taskExecution, int timeoutSeconds, boolean remote) throws TaskTermination {
         remote &= kubernetes != null;
 
         List<String> actualCommand = cmd;
-        if ( remote )
-        {
-            actualCommand = kubernetes.wrapCommand( taskExecution, cmd );
+        if (remote) {
+            actualCommand = kubernetes.wrapCommand(taskExecution, cmd);
         }
 
-        Path logPath = taskExecution.addArtifact( ArtifactType.LOG, name + ".log" );
+        Path logPath = taskExecution.addArtifact(ArtifactType.LOG, name + ".log");
 
-        try ( BufferedWriter bw = Files.newBufferedWriter( logPath, StandardOpenOption.CREATE_NEW ) )
-        {
+        try (BufferedWriter bw = Files.newBufferedWriter(logPath, StandardOpenOption.CREATE_NEW)) {
             String intro = remote ? "Running remote command on Kubernetes" : "Running local command";
-            bw.write( intro + ": " + String.join( " ", cmd ) + "\n\n" );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error while initializing log file: " + e.getMessage() );
+            bw.write(intro + ": " + String.join(" ", cmd) + "\n\n");
+        } catch (IOException e) {
+            TaskTermination.error("I/O error while initializing log file: " + e.getMessage());
             return;
         }
 
-        Redirect logRedirect = Redirect.appendTo( logPath.toFile() );
-        ProcessBuilder pb = new ProcessBuilder( actualCommand );
-        pb.redirectInput( Paths.get( "/dev/null" ).toFile() );
-        pb.redirectOutput( logRedirect );
-        pb.redirectError( logRedirect );
+        Redirect logRedirect = Redirect.appendTo(logPath.toFile());
+        ProcessBuilder pb = new ProcessBuilder(actualCommand);
+        pb.redirectInput(Paths.get("/dev/null").toFile());
+        pb.redirectOutput(logRedirect);
+        pb.redirectError(logRedirect);
 
         Process process;
-        try
-        {
+        try {
             process = pb.start();
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error while trying to run command: " + e.getMessage() );
+        } catch (IOException e) {
+            TaskTermination.error("I/O error while trying to run command: " + e.getMessage());
             return;
         }
-        try
-        {
-            if ( !process.waitFor( timeoutSeconds, TimeUnit.SECONDS ) )
-            {
-                TaskTermination.error( "Timeout waiting for " + name );
+        try {
+            if (!process.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
+                TaskTermination.error("Timeout waiting for " + name);
                 return;
             }
-        }
-        catch ( InterruptedException e )
-        {
-            TaskTermination.error( "Interrupted while waiting for command to finish" );
-        }
-        finally
-        {
+        } catch (InterruptedException e) {
+            TaskTermination.error("Interrupted while waiting for command to finish");
+        } finally {
             process.destroy();
         }
 
-        try ( BufferedWriter bw = Files.newBufferedWriter( logPath, StandardOpenOption.APPEND ) )
-        {
-            bw.write( "\nCommand returned exit code " + process.exitValue() + "\n" );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error while finishing log file: " + e.getMessage() );
+        try (BufferedWriter bw = Files.newBufferedWriter(logPath, StandardOpenOption.APPEND)) {
+            bw.write("\nCommand returned exit code " + process.exitValue() + "\n");
+        } catch (IOException e) {
+            TaskTermination.error("I/O error while finishing log file: " + e.getMessage());
             return;
         }
 
-        if ( process.exitValue() != 0 )
-        {
-            TaskTermination.fail( name + " exited with code " + process.exitValue() );
+        if (process.exitValue() != 0) {
+            TaskTermination.fail(name + " exited with code " + process.exitValue());
             return;
         }
     }
 
-    public void run( TaskExecution taskExecution, int timeoutSeconds )
-        throws TaskTermination
-    {
-        runImpl( taskExecution, timeoutSeconds, false );
+    public void run(TaskExecution taskExecution, int timeoutSeconds) throws TaskTermination {
+        runImpl(taskExecution, timeoutSeconds, false);
     }
 
-    public void runRemote( TaskExecution taskExecution, int timeoutSeconds )
-        throws TaskTermination
-    {
-        runImpl( taskExecution, timeoutSeconds, true );
+    public void runRemote(TaskExecution taskExecution, int timeoutSeconds) throws TaskTermination {
+        runImpl(taskExecution, timeoutSeconds, true);
     }
 }

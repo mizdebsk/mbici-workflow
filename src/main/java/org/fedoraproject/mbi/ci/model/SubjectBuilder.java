@@ -23,19 +23,15 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class SubjectBuilder
-    implements Builder<Subject>
-{
+public class SubjectBuilder implements Builder<Subject> {
     private final List<SubjectComponent> subjectComponents = new ArrayList<>();
 
-    public void addSubjectComponent( SubjectComponent subjectComponent )
-    {
-        subjectComponents.add( subjectComponent );
+    public void addSubjectComponent(SubjectComponent subjectComponent) {
+        subjectComponents.add(subjectComponent);
     }
 
     @Override
-    public Subject build()
-    {
-        return new Subject( subjectComponents );
+    public Subject build() {
+        return new Subject(subjectComponents);
     }
 }

@@ -25,45 +25,39 @@ import org.fedoraproject.mbi.wf.model.Task;
  * 
  * @author Mikolaj Izdebski
  */
-public class TmtTestoutReport
-    extends Report
-{
+public class TmtTestoutReport extends Report {
     private final FinishedTask finishedTask;
 
-    public TmtTestoutReport( FinishedTask finishedTask )
-    {
+    public TmtTestoutReport(FinishedTask finishedTask) {
         this.finishedTask = finishedTask;
     }
 
     @Override
-    public void body()
-    {
+    public void body() {
         Task task = finishedTask.getTask();
         Result result = finishedTask.getResult();
 
-        add( "Task ID: " + result.getTaskId() );
-        add( "Result ID: " + result.getId() );
-        add( "Time started: " + result.getTimeStarted() );
-        add( "Time finished: " + result.getTimeFinished() );
-        add( "Outcome: " + result.getOutcome() );
-        add( "Outcome reason: " + result.getOutcomeReason() );
-        add( "More details are available in log files." );
+        add("Task ID: " + result.getTaskId());
+        add("Result ID: " + result.getId());
+        add("Time started: " + result.getTimeStarted());
+        add("Time finished: " + result.getTimeFinished());
+        add("Outcome: " + result.getOutcome());
+        add("Outcome reason: " + result.getOutcomeReason());
+        add("More details are available in log files.");
 
-        add( "" );
-        add( "Task handler: " + task.getHandler() );
+        add("");
+        add("Task handler: " + task.getHandler());
 
-        add( "" );
-        add( "Task parameters:" );
-        for ( Parameter param : task.getParameters() )
-        {
-            add( "  " + param.getName() + ": " + param.getValue() );
+        add("");
+        add("Task parameters:");
+        for (Parameter param : task.getParameters()) {
+            add("  " + param.getName() + ": " + param.getValue());
         }
 
-        add( "" );
-        add( "Task dependencies:" );
-        for ( String dep : task.getDependencies() )
-        {
-            add( "  " + dep );
+        add("");
+        add("Task dependencies:");
+        for (String dep : task.getDependencies()) {
+            add("  " + dep);
         }
     }
 }

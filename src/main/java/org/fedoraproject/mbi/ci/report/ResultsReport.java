@@ -27,65 +27,51 @@ import org.fedoraproject.mbi.wf.model.Workflow;
 /**
  * @author Mikolaj Izdebski
  */
-public class ResultsReport
-    extends Report
-{
+public class ResultsReport extends Report {
     private final Workflow workflow;
 
-    public ResultsReport( Workflow workflow )
-    {
+    public ResultsReport(Workflow workflow) {
         this.workflow = workflow;
     }
 
     @Override
-    public void body()
-    {
+    public void body() {
         List<Result> failed = workflow.getResults().stream() //
-                                      .filter( result -> result.getOutcome() != TaskOutcome.SUCCESS ) //
-                                      .collect( Collectors.toList() );
+                .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                .collect(Collectors.toList());
 
-        header( "Test outcome" );
-        para( "This page shows results of ", link( "https://fedoraproject.org/wiki/Maven_bootstrapping", "MBI CI" ),
-              ", which tests whether Maven can be bootstrapped from scratch." );
+        header("Test outcome");
+        para("This page shows results of ", link("https://fedoraproject.org/wiki/Maven_bootstrapping", "MBI CI"),
+                ", which tests whether Maven can be bootstrapped from scratch.");
 
-        if ( !failed.isEmpty() )
-        {
-            add( "<p>Test <strong>FAILED</strong></p>" );
-            add( "The following tasks failed:" );
-            add( "<ul>" );
-            for ( Result result : failed )
-            {
-                add( "<li><strong>", result.getTaskId(), "</strong>" );
-                add( "<br/>Reason: ", result.getOutcomeReason(), "<br/>(" );
-                for ( Artifact artifact : result.getArtifacts() )
-                {
-                    if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
-                    {
-                        add( link( result.getTaskId() + "/" + artifact.getName(), artifact.getName() ) );
+        if (!failed.isEmpty()) {
+            add("<p>Test <strong>FAILED</strong></p>");
+            add("The following tasks failed:");
+            add("<ul>");
+            for (Result result : failed) {
+                add("<li><strong>", result.getTaskId(), "</strong>");
+                add("<br/>Reason: ", result.getOutcomeReason(), "<br/>(");
+                for (Artifact artifact : result.getArtifacts()) {
+                    if (artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG) {
+                        add(link(result.getTaskId() + "/" + artifact.getName(), artifact.getName()));
                     }
                 }
-                add( ")</li>" );
+                add(")</li>");
             }
-            add( "</ul>" );
-        }
-        else if ( workflow.getResults().size() == workflow.getTasks().size() )
-        {
-            para( "Test <strong>PASSED</strong>" );
-        }
-        else
-        {
-            para( "Test is still running. Results will appear here once the test finishes." );
+            add("</ul>");
+        } else if (workflow.getResults().size() == workflow.getTasks().size()) {
+            para("Test <strong>PASSED</strong>");
+        } else {
+            para("Test is still running. Results will appear here once the test finishes.");
         }
 
-        para( "Tests consists of a set of tasks, which all must be successfully completed in order for the test to pass. ",
-              "Constituent tasks are steps necessary to build RPM packages from sources specified by ",
-              link( "subject.html", "test subject" ), " on given ",
-              link( "platform.html", "operating system platform" ), ", in the way defined by ",
-              link( "plan.html", "test plan" ), "." );
-        para( "Detailed machine-readable information about test results in XML format can be found in ",
-              link( "workflow.xml", "workflow.xml" ), "." );
+        para("Tests consists of a set of tasks, which all must be successfully completed in order for the test to pass. ",
+                "Constituent tasks are steps necessary to build RPM packages from sources specified by ",
+                link("subject.html", "test subject"), " on given ", link("platform.html", "operating system platform"),
+                ", in the way defined by ", link("plan.html", "test plan"), ".");
+        para("Detailed machine-readable information about test results in XML format can be found in ",
+                link("workflow.xml", "workflow.xml"), ".");
 
         footer();
-
     }
 }

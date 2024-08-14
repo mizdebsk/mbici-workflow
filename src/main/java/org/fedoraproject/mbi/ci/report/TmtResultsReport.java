@@ -24,59 +24,52 @@ import org.fedoraproject.mbi.wf.model.TaskOutcome;
 import org.fedoraproject.mbi.wf.model.Workflow;
 
 /**
- * Produces results.yaml file in the <a href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format
+ * Produces results.yaml file in the
+ * <a href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format
  * expected by tmt</a>.
  * 
  * @author Mikolaj Izdebski
  */
-public class TmtResultsReport
-    extends Report
-{
+public class TmtResultsReport extends Report {
     private final Workflow workflow;
 
-    public TmtResultsReport( Workflow workflow )
-    {
+    public TmtResultsReport(Workflow workflow) {
         this.workflow = workflow;
     }
 
     @Override
-    public void body()
-    {
+    public void body() {
         boolean failed = workflow.getResults().stream() //
-                                 .filter( result -> result.getOutcome() != TaskOutcome.SUCCESS ) //
-                                 .findAny().isPresent();
+                .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                .findAny().isPresent();
 
-        add( "- name: /overview" );
-        add( "  result: " + ( failed ? "fail" : "pass" ) );
-        add( "  log:" );
-        add( "    - ../output.txt" );
-        add( "    - result.html" );
+        add("- name: /overview");
+        add("  result: " + (failed ? "fail" : "pass"));
+        add("  log:");
+        add("    - ../output.txt");
+        add("    - result.html");
 
-        for ( Result result : workflow.getResults() )
-        {
-            String tmtOutcome = switch ( result.getOutcome() )
-            {
+        for (Result result : workflow.getResults()) {
+            String tmtOutcome = switch (result.getOutcome()) {
                 case SUCCESS -> "pass";
                 case FAILURE -> "fail";
                 case ERROR -> "error";
             };
 
-            Duration duration = Duration.between( result.getTimeStarted(), result.getTimeFinished() );
-            String durationString = String.format( "%d:%02d:%02d", duration.toHours(), //
-                                                   duration.toMinutesPart(), duration.toSecondsPart() );
+            Duration duration = Duration.between(result.getTimeStarted(), result.getTimeFinished());
+            String durationString = String.format("%d:%02d:%02d", duration.toHours(), //
+                    duration.toMinutesPart(), duration.toSecondsPart());
 
-            add( "- name: /task/" + result.getTaskId() );
-            add( "  result: " + tmtOutcome );
-            add( "  duration: " + durationString );
-            add( "  log:" );
+            add("- name: /task/" + result.getTaskId());
+            add("  result: " + tmtOutcome);
+            add("  duration: " + durationString);
+            add("  log:");
 
-            add( "    - " + result.getTaskId() + "/testout.log" );
+            add("    - " + result.getTaskId() + "/testout.log");
 
-            for ( Artifact artifact : result.getArtifacts() )
-            {
-                if ( artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG )
-                {
-                    add( "    - " + result.getTaskId() + "/" + artifact.getName() );
+            for (Artifact artifact : result.getArtifacts()) {
+                if (artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG) {
+                    add("    - " + result.getTaskId() + "/" + artifact.getName());
                 }
             }
         }

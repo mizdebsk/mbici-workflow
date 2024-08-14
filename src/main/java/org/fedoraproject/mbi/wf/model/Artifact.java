@@ -20,33 +20,27 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Artifact
-{
+public class Artifact {
     private final ArtifactType type;
-
     private final String name;
 
-    public Artifact( ArtifactType type, String name )
-    {
+    public Artifact(ArtifactType type, String name) {
         this.type = type;
         this.name = name;
     }
 
-    public ArtifactType getType()
-    {
+    public ArtifactType getType() {
         return type;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    static final Entity<Artifact, ArtifactBuilder> ENTITY = new Entity<>( "artifact", ArtifactBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "type", Artifact::getType, ArtifactBuilder::setType, ArtifactType::toString,
-                             ArtifactType::valueOf );
-        ENTITY.addAttribute( "name", Artifact::getName, ArtifactBuilder::setName );
+    static final Entity<Artifact, ArtifactBuilder> ENTITY = new Entity<>("artifact", ArtifactBuilder::new);
+    static {
+        ENTITY.addAttribute("type", Artifact::getType, ArtifactBuilder::setType, ArtifactType::toString,
+                ArtifactType::valueOf);
+        ENTITY.addAttribute("name", Artifact::getName, ArtifactBuilder::setName);
     }
 }

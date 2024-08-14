@@ -20,19 +20,15 @@ import java.util.Collections;
 /**
  * @author Mikolaj Izdebski
  */
-public class GetterAdapter<OuterType, NestedType>
-    implements Getter<OuterType, Iterable<NestedType>>
-{
+public class GetterAdapter<OuterType, NestedType> implements Getter<OuterType, Iterable<NestedType>> {
     private final Getter<OuterType, NestedType> delegate;
 
-    public GetterAdapter( Getter<OuterType, NestedType> delegate )
-    {
+    public GetterAdapter(Getter<OuterType, NestedType> delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public Iterable<NestedType> get( OuterType object )
-    {
-        return Collections.singleton( delegate.get( object ) );
+    public Iterable<NestedType> get(OuterType object) {
+        return Collections.singleton(delegate.get(object));
     }
 }

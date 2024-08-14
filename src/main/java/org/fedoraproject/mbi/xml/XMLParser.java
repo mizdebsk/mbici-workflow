@@ -34,70 +34,48 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * @author Mikolaj Izdebski
  */
-public class XMLParser
-{
+public class XMLParser {
     private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
-
     private final XMLStreamReader cursor;
 
-    public XMLParser( Reader reader )
-        throws XMLStreamException
-    {
-        cursor = XML_INPUT_FACTORY.createXMLStreamReader( reader );
+    public XMLParser(Reader reader) throws XMLStreamException {
+        cursor = XML_INPUT_FACTORY.createXMLStreamReader(reader);
     }
 
-    private void error( String message )
-        throws XMLStreamException
-    {
-        throw new XMLStreamException( message + ", line: " + cursor.getLocation().getLineNumber() + ", columnn:"
-            + cursor.getLocation().getColumnNumber() );
+    private void error(String message) throws XMLStreamException {
+        throw new XMLStreamException(message + ", line: " + cursor.getLocation().getLineNumber() + ", columnn:"
+                + cursor.getLocation().getColumnNumber());
     }
 
-    public String parseText()
-        throws XMLStreamException
-    {
-        for ( StringBuilder sb = new StringBuilder();; cursor.next() )
-        {
-            if ( cursor.getEventType() == CHARACTERS )
-            {
-                sb.append( cursor.getText() );
-            }
-            else if ( cursor.getEventType() != COMMENT )
-            {
+    public String parseText() throws XMLStreamException {
+        for (StringBuilder sb = new StringBuilder();; cursor.next()) {
+            if (cursor.getEventType() == CHARACTERS) {
+                sb.append(cursor.getText());
+            } else if (cursor.getEventType() != COMMENT) {
                 return sb.toString();
             }
         }
     }
 
-    private void skipWhiteSpace()
-        throws XMLStreamException
-    {
-        if ( !parseText().chars().allMatch( Character::isWhitespace ) )
-        {
-            error( "Expected white space" );
+    private void skipWhiteSpace() throws XMLStreamException {
+        if (!parseText().chars().allMatch(Character::isWhitespace)) {
+            error("Expected white space");
         }
     }
 
-    public boolean hasStartElement()
-        throws XMLStreamException
-    {
+    public boolean hasStartElement() throws XMLStreamException {
         skipWhiteSpace();
 
         return cursor.getEventType() == START_ELEMENT;
     }
 
-    public boolean hasStartElement( String tag )
-        throws XMLStreamException
-    {
-        return hasStartElement() && cursor.getLocalName().equals( tag );
+    public boolean hasStartElement(String tag) throws XMLStreamException {
+        return hasStartElement() && cursor.getLocalName().equals(tag);
     }
 
-    public String parseStartElement()
-        throws XMLStreamException
-    {
-        if ( !hasStartElement() )
-        {
-            error( "Expected a start element" );
+    public String parseStartElement() throws XMLStreamException {
+        if (!hasStartElement()) {
+            error("Expected a start element");
         }
 
         String tag = cursor.getLocalName();
@@ -107,63 +85,47 @@ public class XMLParser
         return tag;
     }
 
-    public void parseStartElement( String tag )
-        throws XMLStreamException
-    {
-        if ( !hasStartElement( tag ) )
-        {
-            error( "Expected <" + tag + "> start element" );
+    public void parseStartElement(String tag) throws XMLStreamException {
+        if (!hasStartElement(tag)) {
+            error("Expected <" + tag + "> start element");
         }
 
         cursor.next();
     }
 
-    private void expectToken( int token, String description )
-        throws XMLStreamException
-    {
+    private void expectToken(int token, String description) throws XMLStreamException {
         skipWhiteSpace();
 
-        if ( cursor.getEventType() != token )
-        {
-            error( "Expected " + description );
+        if (cursor.getEventType() != token) {
+            error("Expected " + description);
         }
     }
 
-    public void parseEndElement( String tag )
-        throws XMLStreamException
-    {
-        expectToken( END_ELEMENT, "</" + tag + "> end element" );
+    public void parseEndElement(String tag) throws XMLStreamException {
+        expectToken(END_ELEMENT, "</" + tag + "> end element");
         cursor.next();
     }
 
-    public void parseStartDocument()
-        throws XMLStreamException
-    {
-        expectToken( START_DOCUMENT, "start of document" );
+    public void parseStartDocument() throws XMLStreamException {
+        expectToken(START_DOCUMENT, "start of document");
         cursor.next();
     }
 
-    public void parseEndDocument()
-        throws XMLStreamException
-    {
-        expectToken( END_DOCUMENT, "end of document" );
+    public void parseEndDocument() throws XMLStreamException {
+        expectToken(END_DOCUMENT, "end of document");
     }
 
-    public <Type, Bean extends Builder<Type>> void parseEntity( Entity<Type, Bean> entity, Bean bean )
-        throws XMLStreamException
-    {
-        parseStartElement( entity.getTag() );
+    public <Type, Bean extends Builder<Type>> void parseEntity(Entity<Type, Bean> entity, Bean bean)
+            throws XMLStreamException {
+        parseStartElement(entity.getTag());
 
-        Set<Constituent<Type, Bean, ?, ?>> allowedElements = new LinkedHashSet<>( entity.getElements() );
+        Set<Constituent<Type, Bean, ?, ?>> allowedElements = new LinkedHashSet<>(entity.getElements());
 
-        for ( Iterator<Constituent<Type, Bean, ?, ?>> iterator = allowedElements.iterator(); iterator.hasNext(); )
-        {
+        for (Iterator<Constituent<Type, Bean, ?, ?>> iterator = allowedElements.iterator(); iterator.hasNext();) {
             Constituent<Type, Bean, ?, ?> constituent = iterator.next();
 
-            if ( constituent.tryParse( this, bean ) )
-            {
-                if ( constituent.isUnique() )
-                {
+            if (constituent.tryParse(this, bean)) {
+                if (constituent.isUnique()) {
                     iterator.remove();
                 }
 
@@ -171,23 +133,20 @@ public class XMLParser
             }
         }
 
-        parseEndElement( entity.getTag() );
+        parseEndElement(entity.getTag());
 
-        for ( Constituent<Type, Bean, ?, ?> constituent : allowedElements )
-        {
-            if ( !constituent.isOptional() )
-            {
-                error( "Mandatory <" + constituent.getTag() + "> of <" + entity.getTag() + "> has not been set" );
+        for (Constituent<Type, Bean, ?, ?> constituent : allowedElements) {
+            if (!constituent.isOptional()) {
+                error("Mandatory <" + constituent.getTag() + "> of <" + entity.getTag() + "> has not been set");
             }
         }
     }
 
-    public <Type, Bean extends Builder<Type>> Type parseDocument( Entity<Type, Bean> rootEntity )
-        throws XMLStreamException
-    {
+    public <Type, Bean extends Builder<Type>> Type parseDocument(Entity<Type, Bean> rootEntity)
+            throws XMLStreamException {
         Bean rootBean = rootEntity.newBean();
         parseStartDocument();
-        parseEntity( rootEntity, rootBean );
+        parseEntity(rootEntity, rootBean);
         parseEndDocument();
         return rootBean.build();
     }

@@ -28,48 +28,35 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class RepoTaskHandler
-    implements TaskHandler
-{
-    public RepoTaskHandler( Task task )
-    {
-        if ( !task.getParameters().isEmpty() )
-        {
-            throw new IllegalArgumentException( getClass().getName() + " does not take any parameters" );
+public class RepoTaskHandler implements TaskHandler {
+    public RepoTaskHandler(Task task) {
+        if (!task.getParameters().isEmpty()) {
+            throw new IllegalArgumentException(getClass().getName() + " does not take any parameters");
         }
     }
 
     @Override
-    public void handleTask( TaskExecution taskExecution )
-        throws TaskTermination
-    {
-        Path repoPath = taskExecution.addArtifact( ArtifactType.REPO, "repo" );
-        try
-        {
-            Files.createDirectories( repoPath );
-        }
-        catch ( IOException e )
-        {
-            TaskTermination.error( "I/O error when creating directory " + repoPath + ": " + e.getMessage() );
+    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
+        Path repoPath = taskExecution.addArtifact(ArtifactType.REPO, "repo");
+        try {
+            Files.createDirectories(repoPath);
+        } catch (IOException e) {
+            TaskTermination.error("I/O error when creating directory " + repoPath + ": " + e.getMessage());
         }
 
-        for ( Path rpmPath : taskExecution.getDependencyArtifacts( ArtifactType.RPM ) )
-        {
-            Path rpmLinkPath = repoPath.resolve( rpmPath.getFileName() );
+        for (Path rpmPath : taskExecution.getDependencyArtifacts(ArtifactType.RPM)) {
+            Path rpmLinkPath = repoPath.resolve(rpmPath.getFileName());
 
-            try
-            {
-                Files.createSymbolicLink( rpmLinkPath, rpmPath );
-            }
-            catch ( IOException e )
-            {
-                TaskTermination.error( "I/O error when creating symbolic link " + rpmLinkPath + ": " + e.getMessage() );
+            try {
+                Files.createSymbolicLink(rpmLinkPath, rpmPath);
+            } catch (IOException e) {
+                TaskTermination.error("I/O error when creating symbolic link " + rpmLinkPath + ": " + e.getMessage());
             }
         }
 
-        Createrepo createrepo = new Createrepo( taskExecution );
-        createrepo.run( repoPath );
+        Createrepo createrepo = new Createrepo(taskExecution);
+        createrepo.run(repoPath);
 
-        TaskTermination.success( "Repo created successfully" );
+        TaskTermination.success("Repo created successfully");
     }
 }

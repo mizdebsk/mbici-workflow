@@ -24,33 +24,26 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class FinishedTask
-{
+public class FinishedTask {
     private final Task task;
-
     private final Result result;
-
     private final Path resultDir;
 
-    public FinishedTask( Task task, Result result, Path resultDir )
-    {
+    public FinishedTask(Task task, Result result, Path resultDir) {
         this.task = task;
         this.result = result;
         this.resultDir = resultDir;
     }
 
-    public Task getTask()
-    {
+    public Task getTask() {
         return task;
     }
 
-    public Result getResult()
-    {
+    public Result getResult() {
         return result;
     }
 
-    public Path getArtifact( Artifact artifact )
-    {
-        return resultDir.resolve( artifact.getName() );
+    public Path getArtifact(Artifact artifact) {
+        return resultDir.resolve(artifact.getName());
     }
 }

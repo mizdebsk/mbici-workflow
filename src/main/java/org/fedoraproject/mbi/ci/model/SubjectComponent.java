@@ -20,51 +20,41 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class SubjectComponent
-{
+public class SubjectComponent {
     private final String name;
-
     private final String scm;
-
     private final String commit;
-
     private final String lookaside;
 
-    public SubjectComponent( String name, String scm, String commit, String lookaside )
-    {
+    public SubjectComponent(String name, String scm, String commit, String lookaside) {
         this.name = name;
         this.scm = scm;
         this.commit = commit;
         this.lookaside = lookaside;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getScm()
-    {
+    public String getScm() {
         return scm;
     }
 
-    public String getCommit()
-    {
+    public String getCommit() {
         return commit;
     }
 
-    public String getLookaside()
-    {
+    public String getLookaside() {
         return lookaside;
     }
 
-    static final Entity<SubjectComponent, SubjectComponentBuilder> ENTITY =
-        new Entity<>( "component", SubjectComponentBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "name", SubjectComponent::getName, SubjectComponentBuilder::setName );
-        ENTITY.addAttribute( "scm", SubjectComponent::getScm, SubjectComponentBuilder::setScm );
-        ENTITY.addAttribute( "commit", SubjectComponent::getCommit, SubjectComponentBuilder::setCommit );
-        ENTITY.addAttribute( "lookaside", SubjectComponent::getLookaside, SubjectComponentBuilder::setLookaside );
+    static final Entity<SubjectComponent, SubjectComponentBuilder> ENTITY = new Entity<>("component",
+            SubjectComponentBuilder::new);
+    static {
+        ENTITY.addAttribute("name", SubjectComponent::getName, SubjectComponentBuilder::setName);
+        ENTITY.addAttribute("scm", SubjectComponent::getScm, SubjectComponentBuilder::setScm);
+        ENTITY.addAttribute("commit", SubjectComponent::getCommit, SubjectComponentBuilder::setCommit);
+        ENTITY.addAttribute("lookaside", SubjectComponent::getLookaside, SubjectComponentBuilder::setLookaside);
     }
 }

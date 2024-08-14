@@ -23,29 +23,23 @@ import org.fedoraproject.mbi.wf.TaskTermination;
 /**
  * @author Mikolaj Izdebski
  */
-class Curl
-{
+class Curl {
     private static final int CURL_TIMEOUT = 300;
 
     private final TaskExecution taskExecution;
-
     private int counter;
 
-    public Curl( TaskExecution taskExecution )
-    {
+    public Curl(TaskExecution taskExecution) {
         this.taskExecution = taskExecution;
     }
 
-    public void downloadFile( String url, Path targetPath )
-        throws TaskTermination
-    {
-        Command curl = new Command( "curl", "--http1.1", "-f", "-L", "-o", targetPath.toString(), url );
+    public void downloadFile(String url, Path targetPath) throws TaskTermination {
+        Command curl = new Command("curl", "--http1.1", "-f", "-L", "-o", targetPath.toString(), url);
 
-        if ( counter++ > 0 )
-        {
-            curl.setName( "curl-" + counter );
+        if (counter++ > 0) {
+            curl.setName("curl-" + counter);
         }
 
-        curl.run( taskExecution, CURL_TIMEOUT );
+        curl.run(taskExecution, CURL_TIMEOUT);
     }
 }

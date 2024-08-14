@@ -20,40 +20,30 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class SubjectComponentBuilder
-    implements Builder<SubjectComponent>
-{
+public class SubjectComponentBuilder implements Builder<SubjectComponent> {
     private String name;
-
     private String scm;
-
     private String commit;
-
     private String lookaside;
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setScm( String scm )
-    {
+    public void setScm(String scm) {
         this.scm = scm;
     }
 
-    public void setCommit( String commit )
-    {
+    public void setCommit(String commit) {
         this.commit = commit;
     }
 
-    public void setLookaside( String lookaside )
-    {
+    public void setLookaside(String lookaside) {
         this.lookaside = lookaside;
     }
 
     @Override
-    public SubjectComponent build()
-    {
-        return new SubjectComponent( name, scm, commit, lookaside );
+    public SubjectComponent build() {
+        return new SubjectComponent(name, scm, commit, lookaside);
     }
 }

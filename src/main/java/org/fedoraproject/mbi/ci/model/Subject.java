@@ -27,26 +27,20 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Subject
-{
+public class Subject {
     private final List<SubjectComponent> subjectComponents;
 
-    public Subject( List<SubjectComponent> subjectComponents )
-    {
-        this.subjectComponents = Collections.unmodifiableList( subjectComponents );
+    public Subject(List<SubjectComponent> subjectComponents) {
+        this.subjectComponents = Collections.unmodifiableList(subjectComponents);
     }
 
-    public List<SubjectComponent> getComponentOverrides()
-    {
+    public List<SubjectComponent> getComponentOverrides() {
         return subjectComponents;
     }
 
-    public SubjectComponent getSubjectComponent( String component )
-    {
-        for ( SubjectComponent override : subjectComponents )
-        {
-            if ( override.getName().equals( component ) )
-            {
+    public SubjectComponent getSubjectComponent(String component) {
+        for (SubjectComponent override : subjectComponents) {
+            if (override.getName().equals(component)) {
                 return override;
             }
         }
@@ -54,22 +48,17 @@ public class Subject
         return null;
     }
 
-    static final Entity<Subject, SubjectBuilder> ENTITY = new Entity<>( "subject", SubjectBuilder::new );
-    static
-    {
-        ENTITY.addRelationship( SubjectComponent.ENTITY, Subject::getComponentOverrides,
-                                SubjectBuilder::addSubjectComponent );
+    static final Entity<Subject, SubjectBuilder> ENTITY = new Entity<>("subject", SubjectBuilder::new);
+    static {
+        ENTITY.addRelationship(SubjectComponent.ENTITY, Subject::getComponentOverrides,
+                SubjectBuilder::addSubjectComponent);
     }
 
-    public static Subject readFromXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        return ENTITY.readFromXML( path );
+    public static Subject readFromXML(Path path) throws IOException, XMLStreamException {
+        return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        ENTITY.writeToXML( path, this );
+    public void writeToXML(Path path) throws IOException, XMLStreamException {
+        ENTITY.writeToXML(path, this);
     }
 }

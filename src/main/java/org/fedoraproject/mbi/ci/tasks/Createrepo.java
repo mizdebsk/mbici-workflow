@@ -23,22 +23,18 @@ import org.fedoraproject.mbi.wf.TaskTermination;
 /**
  * @author Mikolaj Izdebski
  */
-class Createrepo
-{
+class Createrepo {
     private static final int CREATEREPO_TIMEOUT = 60;
 
     private final TaskExecution taskExecution;
 
-    public Createrepo( TaskExecution taskExecution )
-    {
+    public Createrepo(TaskExecution taskExecution) {
         this.taskExecution = taskExecution;
     }
 
-    public void run( Path repoPath )
-        throws TaskTermination
-    {
-        Command createrepo = new Command( "createrepo_c", repoPath.toString() );
-        createrepo.setName( "createrepo" );
-        createrepo.runRemote( taskExecution, CREATEREPO_TIMEOUT );
+    public void run(Path repoPath) throws TaskTermination {
+        Command createrepo = new Command("createrepo_c", repoPath.toString());
+        createrepo.setName("createrepo");
+        createrepo.runRemote(taskExecution, CREATEREPO_TIMEOUT);
     }
 }

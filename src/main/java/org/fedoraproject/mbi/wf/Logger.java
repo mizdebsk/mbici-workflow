@@ -20,18 +20,11 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-interface Logger
-{
-    void logTaskRunning( Task task );
-
-    void logTaskSucceeded( FinishedTask finishedTask );
-
-    void logTaskFailed( FinishedTask finishedTask );
-
-    void logTaskReused( FinishedTask finishedTask );
-
+interface Logger {
+    void logTaskRunning(Task task);
+    void logTaskSucceeded(FinishedTask finishedTask);
+    void logTaskFailed(FinishedTask finishedTask);
+    void logTaskReused(FinishedTask finishedTask);
     void logWorkflowSucceeded();
-
     void logWorkflowFailed();
-
 }

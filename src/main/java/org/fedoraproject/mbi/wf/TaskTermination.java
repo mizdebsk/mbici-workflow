@@ -20,39 +20,29 @@ import org.fedoraproject.mbi.wf.model.TaskOutcome;
 /**
  * @author Mikolaj Izdebski
  */
-public final class TaskTermination
-    extends Throwable
-{
+public final class TaskTermination extends Throwable {
     private static final long serialVersionUID = 1;
 
     private final TaskOutcome outcome;
 
-    private TaskTermination( TaskOutcome outcome, String reason )
-    {
-        super( reason );
+    private TaskTermination(TaskOutcome outcome, String reason) {
+        super(reason);
         this.outcome = outcome;
     }
 
-    public TaskOutcome getOutcome()
-    {
+    public TaskOutcome getOutcome() {
         return outcome;
     }
 
-    public static TaskTermination error( String reason )
-        throws TaskTermination
-    {
-        throw new TaskTermination( TaskOutcome.ERROR, reason );
+    public static TaskTermination error(String reason) throws TaskTermination {
+        throw new TaskTermination(TaskOutcome.ERROR, reason);
     }
 
-    public static TaskTermination fail( String reason )
-        throws TaskTermination
-    {
-        throw new TaskTermination( TaskOutcome.FAILURE, reason );
+    public static TaskTermination fail(String reason) throws TaskTermination {
+        throw new TaskTermination(TaskOutcome.FAILURE, reason);
     }
 
-    public static TaskTermination success( String reason )
-        throws TaskTermination
-    {
-        throw new TaskTermination( TaskOutcome.SUCCESS, reason );
+    public static TaskTermination success(String reason) throws TaskTermination {
+        throw new TaskTermination(TaskOutcome.SUCCESS, reason);
     }
 }

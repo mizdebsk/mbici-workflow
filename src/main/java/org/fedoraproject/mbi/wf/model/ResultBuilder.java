@@ -24,61 +24,45 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class ResultBuilder
-    implements Builder<Result>
-{
+public class ResultBuilder implements Builder<Result> {
     private String id;
-
     private String taskId;
-
     private final List<Artifact> artifacts = new ArrayList<>();
-
     private TaskOutcome outcome;
-
     private String outcomeReason;
-
     private LocalDateTime timeStarted;
-
     private LocalDateTime timeFinished;
 
-    public void setId( String id )
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setTaskId( String taskId )
-    {
+    public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 
-    public void addArtifact( Artifact artifact )
-    {
-        artifacts.add( artifact );
+    public void addArtifact(Artifact artifact) {
+        artifacts.add(artifact);
     }
 
-    public void setOutcome( TaskOutcome outcome )
-    {
+    public void setOutcome(TaskOutcome outcome) {
         this.outcome = outcome;
     }
 
-    public void setOutcomeReason( String outcomeReason )
-    {
+    public void setOutcomeReason(String outcomeReason) {
         this.outcomeReason = outcomeReason;
     }
 
-    public void setTimeStarted( LocalDateTime timeStarted )
-    {
+    public void setTimeStarted(LocalDateTime timeStarted) {
         this.timeStarted = timeStarted;
     }
 
-    public void setTimeFinished( LocalDateTime timeFinished )
-    {
+    public void setTimeFinished(LocalDateTime timeFinished) {
         this.timeFinished = timeFinished;
     }
 
     @Override
-    public Result build()
-    {
-        return new Result( id, taskId, artifacts, outcome, outcomeReason, timeStarted, timeFinished );
+    public Result build() {
+        return new Result(id, taskId, artifacts, outcome, outcomeReason, timeStarted, timeFinished);
     }
 }

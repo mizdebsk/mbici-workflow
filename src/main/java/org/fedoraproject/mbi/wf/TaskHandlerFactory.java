@@ -30,33 +30,27 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class TaskHandlerFactory
-    extends Thread
-{
+public class TaskHandlerFactory extends Thread {
     private final Map<String, Function<Task, ? extends TaskHandler>> registry = new LinkedHashMap<>();
 
-    private void registerHandler( Class<? extends TaskHandler> cls, Function<Task, ? extends TaskHandler> ctor )
-    {
-        registry.put( cls.getCanonicalName(), ctor );
+    private void registerHandler(Class<? extends TaskHandler> cls, Function<Task, ? extends TaskHandler> ctor) {
+        registry.put(cls.getCanonicalName(), ctor);
     }
 
-    public TaskHandlerFactory()
-    {
-        registerHandler( CheckoutTaskHandler.class, CheckoutTaskHandler::new );
-        registerHandler( GatherTaskHandler.class, GatherTaskHandler::new );
-        registerHandler( RepoTaskHandler.class, RepoTaskHandler::new );
-        registerHandler( RpmTaskHandler.class, RpmTaskHandler::new );
-        registerHandler( SrpmTaskHandler.class, SrpmTaskHandler::new );
-        registerHandler( ValidateTaskHandler.class, ValidateTaskHandler::new );
+    public TaskHandlerFactory() {
+        registerHandler(CheckoutTaskHandler.class, CheckoutTaskHandler::new);
+        registerHandler(GatherTaskHandler.class, GatherTaskHandler::new);
+        registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
+        registerHandler(RpmTaskHandler.class, RpmTaskHandler::new);
+        registerHandler(SrpmTaskHandler.class, SrpmTaskHandler::new);
+        registerHandler(ValidateTaskHandler.class, ValidateTaskHandler::new);
     }
 
-    public TaskHandler createTaskHandler( Task task )
-    {
-        Function<Task, ? extends TaskHandler> ctor = registry.get( task.getHandler() );
-        if ( ctor == null )
-        {
-            throw new IllegalArgumentException( "Unsupported task handler: " + task.getHandler() );
+    public TaskHandler createTaskHandler(Task task) {
+        Function<Task, ? extends TaskHandler> ctor = registry.get(task.getHandler());
+        if (ctor == null) {
+            throw new IllegalArgumentException("Unsupported task handler: " + task.getHandler());
         }
-        return ctor.apply( task );
+        return ctor.apply(task);
     }
 }

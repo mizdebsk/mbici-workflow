@@ -20,32 +20,26 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Macro
-{
+public class Macro {
     private final String name;
-
     private final String value;
 
-    public Macro( String name, String value )
-    {
+    public Macro(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 
-    static final Entity<Macro, MacroBuilder> ENTITY = new Entity<>( "macro", MacroBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "name", Macro::getName, MacroBuilder::setName );
-        ENTITY.addAttribute( "value", Macro::getValue, MacroBuilder::setValue );
+    static final Entity<Macro, MacroBuilder> ENTITY = new Entity<>("macro", MacroBuilder::new);
+    static {
+        ENTITY.addAttribute("name", Macro::getName, MacroBuilder::setName);
+        ENTITY.addAttribute("value", Macro::getValue, MacroBuilder::setValue);
     }
 }

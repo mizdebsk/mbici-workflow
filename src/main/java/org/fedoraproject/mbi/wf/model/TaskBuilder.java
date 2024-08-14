@@ -23,45 +23,34 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class TaskBuilder
-    implements Builder<Task>
-{
+public class TaskBuilder implements Builder<Task> {
     private String id;
-
     private String handler;
-
     private final List<String> dependencies = new ArrayList<>();
-
     private final List<Parameter> parameters = new ArrayList<>();
 
-    public void setId( String id )
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setHandler( String handler )
-    {
+    public void setHandler(String handler) {
         this.handler = handler;
     }
 
-    public void addDependency( String dependency )
-    {
-        dependencies.add( dependency );
+    public void addDependency(String dependency) {
+        dependencies.add(dependency);
     }
 
-    public void addParameter( Parameter parameter )
-    {
-        parameters.add( parameter );
+    public void addParameter(Parameter parameter) {
+        parameters.add(parameter);
     }
 
-    public void addParameter( String name, String value )
-    {
-        addParameter( new Parameter( name, value ) );
+    public void addParameter(String name, String value) {
+        addParameter(new Parameter(name, value));
     }
 
     @Override
-    public Task build()
-    {
-        return new Task( id, handler, dependencies, parameters );
+    public Task build() {
+        return new Task(id, handler, dependencies, parameters);
     }
 }

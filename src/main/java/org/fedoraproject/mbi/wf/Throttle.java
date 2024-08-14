@@ -20,9 +20,7 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public interface Throttle
-{
-    void acquireCapacity( Task task );
-
-    void releaseCapacity( Task task );
+public interface Throttle {
+    void acquireCapacity(Task task);
+    void releaseCapacity(Task task);
 }

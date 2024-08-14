@@ -23,41 +23,33 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Phase
-{
+public class Phase {
     private final String name;
-
     private final List<String> components;
-
     private final List<Macro> macros;
 
-    public Phase( String name, List<String> components, List<Macro> macros )
-    {
+    public Phase(String name, List<String> components, List<Macro> macros) {
         this.name = name;
-        this.components = Collections.unmodifiableList( components );
-        this.macros = Collections.unmodifiableList( macros );
+        this.components = Collections.unmodifiableList(components);
+        this.macros = Collections.unmodifiableList(macros);
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public List<String> getComponents()
-    {
+    public List<String> getComponents() {
         return components;
     }
 
-    public List<Macro> getMacros()
-    {
+    public List<Macro> getMacros() {
         return macros;
     }
 
-    static final Entity<Phase, PhaseBuilder> ENTITY = new Entity<>( "phase", PhaseBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "name", Phase::getName, PhaseBuilder::setName );
-        ENTITY.addMultiAttribute( "component", Phase::getComponents, PhaseBuilder::addComponent );
-        ENTITY.addRelationship( Macro.ENTITY, Phase::getMacros, PhaseBuilder::addMacro );
+    static final Entity<Phase, PhaseBuilder> ENTITY = new Entity<>("phase", PhaseBuilder::new);
+    static {
+        ENTITY.addAttribute("name", Phase::getName, PhaseBuilder::setName);
+        ENTITY.addMultiAttribute("component", Phase::getComponents, PhaseBuilder::addComponent);
+        ENTITY.addRelationship(Macro.ENTITY, Phase::getMacros, PhaseBuilder::addMacro);
     }
 }

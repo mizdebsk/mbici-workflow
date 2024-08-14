@@ -29,55 +29,42 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class SrpmTaskHandler
-    implements TaskHandler
-{
-    public SrpmTaskHandler( Task task )
-    {
-        if ( !task.getParameters().isEmpty() )
-        {
-            throw new IllegalArgumentException( getClass().getName() + " does not take any parameters" );
+public class SrpmTaskHandler implements TaskHandler {
+    public SrpmTaskHandler(Task task) {
+        if (!task.getParameters().isEmpty()) {
+            throw new IllegalArgumentException(getClass().getName() + " does not take any parameters");
         }
     }
 
-    private Path findOneFile( Path baseDir, String extension )
-        throws TaskTermination
-    {
-        try ( var s = Files.find( baseDir, 1,
-                                  ( p, bfa ) -> p.getFileName().toString().endsWith( extension ) && bfa.isRegularFile(),
-                                  FileVisitOption.FOLLOW_LINKS ) )
-        {
+    private Path findOneFile(Path baseDir, String extension) throws TaskTermination {
+        try (var s = Files.find(baseDir, 1,
+                (p, bfa) -> p.getFileName().toString().endsWith(extension) && bfa.isRegularFile(),
+                FileVisitOption.FOLLOW_LINKS)) {
             var it = s.iterator();
-            if ( !it.hasNext() )
-            {
-                throw TaskTermination.fail( "No " + extension + " file was found in " + baseDir );
+            if (!it.hasNext()) {
+                throw TaskTermination.fail("No " + extension + " file was found in " + baseDir);
             }
 
             Path path = it.next();
 
-            if ( it.hasNext() )
-            {
-                throw TaskTermination.fail( "More than one " + extension + " file was not found in " + baseDir );
+            if (it.hasNext()) {
+                throw TaskTermination.fail("More than one " + extension + " file was not found in " + baseDir);
             }
 
             return path;
-        }
-        catch ( IOException e )
-        {
-            throw TaskTermination.error( "I/O error when looknig for " + extension + " file: " + e.getMessage() );
+        } catch (IOException e) {
+            throw TaskTermination.error("I/O error when looknig for " + extension + " file: " + e.getMessage());
         }
     }
 
     @Override
-    public void handleTask( TaskExecution taskExecution )
-        throws TaskTermination
-    {
-        Path sourcePath = taskExecution.getDependencyArtifact( ArtifactType.CHECKOUT );
-        Path specPath = findOneFile( sourcePath, ".spec" );
+    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
+        Path sourcePath = taskExecution.getDependencyArtifact(ArtifactType.CHECKOUT);
+        Path specPath = findOneFile(sourcePath, ".spec");
         Mock mock = new Mock();
-        mock.run( taskExecution, "--buildsrpm", "--spec", specPath.toString(), "--sources", sourcePath.toString() );
-        Path srpmPath = findOneFile( taskExecution.getResultDir(), ".src.rpm" );
-        taskExecution.addArtifact( ArtifactType.SRPM, srpmPath.getFileName().toString() );
-        TaskTermination.success( "Source RPM was built in mock" );
+        mock.run(taskExecution, "--buildsrpm", "--spec", specPath.toString(), "--sources", sourcePath.toString());
+        Path srpmPath = findOneFile(taskExecution.getResultDir(), ".src.rpm");
+        taskExecution.addArtifact(ArtifactType.SRPM, srpmPath.getFileName().toString());
+        TaskTermination.success("Source RPM was built in mock");
     }
 }

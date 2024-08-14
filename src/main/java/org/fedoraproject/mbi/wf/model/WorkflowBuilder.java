@@ -23,26 +23,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class WorkflowBuilder
-    implements Builder<Workflow>
-{
+public class WorkflowBuilder implements Builder<Workflow> {
     private final List<Task> tasks = new ArrayList<>();
-
     private final List<Result> results = new ArrayList<>();
 
-    public void addTask( Task task )
-    {
-        tasks.add( task );
+    public void addTask(Task task) {
+        tasks.add(task);
     }
 
-    public void addResult( Result result )
-    {
-        results.add( result );
+    public void addResult(Result result) {
+        results.add(result);
     }
 
     @Override
-    public Workflow build()
-    {
-        return new Workflow( tasks, results );
+    public Workflow build() {
+        return new Workflow(tasks, results);
     }
 }

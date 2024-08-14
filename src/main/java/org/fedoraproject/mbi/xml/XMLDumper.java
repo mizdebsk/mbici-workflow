@@ -24,78 +24,57 @@ import javax.xml.stream.XMLStreamWriter;
 /**
  * @author Mikolaj Izdebski
  */
-public class XMLDumper
-{
+public class XMLDumper {
     private static final XMLOutputFactory XML_OUTPUT_FACTORY = XMLOutputFactory.newInstance();
 
     private final XMLStreamWriter cursor;
-
     private int indent;
 
-    public XMLDumper( Writer writer )
-        throws XMLStreamException
-    {
-        cursor = XML_OUTPUT_FACTORY.createXMLStreamWriter( writer );
+    public XMLDumper(Writer writer) throws XMLStreamException {
+        cursor = XML_OUTPUT_FACTORY.createXMLStreamWriter(writer);
     }
 
-    private void indent()
-        throws XMLStreamException
-    {
-        for ( int i = indent; i-- > 0; )
-        {
-            cursor.writeCharacters( "  " );
+    private void indent() throws XMLStreamException {
+        for (int i = indent; i-- > 0;) {
+            cursor.writeCharacters("  ");
         }
     }
 
-    private void newLine()
-        throws XMLStreamException
-    {
-        cursor.writeCharacters( "\n" );
+    private void newLine() throws XMLStreamException {
+        cursor.writeCharacters("\n");
     }
 
-    public void dumpStartDocument()
-        throws XMLStreamException
-    {
+    public void dumpStartDocument() throws XMLStreamException {
         cursor.writeStartDocument();
         newLine();
     }
 
-    public void dumpEndDocument()
-        throws XMLStreamException
-    {
+    public void dumpEndDocument() throws XMLStreamException {
         cursor.writeEndDocument();
     }
 
-    public void dumpStartElement( String tag )
-        throws XMLStreamException
-    {
+    public void dumpStartElement(String tag) throws XMLStreamException {
         indent();
-        cursor.writeStartElement( tag );
+        cursor.writeStartElement(tag);
     }
 
-    public void dumpEndElement()
-        throws XMLStreamException
-    {
+    public void dumpEndElement() throws XMLStreamException {
         cursor.writeEndElement();
         newLine();
     }
 
-    public void dumpText( String text )
-        throws XMLStreamException
-    {
-        cursor.writeCharacters( text );
+    public void dumpText(String text) throws XMLStreamException {
+        cursor.writeCharacters(text);
     }
 
-    public <Type, Bean extends Builder<Type>> void dumpEntity( Entity<Type, Bean> entity, Type value )
-        throws XMLStreamException
-    {
-        dumpStartElement( entity.getTag() );
+    public <Type, Bean extends Builder<Type>> void dumpEntity(Entity<Type, Bean> entity, Type value)
+            throws XMLStreamException {
+        dumpStartElement(entity.getTag());
         newLine();
         indent++;
 
-        for ( Constituent<Type, Bean, ?, ?> constituent : entity.getElements() )
-        {
-            constituent.doDump( this, value );
+        for (Constituent<Type, Bean, ?, ?> constituent : entity.getElements()) {
+            constituent.doDump(this, value);
         }
 
         --indent;
@@ -103,11 +82,10 @@ public class XMLDumper
         dumpEndElement();
     }
 
-    public <Type, Bean extends Builder<Type>> void dumpDocument( Entity<Type, Bean> rootEntity, Type value )
-        throws XMLStreamException
-    {
+    public <Type, Bean extends Builder<Type>> void dumpDocument(Entity<Type, Bean> rootEntity, Type value)
+            throws XMLStreamException {
         dumpStartDocument();
-        dumpEntity( rootEntity, value );
+        dumpEntity(rootEntity, value);
         dumpEndDocument();
     }
 }

@@ -34,49 +34,43 @@ import org.fedoraproject.mbi.wf.model.WorkflowBuilder;
 /**
  * @author Mikolaj Izdebski
  */
-class WorkflowFactory
-{
-    public Workflow createFromPlan( Platform platform, Plan plan, Subject subject, boolean validate )
-    {
+class WorkflowFactory {
+    public Workflow createFromPlan(Platform platform, Plan plan, Subject subject, boolean validate) {
         WorkflowBuilder workflowBuilder = new WorkflowBuilder();
-        TaskFactory taskFactory = new TaskFactory( workflowBuilder );
+        TaskFactory taskFactory = new TaskFactory(workflowBuilder);
         Map<String, Task> srpms = new LinkedHashMap<>();
         Map<String, Task> checkouts = new LinkedHashMap<>();
 
-        Task gather = taskFactory.createGatherTask( platform );
-        Task gatherRepo = taskFactory.createRepoTask( "platform", Collections.singletonList( gather ) );
+        Task gather = taskFactory.createGatherTask(platform);
+        Task gatherRepo = taskFactory.createRepoTask("platform", Collections.singletonList(gather));
 
         LinkedList<Task> repos = new LinkedList<>();
-        repos.add( gatherRepo );
+        repos.add(gatherRepo);
 
-        for ( Phase phase : plan.getPhases() )
-        {
+        for (Phase phase : plan.getPhases()) {
             List<Task> rpms = new ArrayList<>();
 
-            for ( String component : phase.getComponents() )
-            {
-                Task srpm = srpms.get( component );
-                if ( srpm == null )
-                {
-                    SubjectComponent componentSubject = subject.getSubjectComponent( component );
-                    Task checkout = taskFactory.createCheckoutTask( componentSubject );
-                    checkouts.put( component, checkout );
-                    srpm = taskFactory.createSrpmTask( component, checkout, gatherRepo );
-                    srpms.put( component, srpm );
+            for (String component : phase.getComponents()) {
+                Task srpm = srpms.get(component);
+                if (srpm == null) {
+                    SubjectComponent componentSubject = subject.getSubjectComponent(component);
+                    Task checkout = taskFactory.createCheckoutTask(componentSubject);
+                    checkouts.put(component, checkout);
+                    srpm = taskFactory.createSrpmTask(component, checkout, gatherRepo);
+                    srpms.put(component, srpm);
                 }
 
-                Task rpm = taskFactory.createRpmTask( component, phase.getName(), srpm, repos, plan.getMacros(),
-                                                      phase.getMacros() );
-                rpms.add( rpm );
+                Task rpm = taskFactory.createRpmTask(component, phase.getName(), srpm, repos, plan.getMacros(),
+                        phase.getMacros());
+                rpms.add(rpm);
 
-                if ( validate )
-                {
-                    taskFactory.createValidateTask( component, phase.getName(), checkouts.get( component ), srpm, rpm );
+                if (validate) {
+                    taskFactory.createValidateTask(component, phase.getName(), checkouts.get(component), srpm, rpm);
                 }
             }
 
-            Task repo = taskFactory.createRepoTask( phase.getName(), rpms );
-            repos.addFirst( repo );
+            Task repo = taskFactory.createRepoTask(phase.getName(), rpms);
+            repos.addFirst(repo);
         }
 
         return workflowBuilder.build();

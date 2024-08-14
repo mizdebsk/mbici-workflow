@@ -23,71 +23,54 @@ import java.nio.file.attribute.PosixFilePermissions;
 /**
  * @author Mikolaj Izdebski
  */
-public class CacheManager
-{
+public class CacheManager {
     private final Path resultRootDir;
-
     private final Path cacheRootDir;
-
     private final Path workRootDir;
 
-    public CacheManager( Path resultRootDir, Path cacheRootDir, Path workRootDir )
-        throws IOException
-    {
+    public CacheManager(Path resultRootDir, Path cacheRootDir, Path workRootDir) throws IOException {
         this.resultRootDir = resultRootDir;
         this.cacheRootDir = cacheRootDir;
         this.workRootDir = workRootDir;
     }
 
-    public Path getResultRootDir()
-    {
+    public Path getResultRootDir() {
         return resultRootDir;
     }
 
-    public Path getCacheRootDir()
-    {
+    public Path getCacheRootDir() {
         return cacheRootDir;
     }
 
-    public Path getWorkRootDir()
-    {
+    public Path getWorkRootDir() {
         return workRootDir;
     }
 
-    public Path getResultDir( String taskId, String resultId )
-    {
-        return resultRootDir.resolve( taskId ).resolve( resultId );
+    public Path getResultDir(String taskId, String resultId) {
+        return resultRootDir.resolve(taskId).resolve(resultId);
     }
 
-    public Path getDistGit( String key )
-        throws IOException
-    {
-        Path distgitCacheDir = cacheRootDir.resolve( "distgit" );
-        Files.createDirectories( distgitCacheDir );
-        return distgitCacheDir.resolve( key );
+    public Path getDistGit(String key) throws IOException {
+        Path distgitCacheDir = cacheRootDir.resolve("distgit");
+        Files.createDirectories(distgitCacheDir);
+        return distgitCacheDir.resolve(key);
     }
 
-    public Path getLookaside( String key )
-        throws IOException
-    {
-        Path lookasideCacheDir = cacheRootDir.resolve( "lookaside" );
-        Files.createDirectories( lookasideCacheDir );
-        return lookasideCacheDir.resolve( key );
+    public Path getLookaside(String key) throws IOException {
+        Path lookasideCacheDir = cacheRootDir.resolve("lookaside");
+        Files.createDirectories(lookasideCacheDir);
+        return lookasideCacheDir.resolve(key);
     }
 
-    public Path createPending( String key )
-        throws TaskTermination, IOException
-    {
-        Path cachePendingDir = cacheRootDir.resolve( "pending" );
-        Files.createDirectories( cachePendingDir );
-        return Files.createTempDirectory( cachePendingDir, key,
-                                          PosixFilePermissions.asFileAttribute( PosixFilePermissions.fromString( "rwxr-xr-x" ) ) );
+    public Path createPending(String key) throws TaskTermination, IOException {
+        Path cachePendingDir = cacheRootDir.resolve("pending");
+        Files.createDirectories(cachePendingDir);
+        return Files.createTempDirectory(cachePendingDir, key,
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxr-xr-x")));
     }
 
-    public Path createWorkDir( String key )
-        throws IOException
-    {
-        Files.createDirectories( workRootDir );
-        return Files.createTempDirectory( workRootDir, key + "-" );
+    public Path createWorkDir(String key) throws IOException {
+        Files.createDirectories(workRootDir);
+        return Files.createTempDirectory(workRootDir, key + "-");
     }
 }

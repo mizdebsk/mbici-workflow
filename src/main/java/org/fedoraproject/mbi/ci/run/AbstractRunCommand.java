@@ -28,49 +28,45 @@ import picocli.CommandLine.Option;
 /**
  * @author Mikolaj Izdebski
  */
-abstract class AbstractRunCommand
-    implements Callable<Integer>
-{
-    @Option( names = { "-w", "--workflow" }, required = true, description = " path to Workflow" )
+abstract class AbstractRunCommand implements Callable<Integer> {
+    @Option(names = {"-w", "--workflow"}, required = true, description = " path to Workflow")
     protected Path workflowPath;
 
-    @Option( names = { "-R",
-        "--result-dir" }, required = true, description = "path to a directory where task results and artifacts are written" )
+    @Option(names = {"-R",
+            "--result-dir"}, required = true, description = "path to a directory where task results and artifacts are written")
     protected Path resultDir;
 
-    @Option( names = { "-C",
-        "--cache-dir" }, required = true, description = "path to a directory where dist-git commits and lookaside blobs are cached" )
+    @Option(names = {"-C",
+            "--cache-dir"}, required = true, description = "path to a directory where dist-git commits and lookaside blobs are cached")
     protected Path cacheDir;
 
-    @Option( names = { "-W",
-        "--work-dir" }, required = true, description = "path to a directory under which temporary working directories for tasks are created" )
+    @Option(names = {"-W",
+            "--work-dir"}, required = true, description = "path to a directory under which temporary working directories for tasks are created")
     protected Path workDir;
 
-    @Option( names = { "--max-checkout-tasks" }, description = "limit number of parrallel git checkout tasks" )
+    @Option(names = {"--max-checkout-tasks"}, description = "limit number of parrallel git checkout tasks")
     protected Integer maxCheckoutTasks = 3;
 
-    @Option( names = { "--max-srpm-tasks" }, description = "limit number of parrallel SRPM build tasks" )
+    @Option(names = {"--max-srpm-tasks"}, description = "limit number of parrallel SRPM build tasks")
     protected Integer maxSrpmTasks = 5;
 
-    @Option( names = { "--max-rpm-tasks" }, description = "limit number of parrallel RPM build tasks" )
+    @Option(names = {"--max-rpm-tasks"}, description = "limit number of parrallel RPM build tasks")
     protected Integer maxRpmTasks = 2;
 
-    @Option( names = { "--max-validate-tasks" }, description = "limit number of parrallel validation tasks" )
+    @Option(names = {"--max-validate-tasks"}, description = "limit number of parrallel validation tasks")
     protected Integer maxValidateTasks = 4;
 
-    @Option( names = { "-B", "--batch-mode" }, description = "Run in non-interactive mode" )
+    @Option(names = {"-B", "--batch-mode"}, description = "Run in non-interactive mode")
     protected boolean batchMode;
 
     @Override
-    public Integer call()
-        throws Exception
-    {
-        Workflow wfd = Workflow.readFromXML( workflowPath );
-        CacheManager cacheManager = new CacheManager( resultDir, cacheDir, workDir );
-        Throttle throttle = new ThrottleImpl( maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks );
-        WorkflowExecutor wfe = new WorkflowExecutor( wfd, workflowPath, cacheManager, throttle, batchMode );
+    public Integer call() throws Exception {
+        Workflow wfd = Workflow.readFromXML(workflowPath);
+        CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
+        Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks, maxValidateTasks);
+        WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, cacheManager, throttle, batchMode);
         Workflow wf = wfe.execute();
-        wf.writeToXML( workflowPath );
+        wf.writeToXML(workflowPath);
         return 0;
     }
 }

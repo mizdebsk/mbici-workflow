@@ -23,64 +23,52 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Task
-{
+public class Task {
     private final String id;
-
     private final String handler;
-
     private final List<String> dependencies;
-
     private final List<Parameter> parameters;
 
-    public Task( String id, String handler, List<String> dependencies, List<Parameter> parameters )
-    {
+    public Task(String id, String handler, List<String> dependencies, List<Parameter> parameters) {
         this.id = id;
         this.handler = handler;
-        this.dependencies = Collections.unmodifiableList( dependencies );
-        this.parameters = Collections.unmodifiableList( parameters );
+        this.dependencies = Collections.unmodifiableList(dependencies);
+        this.parameters = Collections.unmodifiableList(parameters);
     }
 
-    public Task( Task descriptor )
-    {
+    public Task(Task descriptor) {
         this.id = descriptor.getId();
         this.handler = descriptor.getHandler();
         this.dependencies = descriptor.getDependencies();
         this.parameters = descriptor.getParameters();
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public String getHandler()
-    {
+    public String getHandler() {
         return handler;
     }
 
-    public List<String> getDependencies()
-    {
+    public List<String> getDependencies() {
         return dependencies;
     }
 
-    public List<Parameter> getParameters()
-    {
+    public List<Parameter> getParameters() {
         return parameters;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Task(" + id + ")";
     }
 
-    static final Entity<Task, TaskBuilder> ENTITY = new Entity<>( "task", TaskBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "id", Task::getId, TaskBuilder::setId );
-        ENTITY.addAttribute( "handler", Task::getHandler, TaskBuilder::setHandler );
-        ENTITY.addMultiAttribute( "dependency", Task::getDependencies, TaskBuilder::addDependency );
-        ENTITY.addRelationship( Parameter.ENTITY, Task::getParameters, TaskBuilder::addParameter );
+    static final Entity<Task, TaskBuilder> ENTITY = new Entity<>("task", TaskBuilder::new);
+    static {
+        ENTITY.addAttribute("id", Task::getId, TaskBuilder::setId);
+        ENTITY.addAttribute("handler", Task::getHandler, TaskBuilder::setHandler);
+        ENTITY.addMultiAttribute("dependency", Task::getDependencies, TaskBuilder::addDependency);
+        ENTITY.addRelationship(Parameter.ENTITY, Task::getParameters, TaskBuilder::addParameter);
     }
 }

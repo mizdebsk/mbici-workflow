@@ -18,8 +18,6 @@ package org.fedoraproject.mbi.wf;
 /**
  * @author Mikolaj Izdebski
  */
-public interface TaskHandler
-{
-    void handleTask( TaskExecution task )
-        throws TaskTermination;
+public interface TaskHandler {
+    void handleTask(TaskExecution task) throws TaskTermination;
 }

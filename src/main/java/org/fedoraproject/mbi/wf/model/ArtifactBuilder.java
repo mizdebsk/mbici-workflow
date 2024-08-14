@@ -20,26 +20,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactBuilder
-    implements Builder<Artifact>
-{
+public class ArtifactBuilder implements Builder<Artifact> {
     private ArtifactType type;
-
     private String name;
 
-    public void setType( ArtifactType type )
-    {
+    public void setType(ArtifactType type) {
         this.type = type;
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public Artifact build()
-    {
-        return new Artifact( type, name );
+    public Artifact build() {
+        return new Artifact(type, name);
     }
 }

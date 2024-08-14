@@ -26,17 +26,15 @@ import picocli.CommandLine.Command;
 /**
  * @author Mikolaj Izdebski
  */
-@Command( name = "mbici-wf", subcommands = { //
-    GenerateCommand.class, //
-    LocalRunCommand.class, //
-    KubeRunCommand.class, //
-    ReportCommand.class, //
-}, mixinStandardHelpOptions = true )
-public class Main
-{
-    public static void main( String... args )
-    {
-        int exitCode = new CommandLine( new Main() ).execute( args );
-        System.exit( exitCode );
+@Command(name = "mbici-wf", subcommands = { //
+        GenerateCommand.class, //
+        LocalRunCommand.class, //
+        KubeRunCommand.class, //
+        ReportCommand.class, //
+}, mixinStandardHelpOptions = true)
+public class Main {
+    public static void main(String... args) {
+        int exitCode = new CommandLine(new Main()).execute(args);
+        System.exit(exitCode);
     }
 }

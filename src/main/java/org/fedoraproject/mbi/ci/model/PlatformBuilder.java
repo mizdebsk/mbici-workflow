@@ -23,26 +23,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class PlatformBuilder
-    implements Builder<Platform>
-{
+public class PlatformBuilder implements Builder<Platform> {
     private final List<Repo> repos = new ArrayList<>();
-
     private final List<String> packages = new ArrayList<>();
 
-    public void addRepo( Repo repo )
-    {
-        repos.add( repo );
+    public void addRepo(Repo repo) {
+        repos.add(repo);
     }
 
-    public void addPackage( String name )
-    {
-        packages.add( name );
+    public void addPackage(String name) {
+        packages.add(name);
     }
 
     @Override
-    public Platform build()
-    {
-        return new Platform( repos, packages );
+    public Platform build() {
+        return new Platform(repos, packages);
     }
 }

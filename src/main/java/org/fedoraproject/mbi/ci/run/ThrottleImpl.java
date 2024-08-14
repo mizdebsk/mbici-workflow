@@ -29,35 +29,28 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-class ThrottleImpl
-    implements Throttle
-{
+class ThrottleImpl implements Throttle {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 
-    public ThrottleImpl( int maxCheckout, int maxSrpm, int maxRpm, int maxValidate )
-    {
-        semaphores.put( CheckoutTaskHandler.class.getName(), new Semaphore( maxCheckout ) );
-        semaphores.put( RpmTaskHandler.class.getName(), new Semaphore( maxRpm ) );
-        semaphores.put( SrpmTaskHandler.class.getName(), new Semaphore( maxSrpm ) );
-        semaphores.put( ValidateTaskHandler.class.getName(), new Semaphore( maxValidate ) );
+    public ThrottleImpl(int maxCheckout, int maxSrpm, int maxRpm, int maxValidate) {
+        semaphores.put(CheckoutTaskHandler.class.getName(), new Semaphore(maxCheckout));
+        semaphores.put(RpmTaskHandler.class.getName(), new Semaphore(maxRpm));
+        semaphores.put(SrpmTaskHandler.class.getName(), new Semaphore(maxSrpm));
+        semaphores.put(ValidateTaskHandler.class.getName(), new Semaphore(maxValidate));
     }
 
     @Override
-    public void acquireCapacity( Task task )
-    {
-        Semaphore sema = semaphores.get( task.getHandler() );
-        if ( sema != null )
-        {
+    public void acquireCapacity(Task task) {
+        Semaphore sema = semaphores.get(task.getHandler());
+        if (sema != null) {
             sema.acquireUninterruptibly();
         }
     }
 
     @Override
-    public void releaseCapacity( Task task )
-    {
-        Semaphore sema = semaphores.get( task.getHandler() );
-        if ( sema != null )
-        {
+    public void releaseCapacity(Task task) {
+        Semaphore sema = semaphores.get(task.getHandler());
+        if (sema != null) {
             sema.release();
         }
     }

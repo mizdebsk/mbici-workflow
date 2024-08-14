@@ -18,7 +18,6 @@ package org.fedoraproject.mbi.xml;
 /**
  * @author Mikolaj Izdebski
  */
-public interface Builder<Type>
-{
+public interface Builder<Type> {
     Type build();
 }

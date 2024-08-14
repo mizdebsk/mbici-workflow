@@ -20,8 +20,6 @@ import picocli.CommandLine.Command;
 /**
  * @author Mikolaj Izdebski
  */
-@Command( name = "run", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true )
-public class LocalRunCommand
-    extends AbstractRunCommand
-{
+@Command(name = "run", description = "execute Workflow and update it in-place", mixinStandardHelpOptions = true)
+public class LocalRunCommand extends AbstractRunCommand {
 }

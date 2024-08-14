@@ -34,130 +34,111 @@ import org.fedoraproject.mbi.wf.model.WorkflowBuilder;
 /**
  * @author Mikolaj Izdebski
  */
-class TaskFactory
-{
+class TaskFactory {
     private static final String RPM_HANDLER = RpmTaskHandler.class.getName();
-
     private static final String SRPM_HANDLER = SrpmTaskHandler.class.getName();
-
     private static final String GATHER_HANDLER = GatherTaskHandler.class.getName();
-
     private static final String CHECKOUT_HANDLER = CheckoutTaskHandler.class.getName();
-
     private static final String REPO_HANDLER = RepoTaskHandler.class.getName();
-
     private static final String VALIDATE_HANDLER = ValidateTaskHandler.class.getName();
 
     private final WorkflowBuilder workflowBuilder;
 
-    public TaskFactory( WorkflowBuilder workflowBuilder )
-    {
+    public TaskFactory(WorkflowBuilder workflowBuilder) {
         this.workflowBuilder = workflowBuilder;
     }
 
-    public Task createGatherTask( Platform platform )
-    {
+    public Task createGatherTask(Platform platform) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( "platform" );
-        task.setHandler( GATHER_HANDLER );
+        task.setId("platform");
+        task.setHandler(GATHER_HANDLER);
 
-        for ( Repo repo : platform.getRepos() )
-        {
-            task.addParameter( "repo-" + repo.getName(), repo.getUrl() );
+        for (Repo repo : platform.getRepos()) {
+            task.addParameter("repo-" + repo.getName(), repo.getUrl());
         }
 
         int i = 0;
-        for ( String packageName : platform.getPackages() )
-        {
-            task.addParameter( "package-" + ++i, packageName );
+        for (String packageName : platform.getPackages()) {
+            task.addParameter("package-" + ++i, packageName);
         }
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 
-    public Task createRepoTask( String phase, List<Task> rpms )
-    {
+    public Task createRepoTask(String phase, List<Task> rpms) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( phase + "-repo" );
-        task.setHandler( REPO_HANDLER );
+        task.setId(phase + "-repo");
+        task.setHandler(REPO_HANDLER);
 
-        for ( Task rpm : rpms )
-        {
-            task.addDependency( rpm.getId() );
+        for (Task rpm : rpms) {
+            task.addDependency(rpm.getId());
         }
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 
-    public Task createCheckoutTask( SubjectComponent cs )
-    {
+    public Task createCheckoutTask(SubjectComponent cs) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( cs.getName() + "-checkout" );
-        task.setHandler( CHECKOUT_HANDLER );
-        task.addParameter( "scm", cs.getScm() );
-        task.addParameter( "commit", cs.getCommit() );
-        task.addParameter( "lookaside", cs.getLookaside() );
+        task.setId(cs.getName() + "-checkout");
+        task.setHandler(CHECKOUT_HANDLER);
+        task.addParameter("scm", cs.getScm());
+        task.addParameter("commit", cs.getCommit());
+        task.addParameter("lookaside", cs.getLookaside());
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 
-    public Task createSrpmTask( String component, Task checkout, Task repo )
-    {
+    public Task createSrpmTask(String component, Task checkout, Task repo) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( component + "-srpm" );
-        task.setHandler( SRPM_HANDLER );
-        task.addDependency( checkout.getId() );
-        task.addDependency( repo.getId() );
+        task.setId(component + "-srpm");
+        task.setHandler(SRPM_HANDLER);
+        task.addDependency(checkout.getId());
+        task.addDependency(repo.getId());
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 
-    public Task createRpmTask( String component, String phase, Task srpm, List<Task> repos, List<Macro> planMacros,
-                               List<Macro> phaseMacros )
-    {
+    public Task createRpmTask(String component, String phase, Task srpm, List<Task> repos, List<Macro> planMacros,
+            List<Macro> phaseMacros) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( component + "-" + phase + "-rpm" );
-        task.setHandler( RPM_HANDLER );
-        task.addDependency( srpm.getId() );
-        for ( Task repo : repos )
-        {
-            task.addDependency( repo.getId() );
+        task.setId(component + "-" + phase + "-rpm");
+        task.setHandler(RPM_HANDLER);
+        task.addDependency(srpm.getId());
+        for (Task repo : repos) {
+            task.addDependency(repo.getId());
         }
 
-        for ( Macro macro : planMacros )
-        {
-            task.addParameter( macro.getName(), macro.getValue() );
+        for (Macro macro : planMacros) {
+            task.addParameter(macro.getName(), macro.getValue());
         }
 
-        for ( Macro macro : phaseMacros )
-        {
-            task.addParameter( macro.getName(), macro.getValue() );
+        for (Macro macro : phaseMacros) {
+            task.addParameter(macro.getName(), macro.getValue());
         }
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 
-    public Task createValidateTask( String component, String phase, Task checkout, Task srpm, Task rpm )
-    {
+    public Task createValidateTask(String component, String phase, Task checkout, Task srpm, Task rpm) {
         TaskBuilder task = new TaskBuilder();
-        task.setId( component + "-" + phase + "-validate" );
-        task.setHandler( VALIDATE_HANDLER );
-        task.addDependency( checkout.getId() );
-        task.addDependency( srpm.getId() );
-        task.addDependency( rpm.getId() );
+        task.setId(component + "-" + phase + "-validate");
+        task.setHandler(VALIDATE_HANDLER);
+        task.addDependency(checkout.getId());
+        task.addDependency(srpm.getId());
+        task.addDependency(rpm.getId());
 
         Task taskDescriptor = task.build();
-        workflowBuilder.addTask( taskDescriptor );
+        workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
     }
 }

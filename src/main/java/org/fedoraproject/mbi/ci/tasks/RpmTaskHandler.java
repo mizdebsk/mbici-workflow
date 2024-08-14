@@ -30,40 +30,29 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class RpmTaskHandler
-    implements TaskHandler
-{
+public class RpmTaskHandler implements TaskHandler {
     private final List<Parameter> macros;
 
-    public RpmTaskHandler( Task task )
-    {
+    public RpmTaskHandler(Task task) {
         macros = task.getParameters();
     }
 
     @Override
-    public void handleTask( TaskExecution taskExecution )
-        throws TaskTermination
-    {
-        Path srpmPath = taskExecution.getDependencyArtifact( ArtifactType.SRPM );
+    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
+        Path srpmPath = taskExecution.getDependencyArtifact(ArtifactType.SRPM);
         Mock mock = new Mock();
-        for ( Parameter param : macros )
-        {
-            mock.addMacro( param.getName(), param.getValue() );
+        for (Parameter param : macros) {
+            mock.addMacro(param.getName(), param.getValue());
         }
-        mock.run( taskExecution, "--rebuild", srpmPath.toString() );
-        try ( var s =
-            Files.find( taskExecution.getResultDir(), 1, ( p, bfa ) -> p.getFileName().toString().endsWith( ".rpm" )
-                && !p.getFileName().toString().endsWith( ".src.rpm" ) && bfa.isRegularFile() ) )
-        {
-            for ( var it = s.iterator(); it.hasNext(); )
-            {
-                taskExecution.addArtifact( ArtifactType.RPM, it.next().getFileName().toString() );
+        mock.run(taskExecution, "--rebuild", srpmPath.toString());
+        try (var s = Files.find(taskExecution.getResultDir(), 1, (p, bfa) -> p.getFileName().toString().endsWith(".rpm")
+                && !p.getFileName().toString().endsWith(".src.rpm") && bfa.isRegularFile())) {
+            for (var it = s.iterator(); it.hasNext();) {
+                taskExecution.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
             }
+        } catch (IOException e) {
+            throw TaskTermination.error("I/O error when looknig for RPM files: " + e.getMessage());
         }
-        catch ( IOException e )
-        {
-            throw TaskTermination.error( "I/O error when looknig for RPM files: " + e.getMessage() );
-        }
-        TaskTermination.success( "Binary RPMs were built in mock" );
+        TaskTermination.success("Binary RPMs were built in mock");
     }
 }

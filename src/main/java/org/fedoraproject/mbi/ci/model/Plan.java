@@ -27,44 +27,34 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Plan
-{
+public class Plan {
     private final List<Phase> phases;
-
     private final List<Macro> macros;
 
-    public Plan( List<Phase> phases, List<Macro> macros )
-    {
-        this.phases = Collections.unmodifiableList( phases );
-        this.macros = Collections.unmodifiableList( macros );
+    public Plan(List<Phase> phases, List<Macro> macros) {
+        this.phases = Collections.unmodifiableList(phases);
+        this.macros = Collections.unmodifiableList(macros);
     }
 
-    public List<Phase> getPhases()
-    {
+    public List<Phase> getPhases() {
         return phases;
     }
 
-    public List<Macro> getMacros()
-    {
+    public List<Macro> getMacros() {
         return macros;
     }
 
-    static final Entity<Plan, PlanBuilder> ENTITY = new Entity<>( "plan", PlanBuilder::new );
-    static
-    {
-        ENTITY.addRelationship( Phase.ENTITY, Plan::getPhases, PlanBuilder::addPhase );
-        ENTITY.addRelationship( Macro.ENTITY, Plan::getMacros, PlanBuilder::addMacro );
+    static final Entity<Plan, PlanBuilder> ENTITY = new Entity<>("plan", PlanBuilder::new);
+    static {
+        ENTITY.addRelationship(Phase.ENTITY, Plan::getPhases, PlanBuilder::addPhase);
+        ENTITY.addRelationship(Macro.ENTITY, Plan::getMacros, PlanBuilder::addMacro);
     }
 
-    public static Plan readFromXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        return ENTITY.readFromXML( path );
+    public static Plan readFromXML(Path path) throws IOException, XMLStreamException {
+        return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML( Path path )
-        throws IOException, XMLStreamException
-    {
-        ENTITY.writeToXML( path, this );
+    public void writeToXML(Path path) throws IOException, XMLStreamException {
+        ENTITY.writeToXML(path, this);
     }
 }

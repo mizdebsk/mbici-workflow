@@ -20,32 +20,26 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Parameter
-{
+public class Parameter {
     private final String name;
-
     private final String value;
 
-    public Parameter( String name, String value )
-    {
+    public Parameter(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 
-    static final Entity<Parameter, ParameterBuilder> ENTITY = new Entity<>( "parameter", ParameterBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "name", Parameter::getName, ParameterBuilder::setName );
-        ENTITY.addAttribute( "value", Parameter::getValue, ParameterBuilder::setValue );
+    static final Entity<Parameter, ParameterBuilder> ENTITY = new Entity<>("parameter", ParameterBuilder::new);
+    static {
+        ENTITY.addAttribute("name", Parameter::getName, ParameterBuilder::setName);
+        ENTITY.addAttribute("value", Parameter::getValue, ParameterBuilder::setValue);
     }
 }

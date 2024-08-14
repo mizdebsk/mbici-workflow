@@ -19,7 +19,6 @@ package org.fedoraproject.mbi.xml;
  * @author Mikolaj Izdebski
  */
 @FunctionalInterface
-public interface Setter<OuterType, NestedType>
-{
-    void set( OuterType object, NestedType value );
+public interface Setter<OuterType, NestedType> {
+    void set(OuterType object, NestedType value);
 }

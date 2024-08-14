@@ -20,26 +20,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class MacroBuilder
-    implements Builder<Macro>
-{
+public class MacroBuilder implements Builder<Macro> {
     private String name;
-
     private String value;
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setValue( String value )
-    {
+    public void setValue(String value) {
         this.value = value;
     }
 
     @Override
-    public Macro build()
-    {
-        return new Macro( name, value );
+    public Macro build() {
+        return new Macro(name, value);
     }
 }

@@ -20,26 +20,20 @@ import org.fedoraproject.mbi.xml.Builder;
 /**
  * @author Mikolaj Izdebski
  */
-public class RepoBuilder
-    implements Builder<Repo>
-{
+public class RepoBuilder implements Builder<Repo> {
     private String name;
-
     private String url;
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setUrl( String url )
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
 
     @Override
-    public Repo build()
-    {
-        return new Repo( name, url );
+    public Repo build() {
+        return new Repo(name, url);
     }
 }

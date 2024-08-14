@@ -20,32 +20,26 @@ import org.fedoraproject.mbi.xml.Entity;
 /**
  * @author Mikolaj Izdebski
  */
-public class Repo
-{
+public class Repo {
     private final String name;
-
     private final String url;
 
-    public Repo( String name, String url )
-    {
+    public Repo(String name, String url) {
         this.name = name;
         this.url = url;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
 
-    static final Entity<Repo, RepoBuilder> ENTITY = new Entity<>( "repo", RepoBuilder::new );
-    static
-    {
-        ENTITY.addAttribute( "name", Repo::getName, RepoBuilder::setName );
-        ENTITY.addAttribute( "url", Repo::getUrl, RepoBuilder::setUrl );
+    static final Entity<Repo, RepoBuilder> ENTITY = new Entity<>("repo", RepoBuilder::new);
+    static {
+        ENTITY.addAttribute("name", Repo::getName, RepoBuilder::setName);
+        ENTITY.addAttribute("url", Repo::getUrl, RepoBuilder::setUrl);
     }
 }

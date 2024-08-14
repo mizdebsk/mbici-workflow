@@ -20,56 +20,46 @@ import org.fedoraproject.mbi.wf.model.Task;
 /**
  * @author Mikolaj Izdebski
  */
-public class BatchLogger
-    implements Logger
-{
-    private void log( Object... args )
-    {
+public class BatchLogger implements Logger {
+    private void log(Object... args) {
         StringBuilder sb = new StringBuilder();
 
-        for ( Object arg : args )
-        {
-            sb.append( arg.toString() );
+        for (Object arg : args) {
+            sb.append(arg.toString());
         }
 
-        System.err.println( sb );
+        System.err.println(sb);
     }
 
     @Override
-    public void logTaskRunning( Task task )
-    {
-        log( task, " running" );
+    public void logTaskRunning(Task task) {
+        log(task, " running");
     }
 
     @Override
-    public void logTaskSucceeded( FinishedTask finishedTask )
-    {
-        log( finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(), ", reason: ",
-             finishedTask.getResult().getOutcomeReason() );
+    public void logTaskSucceeded(FinishedTask finishedTask) {
+        log(finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(), ", reason: ",
+                finishedTask.getResult().getOutcomeReason());
     }
 
     @Override
-    public void logTaskFailed( FinishedTask finishedTask )
-    {
-        log( finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(), ", reason: ",
-             finishedTask.getResult().getOutcomeReason() );
+    public void logTaskFailed(FinishedTask finishedTask) {
+        log(finishedTask.getTask(), " finished; outcome is ", finishedTask.getResult().getOutcome(), ", reason: ",
+                finishedTask.getResult().getOutcomeReason());
     }
 
     @Override
-    public void logTaskReused( FinishedTask finishedTask )
-    {
-        log( finishedTask.getTask(), " cached result was reused" );
+    public void logTaskReused(FinishedTask finishedTask) {
+        log(finishedTask.getTask(), " cached result was reused");
     }
 
     @Override
-    public void logWorkflowSucceeded()
-    {
-        log( "Workflow complete" );
+    public void logWorkflowSucceeded() {
+        log("Workflow complete");
     }
 
     @Override
-    public void logWorkflowFailed()
-    {
-        log( "Workflow INCOMPLETE" );
+    public void logWorkflowFailed() {
+        log("Workflow INCOMPLETE");
     }
 }
