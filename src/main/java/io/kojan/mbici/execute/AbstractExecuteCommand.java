@@ -56,6 +56,12 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
     @Option(names = {"-B", "--batch-mode"}, description = "Run in non-interactive mode")
     protected boolean batchMode;
 
+    @Option(names = {"-h", "--webhook-url"}, description = "Notify webhook about workflow state changes")
+    protected String webhookUrl;
+
+    @Option(names = {"-t", "--webhook-token"}, description = "Bearer token to use for webhook authorization")
+    protected String webhookToken;
+
     @Override
     public Integer call() throws Exception {
         Workflow wfd = Workflow.readFromXML(workflowPath);
@@ -68,6 +74,12 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         dumper.setDaemon(true);
         dumper.start();
         wfe.addExecutionListener(dumper);
+        if (webhookUrl != null) {
+            WebHookDumper webhook = new WebHookDumper(webhookUrl, webhookToken);
+            webhook.setDaemon(true);
+            webhook.start();
+            wfe.addExecutionListener(webhook);
+        }
         Workflow wf = wfe.execute();
         wf.writeToXML(workflowPath);
         return 0;
