@@ -96,7 +96,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
               <attach>false</attach>
               <archive>
                 <manifest>
-                  <mainClass>org.fedoraproject.mbi.ci.Main</mainClass>
+                  <mainClass>io.kojan.mbici.Main</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>
