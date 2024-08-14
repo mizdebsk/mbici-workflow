@@ -18,7 +18,7 @@ package org.fedoraproject.mbi.ci.model;
 import java.util.Collections;
 import java.util.List;
 
-import org.fedoraproject.mbi.xml.Entity;
+import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski

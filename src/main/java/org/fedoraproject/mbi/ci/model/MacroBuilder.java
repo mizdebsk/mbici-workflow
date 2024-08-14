@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.mbi.ci.model;
 
-import org.fedoraproject.mbi.xml.Builder;
+import io.kojan.xml.Builder;
 
 /**
  * @author Mikolaj Izdebski

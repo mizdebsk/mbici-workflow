@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.mbi.wf.model;
 
-import org.fedoraproject.mbi.xml.Entity;
+import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski

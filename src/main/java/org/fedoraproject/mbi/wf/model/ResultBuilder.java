@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fedoraproject.mbi.xml.Builder;
+import io.kojan.xml.Builder;
 
 /**
  * @author Mikolaj Izdebski

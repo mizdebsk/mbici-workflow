@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.fedoraproject.mbi.xml.Entity;
+import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski
