@@ -2,7 +2,7 @@
 
 Name:           mbici-workflow
 Version:        1.0.0~SNAPSHOT
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        MBICI Workflow
 License:        Apache-2.0
 URL:            https://github.com/mizdebsk/mbici-workflow
@@ -68,5 +68,8 @@ install -p -m 644 mbici-wf_completion %{buildroot}%{_datadir}/bash-completion/co
 %license LICENSE AUTHORS
 
 %changelog
+* Thu Aug 15 2024 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.0.0~SNAPSHOT-2
+- Update to latest snapshot
+
 * Tue Aug 13 2024 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.0.0~SNAPSHOT-1
 - Initial packaging
