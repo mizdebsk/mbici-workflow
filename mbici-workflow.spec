@@ -41,11 +41,11 @@ mvn clean verify
 native-image -jar target/mbici-workflow.jar
 
 # Generate manpages
-java -cp $(echo -n $HOME/.m2/repository/info/picocli/picocli-codegen/*/picocli-codegen-*.jar):$(echo -n $HOME/.m2/repository/info/picocli/picocli/*/picocli-*.jar):target/classes picocli.codegen.docgen.manpage.ManPageGenerator -d man io.kojan.mbici.Main
+java -cp $(echo -n $HOME/.m2/repository/info/picocli/picocli-codegen/*/picocli-codegen-*.jar):target/mbici-workflow.jar picocli.codegen.docgen.manpage.ManPageGenerator -d man io.kojan.mbici.Main
 asciidoctor -b manpage man/*.adoc
 
 # Generate bash completion
-java -cp $(echo -n $HOME/.m2/repository/info/picocli/picocli/*/picocli-*.jar):target/classes picocli.AutoComplete io.kojan.mbici.Main
+java -cp target/mbici-workflow.jar picocli.AutoComplete io.kojan.mbici.Main
 
 %install
 # Install native binary
