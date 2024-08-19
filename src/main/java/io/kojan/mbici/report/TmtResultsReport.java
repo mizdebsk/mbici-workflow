@@ -57,8 +57,8 @@ public class TmtResultsReport extends Report {
             };
 
             Duration duration = Duration.between(result.getTimeStarted(), result.getTimeFinished());
-            String durationString = String.format("%d:%02d:%02d", duration.toHours(), //
-                    duration.toMinutesPart(), duration.toSecondsPart());
+            String durationString = "%d:%02d:%02d".formatted( duration.toHours(), //
+                duration.toMinutesPart(), duration.toSecondsPart() );
 
             add("- name: /task/" + result.getTaskId());
             add("  result: " + tmtOutcome);
