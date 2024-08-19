@@ -48,7 +48,7 @@ class Mock {
             bw.write("config_opts['plugin_conf']['yum_cache_enable'] = False\n");
             bw.write("config_opts['plugin_conf']['root_cache_enable'] = False\n");
             bw.write("config_opts['plugin_conf']['package_state_enable'] = False\n");
-            bw.write("config_opts['plugin_conf']['tmpfs_enable'] = True\n");
+            bw.write("config_opts['plugin_conf']['tmpfs_enable'] = False\n");
             bw.write("config_opts['plugin_conf']['tmpfs_opts']['required_ram_mb'] = 2048\n");
             bw.write("config_opts['plugin_conf']['tmpfs_opts']['max_fs_size'] = '4g'\n");
             // bw.write( "config_opts['nosync'] = True\n" );
@@ -93,6 +93,7 @@ class Mock {
         }
 
         Command mock = new Command("mock");
+        mock.addArg("--enable-plugin", "tmpfs");
         mock.addArg("-r", mockConfPath.toString());
         mock.addArg("--resultdir", taskExecution.getResultDir().toString());
         mock.addArg(mockArgs);
