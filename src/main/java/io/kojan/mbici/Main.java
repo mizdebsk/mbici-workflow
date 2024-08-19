@@ -15,6 +15,9 @@
  */
 package io.kojan.mbici;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import io.kojan.mbici.execute.KubeExecuteCommand;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
@@ -35,7 +38,9 @@ import picocli.CommandLine.Command;
 }, mixinStandardHelpOptions = true)
 public class Main {
     public static void main(String... args) {
-        int exitCode = new CommandLine(new Main()).execute(args);
+        int exitCode = new CommandLine(new Main()) //
+                .registerConverter(Path.class, arg -> Paths.get(arg).toAbsolutePath()) //
+                .execute(args);
         System.exit(exitCode);
     }
 }
