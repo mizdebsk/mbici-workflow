@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.subject;
 
+import io.kojan.mbici.model.Subject;
+import io.kojan.mbici.model.SubjectComponent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
@@ -23,20 +25,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
-import io.kojan.mbici.model.Subject;
-import io.kojan.mbici.model.SubjectComponent;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "local-subject", description = "generate Subject from local dist-git repos", mixinStandardHelpOptions = true)
+@Command(
+        name = "local-subject",
+        description = "generate Subject from local dist-git repos",
+        mixinStandardHelpOptions = true)
 public class LocalSubjectCommand extends AbstractSubjectCommand {
 
-    @Option(names = {"-S",
-            "--scm"}, required = true, description = "path to directory containing dist-git repositories")
+    @Option(
+            names = {"-S", "--scm"},
+            required = true,
+            description = "path to directory containing dist-git repositories")
     protected Path scmPath;
 
-    @Option(names = {"-r", "--ref"}, description = "git ref to use in each dist-git repository")
+    @Option(
+            names = {"-r", "--ref"},
+            description = "git ref to use in each dist-git repository")
     protected String ref = "rawhide";
 
     private String resolveRef(Path repo, String ref) throws InterruptedException, IOException {
@@ -52,7 +58,8 @@ public class LocalSubjectCommand extends AbstractSubjectCommand {
         process.getInputStream().transferTo(bis);
         int exitCode = process.waitFor();
         if (exitCode != 0) {
-            throw new RuntimeException("git rev-parse failed with exit code " + exitCode + " for repo " + repo);
+            throw new RuntimeException(
+                    "git rev-parse failed with exit code " + exitCode + " for repo " + repo);
         }
 
         return new String(bis.toByteArray()).strip();
@@ -64,9 +71,10 @@ public class LocalSubjectCommand extends AbstractSubjectCommand {
         for (String component : components) {
             Path repo = scmPath.resolve(component);
             String commit = resolveRef(repo, ref);
-            subjComps.add(new SubjectComponent(component, repo.toString(), commit, lookaside + "/" + component));
+            subjComps.add(
+                    new SubjectComponent(
+                            component, repo.toString(), commit, lookaside + "/" + component));
         }
         return new Subject(subjComps);
     }
-
 }

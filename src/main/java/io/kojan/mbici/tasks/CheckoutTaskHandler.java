@@ -15,6 +15,12 @@
  */
 package io.kojan.mbici.tasks;
 
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskHandler;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
+import io.kojan.workflow.model.Parameter;
+import io.kojan.workflow.model.Task;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -22,13 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import io.kojan.workflow.TaskExecution;
-import io.kojan.workflow.TaskHandler;
-import io.kojan.workflow.TaskTermination;
-import io.kojan.workflow.model.ArtifactType;
-import io.kojan.workflow.model.Parameter;
-import io.kojan.workflow.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -46,17 +45,18 @@ public class CheckoutTaskHandler implements TaskHandler {
         String lookaside = null;
         for (Parameter param : task.getParameters()) {
             switch (param.getName()) {
-                case "scm" :
+                case "scm":
                     scm = param.getValue();
                     break;
-                case "commit" :
+                case "commit":
                     commit = param.getValue();
                     break;
-                case "lookaside" :
+                case "lookaside":
                     lookaside = param.getValue();
                     break;
-                default :
-                    throw new IllegalArgumentException("Unknown checkout task parameter: " + param.getName());
+                default:
+                    throw new IllegalArgumentException(
+                            "Unknown checkout task parameter: " + param.getName());
             }
         }
 
@@ -75,7 +75,8 @@ public class CheckoutTaskHandler implements TaskHandler {
         this.lookaside = lookaside;
     }
 
-    private void runGit(String logName, TaskExecution taskExecution, String... args) throws TaskTermination {
+    private void runGit(String logName, TaskExecution taskExecution, String... args)
+            throws TaskTermination {
         Command git = new Command("git");
         git.setName(logName);
         git.addArg("--git-dir", taskExecution.getWorkDir().resolve("git").toString());
@@ -91,7 +92,8 @@ public class CheckoutTaskHandler implements TaskHandler {
         try {
             Files.createSymbolicLink(artifact, dgCache);
         } catch (IOException e) {
-            TaskTermination.error("I/O error when linking artifact " + artifact + ": " + e.getMessage());
+            TaskTermination.error(
+                    "I/O error when linking artifact " + artifact + ": " + e.getMessage());
         }
 
         if (Files.exists(dgCache)) {
@@ -100,9 +102,25 @@ public class CheckoutTaskHandler implements TaskHandler {
         }
         Path workTree = taskExecution.getCacheManager().createPending("checkout-" + commit);
         runGit("git-init", taskExecution, "init", "--bare");
-        runGit("git-fetch", taskExecution, "-c", "http.version=HTTP/1.1", "remote", "add", "--fetch", "origin", scm);
+        runGit(
+                "git-fetch",
+                taskExecution,
+                "-c",
+                "http.version=HTTP/1.1",
+                "remote",
+                "add",
+                "--fetch",
+                "origin",
+                scm);
         Files.createDirectories(workTree);
-        runGit("git-reset", taskExecution, "--work-tree", workTree.toString(), "reset", "--hard", commit);
+        runGit(
+                "git-reset",
+                taskExecution,
+                "--work-tree",
+                workTree.toString(),
+                "reset",
+                "--hard",
+                commit);
         for (String line : Files.readAllLines(workTree.resolve("sources"))) {
             Pattern pattern = Pattern.compile("^SHA512 \\(([^)]+)\\) = ([0-9a-f]{128})$");
             Matcher matcher = pattern.matcher(line);
@@ -114,7 +132,10 @@ public class CheckoutTaskHandler implements TaskHandler {
                 if (!Files.exists(lasCache)) {
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
                     curl.downloadFile(url, downloadPath);
-                    Files.move(downloadPath, lasCache, StandardCopyOption.ATOMIC_MOVE,
+                    Files.move(
+                            downloadPath,
+                            lasCache,
+                            StandardCopyOption.ATOMIC_MOVE,
                             StandardCopyOption.REPLACE_EXISTING);
                 }
                 Files.createLink(downloadPath, lasCache);

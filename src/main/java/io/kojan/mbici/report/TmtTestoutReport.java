@@ -22,7 +22,7 @@ import io.kojan.workflow.model.Task;
 
 /**
  * Produces testout.log file with compact description of test result.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class TmtTestoutReport extends Report {

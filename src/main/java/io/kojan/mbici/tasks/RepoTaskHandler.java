@@ -15,15 +15,14 @@
  */
 package io.kojan.mbici.tasks;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import io.kojan.workflow.TaskExecution;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Task;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,7 +30,8 @@ import io.kojan.workflow.model.Task;
 public class RepoTaskHandler implements TaskHandler {
     public RepoTaskHandler(Task task) {
         if (!task.getParameters().isEmpty()) {
-            throw new IllegalArgumentException(getClass().getName() + " does not take any parameters");
+            throw new IllegalArgumentException(
+                    getClass().getName() + " does not take any parameters");
         }
     }
 
@@ -41,7 +41,8 @@ public class RepoTaskHandler implements TaskHandler {
         try {
             Files.createDirectories(repoPath);
         } catch (IOException e) {
-            TaskTermination.error("I/O error when creating directory " + repoPath + ": " + e.getMessage());
+            TaskTermination.error(
+                    "I/O error when creating directory " + repoPath + ": " + e.getMessage());
         }
 
         for (Path rpmPath : taskExecution.getDependencyArtifacts(ArtifactType.RPM)) {
@@ -50,7 +51,11 @@ public class RepoTaskHandler implements TaskHandler {
             try {
                 Files.createSymbolicLink(rpmLinkPath, rpmPath);
             } catch (IOException e) {
-                TaskTermination.error("I/O error when creating symbolic link " + rpmLinkPath + ": " + e.getMessage());
+                TaskTermination.error(
+                        "I/O error when creating symbolic link "
+                                + rpmLinkPath
+                                + ": "
+                                + e.getMessage());
             }
         }
 

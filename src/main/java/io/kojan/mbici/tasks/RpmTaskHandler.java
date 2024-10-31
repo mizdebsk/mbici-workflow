@@ -15,17 +15,16 @@
  */
 package io.kojan.mbici.tasks;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
 import io.kojan.workflow.TaskExecution;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Parameter;
 import io.kojan.workflow.model.Task;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,9 +44,15 @@ public class RpmTaskHandler implements TaskHandler {
             mock.addMacro(param.getName(), param.getValue());
         }
         mock.run(taskExecution, "--rebuild", srpmPath.toString());
-        try (var s = Files.find(taskExecution.getResultDir(), 1, (p, bfa) -> p.getFileName().toString().endsWith(".rpm")
-                && !p.getFileName().toString().endsWith(".src.rpm") && bfa.isRegularFile())) {
-            for (var it = s.iterator(); it.hasNext();) {
+        try (var s =
+                Files.find(
+                        taskExecution.getResultDir(),
+                        1,
+                        (p, bfa) ->
+                                p.getFileName().toString().endsWith(".rpm")
+                                        && !p.getFileName().toString().endsWith(".src.rpm")
+                                        && bfa.isRegularFile())) {
+            for (var it = s.iterator(); it.hasNext(); ) {
                 taskExecution.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
             }
         } catch (IOException e) {

@@ -15,51 +15,73 @@
  */
 package io.kojan.mbici.execute;
 
-import java.nio.file.Path;
-import java.util.concurrent.Callable;
-
 import io.kojan.workflow.CacheManager;
 import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.Throttle;
 import io.kojan.workflow.WorkflowExecutor;
 import io.kojan.workflow.model.Workflow;
+import java.nio.file.Path;
+import java.util.concurrent.Callable;
 import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
 abstract class AbstractExecuteCommand implements Callable<Integer> {
-    @Option(names = {"-w", "--workflow"}, required = true, description = " path to Workflow")
+    @Option(
+            names = {"-w", "--workflow"},
+            required = true,
+            description = " path to Workflow")
     protected Path workflowPath;
 
-    @Option(names = {"-R",
-            "--result-dir"}, required = true, description = "path to a directory where task results and artifacts are written")
+    @Option(
+            names = {"-R", "--result-dir"},
+            required = true,
+            description = "path to a directory where task results and artifacts are written")
     protected Path resultDir;
 
-    @Option(names = {"-C",
-            "--cache-dir"}, required = true, description = "path to a directory where dist-git commits and lookaside blobs are cached")
+    @Option(
+            names = {"-C", "--cache-dir"},
+            required = true,
+            description =
+                    "path to a directory where dist-git commits and lookaside blobs are cached")
     protected Path cacheDir;
 
-    @Option(names = {"-W",
-            "--work-dir"}, required = true, description = "path to a directory under which temporary working directories for tasks are created")
+    @Option(
+            names = {"-W", "--work-dir"},
+            required = true,
+            description =
+                    "path to a directory under which temporary working directories for tasks are created")
     protected Path workDir;
 
-    @Option(names = {"--max-checkout-tasks"}, description = "limit number of parrallel git checkout tasks")
+    @Option(
+            names = {"--max-checkout-tasks"},
+            description = "limit number of parrallel git checkout tasks")
     protected Integer maxCheckoutTasks = 3;
 
-    @Option(names = {"--max-srpm-tasks"}, description = "limit number of parrallel SRPM build tasks")
+    @Option(
+            names = {"--max-srpm-tasks"},
+            description = "limit number of parrallel SRPM build tasks")
     protected Integer maxSrpmTasks = 5;
 
-    @Option(names = {"--max-rpm-tasks"}, description = "limit number of parrallel RPM build tasks")
+    @Option(
+            names = {"--max-rpm-tasks"},
+            description = "limit number of parrallel RPM build tasks")
     protected Integer maxRpmTasks = 2;
 
-    @Option(names = {"-B", "--batch-mode"}, description = "Run in non-interactive mode")
+    @Option(
+            names = {"-B", "--batch-mode"},
+            description = "Run in non-interactive mode")
     protected boolean batchMode;
 
-    @Option(names = {"-h", "--webhook-url"}, description = "Notify webhook about workflow state changes")
+    @Option(
+            names = {"-h", "--webhook-url"},
+            description = "Notify webhook about workflow state changes")
     protected String webhookUrl;
 
-    @Option(names = {"-t", "--webhook-token"}, description = "Bearer token to use for webhook authorization")
+    @Option(
+            names = {"-t", "--webhook-token"},
+            description = "Bearer token to use for webhook authorization")
     protected String webhookToken;
 
     @Override
@@ -68,8 +90,9 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl();
         CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
-        WorkflowExecutor wfe = new WorkflowExecutor(wfd, workflowPath, handlerFactory, cacheManager, throttle,
-                batchMode);
+        WorkflowExecutor wfe =
+                new WorkflowExecutor(
+                        wfd, workflowPath, handlerFactory, cacheManager, throttle, batchMode);
         Dumper dumper = new Dumper(workflowPath);
         dumper.setDaemon(true);
         dumper.start();

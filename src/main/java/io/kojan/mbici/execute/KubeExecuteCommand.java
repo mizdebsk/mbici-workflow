@@ -22,52 +22,93 @@ import picocli.CommandLine.Option;
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "kube-exec", description = "execute Workflow on Kubernetes cluster", mixinStandardHelpOptions = true)
+@Command(
+        name = "kube-exec",
+        description = "execute Workflow on Kubernetes cluster",
+        mixinStandardHelpOptions = true)
 public class KubeExecuteCommand extends AbstractExecuteCommand {
-    @Option(names = {"--namespace"}, description = "Kubernetes Namespace")
+    @Option(
+            names = {"--namespace"},
+            description = "Kubernetes Namespace")
     private String namespace;
 
-    @Option(names = {"--container-image"}, description = "Container image to use for running all commands")
+    @Option(
+            names = {"--container-image"},
+            description = "Container image to use for running all commands")
     private String containerImage = "quay.io/mizdebsk/mock:prod";
 
-    @Option(names = {"--cache-volume-claim-name"}, description = "Name of PersistentVolumeClaim to use for cache")
+    @Option(
+            names = {"--cache-volume-claim-name"},
+            description = "Name of PersistentVolumeClaim to use for cache")
     private String cacheVolumeClaimName = "mbici-cache";
 
-    @Option(names = {"--result-volume-claim-name"}, description = "Name of PersistentVolumeClaim to use for results")
+    @Option(
+            names = {"--result-volume-claim-name"},
+            description = "Name of PersistentVolumeClaim to use for results")
     private String resultVolumeClaimName = "mbici-result";
 
-    @Option(names = {"--pod-running-timeout"}, description = "Pod running timeout")
+    @Option(
+            names = {"--pod-running-timeout"},
+            description = "Pod running timeout")
     private String podRunningTimeout = "30m";
 
-    @Option(names = {"--srpm-cpu-request"}, description = "Requested CPU for running SRPM Pods")
+    @Option(
+            names = {"--srpm-cpu-request"},
+            description = "Requested CPU for running SRPM Pods")
     private String srpmCpuRequest = "500m";
 
-    @Option(names = {"--srpm-cpu-limit"}, description = "Max CPU for running SRPM Pods")
+    @Option(
+            names = {"--srpm-cpu-limit"},
+            description = "Max CPU for running SRPM Pods")
     private String srpmCpuLimit = "2";
 
-    @Option(names = {"--rpm-cpu-request"}, description = "Requested CPU for running RPM Pods")
+    @Option(
+            names = {"--rpm-cpu-request"},
+            description = "Requested CPU for running RPM Pods")
     private String rpmCpuRequest = "1";
 
-    @Option(names = {"--rpm-cpu-limit"}, description = "Max CPU for running RPM Pods")
+    @Option(
+            names = {"--rpm-cpu-limit"},
+            description = "Max CPU for running RPM Pods")
     private String rpmCpuLimit = "4";
 
-    @Option(names = {"--srpm-memory-request"}, description = "Requested memory for running SRPM Pods")
+    @Option(
+            names = {"--srpm-memory-request"},
+            description = "Requested memory for running SRPM Pods")
     private String srpmMemoryRequest = "256Mi";
 
-    @Option(names = {"--srpm-memory-limit"}, description = "Max memory for running SRPM Pods")
+    @Option(
+            names = {"--srpm-memory-limit"},
+            description = "Max memory for running SRPM Pods")
     private String srpmMemoryLimit = "1Gi";
 
-    @Option(names = {"--rpm-memory-request"}, description = "Requested memory for running RPM Pods")
+    @Option(
+            names = {"--rpm-memory-request"},
+            description = "Requested memory for running RPM Pods")
     private String rpmMemoryRequest = "1Gi";
 
-    @Option(names = {"--rpm-memory-limit"}, description = "Max memory for running RPM Pods")
+    @Option(
+            names = {"--rpm-memory-limit"},
+            description = "Max memory for running RPM Pods")
     private String rpmMemoryLimit = "6Gi";
 
     @Override
     public Integer call() throws Exception {
-        Kubernetes kubernetes = new Kubernetes(namespace, containerImage, cacheVolumeClaimName, resultVolumeClaimName,
-                podRunningTimeout, srpmCpuRequest, srpmCpuLimit, rpmCpuRequest, rpmCpuLimit, srpmMemoryRequest,
-                srpmMemoryLimit, rpmMemoryRequest, rpmMemoryLimit);
+        Kubernetes kubernetes =
+                new Kubernetes(
+                        namespace,
+                        containerImage,
+                        cacheVolumeClaimName,
+                        resultVolumeClaimName,
+                        podRunningTimeout,
+                        srpmCpuRequest,
+                        srpmCpuLimit,
+                        rpmCpuRequest,
+                        rpmCpuLimit,
+                        srpmMemoryRequest,
+                        srpmMemoryLimit,
+                        rpmMemoryRequest,
+                        rpmMemoryLimit);
         io.kojan.mbici.tasks.Command.kubernetes = kubernetes;
         return super.call();
     }

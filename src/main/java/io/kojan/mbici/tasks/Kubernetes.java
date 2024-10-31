@@ -1,27 +1,26 @@
 /*-
-* Copyright (c) 2021 Red Hat, Inc.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (c) 2021 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.kojan.mbici.tasks;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.kojan.workflow.CacheManager;
 import io.kojan.workflow.TaskExecution;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Task;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mikolaj Izdebski
@@ -41,10 +40,20 @@ public class Kubernetes {
     private final String rpmMemoryRequest;
     private final String rpmMemoryLimit;
 
-    public Kubernetes(String namespace, String containerImage, String cacheVolumeClaimName,
-            String resultVolumeClaimName, String podRunningTimeout, String srpmCpuRequest, String srpmCpuLimit,
-            String rpmCpuRequest, String rpmCpuLimit, String srpmMemoryRequest, String srpmMemoryLimit,
-            String rpmMemoryRequest, String rpmMemoryLimit) {
+    public Kubernetes(
+            String namespace,
+            String containerImage,
+            String cacheVolumeClaimName,
+            String resultVolumeClaimName,
+            String podRunningTimeout,
+            String srpmCpuRequest,
+            String srpmCpuLimit,
+            String rpmCpuRequest,
+            String rpmCpuLimit,
+            String srpmMemoryRequest,
+            String srpmMemoryLimit,
+            String rpmMemoryRequest,
+            String rpmMemoryLimit) {
         this.namespace = namespace;
         this.containerImage = containerImage;
         this.cacheVolumeClaimName = cacheVolumeClaimName;
@@ -60,7 +69,8 @@ public class Kubernetes {
         this.rpmMemoryLimit = rpmMemoryLimit;
     }
 
-    public List<String> wrapCommand(TaskExecution taskExecution, List<String> command) throws TaskTermination {
+    public List<String> wrapCommand(TaskExecution taskExecution, List<String> command)
+            throws TaskTermination {
         Task task = taskExecution.getTask();
         CacheManager cacheManager = taskExecution.getCacheManager();
 
@@ -69,7 +79,8 @@ public class Kubernetes {
 
         String cpuRequest = task.getHandler().contains("Srpm") ? srpmCpuRequest : rpmCpuRequest;
         String cpuLimit = task.getHandler().contains("Srpm") ? srpmCpuLimit : rpmCpuLimit;
-        String memRequest = task.getHandler().contains("Srpm") ? srpmMemoryRequest : rpmMemoryRequest;
+        String memRequest =
+                task.getHandler().contains("Srpm") ? srpmMemoryRequest : rpmMemoryRequest;
         String memLimit = task.getHandler().contains("Srpm") ? srpmMemoryLimit : rpmMemoryLimit;
 
         StringBuilder pod = new StringBuilder();
@@ -94,15 +105,21 @@ public class Kubernetes {
         pod.append("        \"volumeMounts\": [");
         pod.append("          {");
         pod.append("            \"name\": \"cache\",");
-        pod.append("            \"mountPath\": \"").append(cacheManager.getCacheRootDir().toString()).append("\"");
+        pod.append("            \"mountPath\": \"")
+                .append(cacheManager.getCacheRootDir().toString())
+                .append("\"");
         pod.append("          },");
         pod.append("          {");
         pod.append("            \"name\": \"result\",");
-        pod.append("            \"mountPath\": \"").append(cacheManager.getResultRootDir().toString()).append("\"");
+        pod.append("            \"mountPath\": \"")
+                .append(cacheManager.getResultRootDir().toString())
+                .append("\"");
         pod.append("          },");
         pod.append("          {");
         pod.append("            \"name\": \"work\",");
-        pod.append("            \"mountPath\": \"").append(cacheManager.getWorkRootDir().toString()).append("\"");
+        pod.append("            \"mountPath\": \"")
+                .append(cacheManager.getWorkRootDir().toString())
+                .append("\"");
         pod.append("          }");
         pod.append("        ],");
         pod.append("        \"resources\": {");

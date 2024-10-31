@@ -38,6 +38,7 @@ public class Macro {
     }
 
     static final Entity<Macro, MacroBuilder> ENTITY = new Entity<>("macro", MacroBuilder::new);
+
     static {
         ENTITY.addAttribute("name", Macro::getName, MacroBuilder::setName);
         ENTITY.addAttribute("value", Macro::getValue, MacroBuilder::setValue);

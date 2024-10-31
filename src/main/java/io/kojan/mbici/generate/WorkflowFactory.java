@@ -15,13 +15,6 @@
  */
 package io.kojan.mbici.generate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import io.kojan.mbici.model.Phase;
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
@@ -30,6 +23,12 @@ import io.kojan.mbici.model.SubjectComponent;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.Workflow;
 import io.kojan.workflow.model.WorkflowBuilder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mikolaj Izdebski
@@ -60,8 +59,14 @@ class WorkflowFactory {
                     srpms.put(component, srpm);
                 }
 
-                Task rpm = taskFactory.createRpmTask(component, phase.getName(), srpm, repos, plan.getMacros(),
-                        phase.getMacros());
+                Task rpm =
+                        taskFactory.createRpmTask(
+                                component,
+                                phase.getName(),
+                                srpm,
+                                repos,
+                                plan.getMacros(),
+                                phase.getMacros());
                 rpms.add(rpm);
             }
 

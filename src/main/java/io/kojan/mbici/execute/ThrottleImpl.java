@@ -15,15 +15,14 @@
  */
 package io.kojan.mbici.execute;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
 import io.kojan.workflow.Throttle;
 import io.kojan.workflow.model.Task;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /**
  * @author Mikolaj Izdebski

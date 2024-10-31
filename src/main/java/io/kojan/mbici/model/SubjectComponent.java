@@ -49,12 +49,15 @@ public class SubjectComponent {
         return lookaside;
     }
 
-    static final Entity<SubjectComponent, SubjectComponentBuilder> ENTITY = new Entity<>("component",
-            SubjectComponentBuilder::new);
+    static final Entity<SubjectComponent, SubjectComponentBuilder> ENTITY =
+            new Entity<>("component", SubjectComponentBuilder::new);
+
     static {
         ENTITY.addAttribute("name", SubjectComponent::getName, SubjectComponentBuilder::setName);
         ENTITY.addAttribute("scm", SubjectComponent::getScm, SubjectComponentBuilder::setScm);
-        ENTITY.addAttribute("commit", SubjectComponent::getCommit, SubjectComponentBuilder::setCommit);
-        ENTITY.addAttribute("lookaside", SubjectComponent::getLookaside, SubjectComponentBuilder::setLookaside);
+        ENTITY.addAttribute(
+                "commit", SubjectComponent::getCommit, SubjectComponentBuilder::setCommit);
+        ENTITY.addAttribute(
+                "lookaside", SubjectComponent::getLookaside, SubjectComponentBuilder::setLookaside);
     }
 }

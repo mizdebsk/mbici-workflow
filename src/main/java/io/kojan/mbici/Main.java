@@ -15,31 +15,34 @@
  */
 package io.kojan.mbici;
 
-import java.nio.file.Path;
-
 import io.kojan.mbici.execute.KubeExecuteCommand;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
 import io.kojan.mbici.subject.LocalSubjectCommand;
+import java.nio.file.Path;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "mbici-wf", subcommands = { //
-        LocalSubjectCommand.class, //
-        GenerateCommand.class, //
-        LocalExecuteCommand.class, //
-        KubeExecuteCommand.class, //
-        ReportCommand.class, //
-}, mixinStandardHelpOptions = true)
+@Command(
+        name = "mbici-wf",
+        subcommands = { //
+            LocalSubjectCommand.class, //
+            GenerateCommand.class, //
+            LocalExecuteCommand.class, //
+            KubeExecuteCommand.class, //
+            ReportCommand.class, //
+        },
+        mixinStandardHelpOptions = true)
 public class Main {
     public static void main(String... args) {
-        int exitCode = new CommandLine(new Main()) //
-                .registerConverter(Path.class, arg -> Path.of(arg).toAbsolutePath()) //
-                .execute(args);
+        int exitCode =
+                new CommandLine(new Main()) //
+                        .registerConverter(Path.class, arg -> Path.of(arg).toAbsolutePath()) //
+                        .execute(args);
         System.exit(exitCode);
     }
 }

@@ -15,24 +15,31 @@
  */
 package io.kojan.mbici.subject;
 
+import io.kojan.mbici.model.Phase;
+import io.kojan.mbici.model.Plan;
+import io.kojan.mbici.model.Subject;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
-import io.kojan.mbici.model.Phase;
-import io.kojan.mbici.model.Plan;
-import io.kojan.mbici.model.Subject;
 import picocli.CommandLine.Option;
 
 abstract class AbstractSubjectCommand implements Callable<Integer> {
-    @Option(names = {"-s", "--subject"}, required = true, description = "where to store generated Test Subject")
+    @Option(
+            names = {"-s", "--subject"},
+            required = true,
+            description = "where to store generated Test Subject")
     private Path subjectPath;
 
-    @Option(names = {"-m", "--plan"}, required = true, description = "path to a Build Plan in XML format")
+    @Option(
+            names = {"-m", "--plan"},
+            required = true,
+            description = "path to a Build Plan in XML format")
     private Path planPath;
 
-    @Option(names = {"-L", "--lookaside"}, description = "lookaside cache base URL")
+    @Option(
+            names = {"-L", "--lookaside"},
+            description = "lookaside cache base URL")
     protected String lookaside = "https://src.fedoraproject.org/lookaside/pkgs/rpms";
 
     protected abstract Subject generateSubject(Set<String> components) throws Exception;

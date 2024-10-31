@@ -15,11 +15,10 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.workflow.model.Workflow;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-
-import io.kojan.workflow.model.Workflow;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,7 +34,10 @@ class Dumper extends AbstractDumper {
     protected void dump(Workflow workflow) throws Exception {
         Path tempPath = workflowPath.getParent().resolve("wf.xml.tmp");
         workflow.writeToXML(tempPath);
-        Files.move(tempPath, workflowPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+                tempPath,
+                workflowPath,
+                StandardCopyOption.ATOMIC_MOVE,
+                StandardCopyOption.REPLACE_EXISTING);
     }
-
 }

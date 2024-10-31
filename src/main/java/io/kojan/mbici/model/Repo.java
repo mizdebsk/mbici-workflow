@@ -38,6 +38,7 @@ public class Repo {
     }
 
     static final Entity<Repo, RepoBuilder> ENTITY = new Entity<>("repo", RepoBuilder::new);
+
     static {
         ENTITY.addAttribute("name", Repo::getName, RepoBuilder::setName);
         ENTITY.addAttribute("url", Repo::getUrl, RepoBuilder::setUrl);

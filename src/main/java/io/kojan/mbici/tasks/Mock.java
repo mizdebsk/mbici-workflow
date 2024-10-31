@@ -15,6 +15,9 @@
  */
 package io.kojan.mbici.tasks;
 
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,10 +25,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import io.kojan.workflow.TaskExecution;
-import io.kojan.workflow.TaskTermination;
-import io.kojan.workflow.model.ArtifactType;
 
 /**
  * @author Mikolaj Izdebski
@@ -58,7 +57,12 @@ class Mock {
             bw.write("config_opts['chroot_setup_cmd'] = 'install rpm-build'\n");
             bw.write("\n");
             for (var macro : macros.entrySet()) {
-                bw.write("config_opts['macros']['%" + macro.getKey() + "'] = '" + macro.getValue() + "'\n");
+                bw.write(
+                        "config_opts['macros']['%"
+                                + macro.getKey()
+                                + "'] = '"
+                                + macro.getValue()
+                                + "'\n");
             }
             bw.write("\n");
             bw.write("config_opts['yum.conf'] = \"\"\"\n");

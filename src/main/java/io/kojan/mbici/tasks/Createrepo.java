@@ -15,10 +15,9 @@
  */
 package io.kojan.mbici.tasks;
 
-import java.nio.file.Path;
-
 import io.kojan.workflow.TaskExecution;
 import io.kojan.workflow.TaskTermination;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski

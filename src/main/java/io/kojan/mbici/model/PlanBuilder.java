@@ -15,10 +15,9 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Builder;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.kojan.xml.Builder;
 
 /**
  * @author Mikolaj Izdebski

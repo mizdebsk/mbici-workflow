@@ -15,14 +15,12 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Entity;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamException;
-
-import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski
@@ -44,7 +42,9 @@ public class Platform {
         return packages;
     }
 
-    static final Entity<Platform, PlatformBuilder> ENTITY = new Entity<>("platform", PlatformBuilder::new);
+    static final Entity<Platform, PlatformBuilder> ENTITY =
+            new Entity<>("platform", PlatformBuilder::new);
+
     static {
         ENTITY.addRelationship(Repo.ENTITY, Platform::getRepos, PlatformBuilder::addRepo);
         ENTITY.addMultiAttribute("package", Platform::getPackages, PlatformBuilder::addPackage);

@@ -15,19 +15,17 @@
  */
 package io.kojan.mbici.report;
 
-import java.time.Duration;
-
 import io.kojan.workflow.model.Artifact;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
+import java.time.Duration;
 
 /**
- * Produces results.yaml file in the
- * <a href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format
- * expected by tmt</a>.
- * 
+ * Produces results.yaml file in the <a
+ * href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format expected by tmt</a>.
+ *
  * @author Mikolaj Izdebski
  */
 public class TmtResultsReport extends Report {
@@ -39,9 +37,11 @@ public class TmtResultsReport extends Report {
 
     @Override
     public void body() {
-        boolean failed = workflow.getResults().stream() //
-                .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
-                .findAny().isPresent();
+        boolean failed =
+                workflow.getResults().stream() //
+                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                        .findAny()
+                        .isPresent();
 
         add("- name: /overview");
         add("  result: " + (failed ? "fail" : "pass"));
@@ -50,15 +50,20 @@ public class TmtResultsReport extends Report {
         add("    - result.html");
 
         for (Result result : workflow.getResults()) {
-            String tmtOutcome = switch (result.getOutcome()) {
-                case SUCCESS -> "pass";
-                case FAILURE -> "fail";
-                case ERROR -> "error";
-            };
+            String tmtOutcome =
+                    switch (result.getOutcome()) {
+                        case SUCCESS -> "pass";
+                        case FAILURE -> "fail";
+                        case ERROR -> "error";
+                    };
 
             Duration duration = Duration.between(result.getTimeStarted(), result.getTimeFinished());
-            String durationString = "%d:%02d:%02d".formatted( duration.toHours(), //
-                duration.toMinutesPart(), duration.toSecondsPart() );
+            String durationString =
+                    "%d:%02d:%02d"
+                            .formatted(
+                                    duration.toHours(), //
+                                    duration.toMinutesPart(),
+                                    duration.toSecondsPart());
 
             add("- name: /task/" + result.getTaskId());
             add("  result: " + tmtOutcome);
@@ -68,7 +73,8 @@ public class TmtResultsReport extends Report {
             add("    - " + result.getTaskId() + "/testout.log");
 
             for (Artifact artifact : result.getArtifacts()) {
-                if (artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG) {
+                if (artifact.getType() == ArtifactType.LOG
+                        || artifact.getType() == ArtifactType.CONFIG) {
                     add("    - " + result.getTaskId() + "/" + artifact.getName());
                 }
             }

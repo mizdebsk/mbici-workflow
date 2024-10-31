@@ -15,8 +15,6 @@
  */
 package io.kojan.mbici.generate;
 
-import java.util.List;
-
 import io.kojan.mbici.model.Macro;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Repo;
@@ -29,6 +27,7 @@ import io.kojan.mbici.tasks.SrpmTaskHandler;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.TaskBuilder;
 import io.kojan.workflow.model.WorkflowBuilder;
+import java.util.List;
 
 /**
  * @author Mikolaj Izdebski
@@ -104,7 +103,12 @@ class TaskFactory {
         return taskDescriptor;
     }
 
-    public Task createRpmTask(String component, String phase, Task srpm, List<Task> repos, List<Macro> planMacros,
+    public Task createRpmTask(
+            String component,
+            String phase,
+            Task srpm,
+            List<Task> repos,
+            List<Macro> planMacros,
             List<Macro> phaseMacros) {
         TaskBuilder task = new TaskBuilder();
         task.setId(component + "-" + phase + "-rpm");

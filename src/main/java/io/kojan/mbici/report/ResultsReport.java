@@ -15,14 +15,13 @@
  */
 package io.kojan.mbici.report;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import io.kojan.workflow.model.Artifact;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,12 +35,15 @@ public class ResultsReport extends Report {
 
     @Override
     public void body() {
-        List<Result> failed = workflow.getResults().stream() //
-                .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
-                .collect(Collectors.toList());
+        List<Result> failed =
+                workflow.getResults().stream() //
+                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                        .collect(Collectors.toList());
 
         header("Test outcome");
-        para("This page shows results of ", link("https://fedoraproject.org/wiki/Maven_bootstrapping", "MBI CI"),
+        para(
+                "This page shows results of ",
+                link("https://fedoraproject.org/wiki/Maven_bootstrapping", "MBI CI"),
                 ", which tests whether Maven can be bootstrapped from scratch.");
 
         if (!failed.isEmpty()) {
@@ -52,8 +54,12 @@ public class ResultsReport extends Report {
                 add("<li><strong>", result.getTaskId(), "</strong>");
                 add("<br/>Reason: ", result.getOutcomeReason(), "<br/>(");
                 for (Artifact artifact : result.getArtifacts()) {
-                    if (artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG) {
-                        add(link(result.getTaskId() + "/" + artifact.getName(), artifact.getName()));
+                    if (artifact.getType() == ArtifactType.LOG
+                            || artifact.getType() == ArtifactType.CONFIG) {
+                        add(
+                                link(
+                                        result.getTaskId() + "/" + artifact.getName(),
+                                        artifact.getName()));
                     }
                 }
                 add(")</li>");
@@ -65,12 +71,19 @@ public class ResultsReport extends Report {
             para("Test is still running. Results will appear here once the test finishes.");
         }
 
-        para("Tests consists of a set of tasks, which all must be successfully completed in order for the test to pass. ",
+        para(
+                "Tests consists of a set of tasks, which all must be successfully completed in order for the test to pass. ",
                 "Constituent tasks are steps necessary to build RPM packages from sources specified by ",
-                link("subject.html", "test subject"), " on given ", link("platform.html", "operating system platform"),
-                ", in the way defined by ", link("plan.html", "test plan"), ".");
-        para("Detailed machine-readable information about test results in XML format can be found in ",
-                link("workflow.xml", "workflow.xml"), ".");
+                link("subject.html", "test subject"),
+                " on given ",
+                link("platform.html", "operating system platform"),
+                ", in the way defined by ",
+                link("plan.html", "test plan"),
+                ".");
+        para(
+                "Detailed machine-readable information about test results in XML format can be found in ",
+                link("workflow.xml", "workflow.xml"),
+                ".");
 
         footer();
     }

@@ -15,14 +15,6 @@
  */
 package io.kojan.mbici.report;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Subject;
@@ -34,36 +26,63 @@ import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "report", description = "generate a simple HTML report describing given Workflow", mixinStandardHelpOptions = true)
+@Command(
+        name = "report",
+        description = "generate a simple HTML report describing given Workflow",
+        mixinStandardHelpOptions = true)
 public class ReportCommand implements Callable<Integer> {
-    @Option(names = {"-m", "--plan"}, required = true, description = "path to a Build Plan in XML format")
+    @Option(
+            names = {"-m", "--plan"},
+            required = true,
+            description = "path to a Build Plan in XML format")
     private Path planPath;
 
-    @Option(names = {"-p", "--platform"}, required = true, description = "path to a Platform in XML format")
+    @Option(
+            names = {"-p", "--platform"},
+            required = true,
+            description = "path to a Platform in XML format")
     private Path platformPath;
 
-    @Option(names = {"-s", "--subject"}, required = true, description = "path to a Test Subject in XML format")
+    @Option(
+            names = {"-s", "--subject"},
+            required = true,
+            description = "path to a Test Subject in XML format")
     private Path subjectPath;
 
-    @Option(names = {"-w",
-            "--workflow"}, required = true, description = "path where generated Workflow should be written")
+    @Option(
+            names = {"-w", "--workflow"},
+            required = true,
+            description = "path where generated Workflow should be written")
     private Path workflowPath;
 
-    @Option(names = {"-R",
-            "--result-dir"}, required = true, description = "path to a directory with task results and artifacts")
+    @Option(
+            names = {"-R", "--result-dir"},
+            required = true,
+            description = "path to a directory with task results and artifacts")
     private Path resultDir;
 
-    @Option(names = {"-r",
-            "--report-dir"}, required = true, description = "path to a directory where generated report should be written")
+    @Option(
+            names = {"-r", "--report-dir"},
+            required = true,
+            description = "path to a directory where generated report should be written")
     private Path reportDir;
 
-    @Option(names = {"-t", "--tmt"}, description = "generate tmt results.yaml and include build logs")
+    @Option(
+            names = {"-t", "--tmt"},
+            description = "generate tmt results.yaml and include build logs")
     private boolean full;
 
     @Override
@@ -94,8 +113,9 @@ public class ReportCommand implements Callable<Integer> {
         List<FinishedTask> finishedTasks = new ArrayList<>();
         for (Result result : workflow.getResults()) {
             Task task = tasksById.get(result.getTaskId());
-            FinishedTask finishedTask = new FinishedTask(task, result,
-                    cacheManager.getResultDir(task.getId(), result.getId()));
+            FinishedTask finishedTask =
+                    new FinishedTask(
+                            task, result, cacheManager.getResultDir(task.getId(), result.getId()));
             finishedTasks.add(finishedTask);
         }
 
@@ -113,10 +133,13 @@ public class ReportCommand implements Callable<Integer> {
                 continue;
             }
             for (Artifact artifact : result.getArtifacts()) {
-                if (artifact.getType() == ArtifactType.LOG || artifact.getType() == ArtifactType.CONFIG) {
+                if (artifact.getType() == ArtifactType.LOG
+                        || artifact.getType() == ArtifactType.CONFIG) {
                     Files.createDirectories(subDir);
-                    System.err.println("Publishing " + result.getTaskId() + "/" + artifact.getName());
-                    Files.copy(finishedTask.getArtifact(artifact), subDir.resolve(artifact.getName()));
+                    System.err.println(
+                            "Publishing " + result.getTaskId() + "/" + artifact.getName());
+                    Files.copy(
+                            finishedTask.getArtifact(artifact), subDir.resolve(artifact.getName()));
                 }
             }
         }

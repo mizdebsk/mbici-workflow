@@ -15,10 +15,9 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Entity;
 import java.util.Collections;
 import java.util.List;
-
-import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski
@@ -47,6 +46,7 @@ public class Phase {
     }
 
     static final Entity<Phase, PhaseBuilder> ENTITY = new Entity<>("phase", PhaseBuilder::new);
+
     static {
         ENTITY.addAttribute("name", Phase::getName, PhaseBuilder::setName);
         ENTITY.addMultiAttribute("component", Phase::getComponents, PhaseBuilder::addComponent);

@@ -15,10 +15,9 @@
  */
 package io.kojan.mbici.tasks;
 
-import java.nio.file.Path;
-
 import io.kojan.workflow.TaskExecution;
 import io.kojan.workflow.TaskTermination;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski
@@ -34,7 +33,8 @@ class Curl {
     }
 
     public void downloadFile(String url, Path targetPath) throws TaskTermination {
-        Command curl = new Command("curl", "--http1.1", "-f", "-L", "-o", targetPath.toString(), url);
+        Command curl =
+                new Command("curl", "--http1.1", "-f", "-L", "-o", targetPath.toString(), url);
 
         if (counter++ > 0) {
             curl.setName("curl-" + counter);

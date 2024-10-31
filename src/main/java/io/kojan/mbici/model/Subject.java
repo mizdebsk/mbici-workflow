@@ -15,14 +15,12 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Entity;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamException;
-
-import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski
@@ -48,9 +46,13 @@ public class Subject {
         return null;
     }
 
-    static final Entity<Subject, SubjectBuilder> ENTITY = new Entity<>("subject", SubjectBuilder::new);
+    static final Entity<Subject, SubjectBuilder> ENTITY =
+            new Entity<>("subject", SubjectBuilder::new);
+
     static {
-        ENTITY.addRelationship(SubjectComponent.ENTITY, Subject::getComponentOverrides,
+        ENTITY.addRelationship(
+                SubjectComponent.ENTITY,
+                Subject::getComponentOverrides,
                 SubjectBuilder::addSubjectComponent);
     }
 

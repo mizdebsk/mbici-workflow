@@ -15,6 +15,12 @@
  */
 package io.kojan.mbici.tasks;
 
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskHandler;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
+import io.kojan.workflow.model.Parameter;
+import io.kojan.workflow.model.Task;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,13 +29,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.kojan.workflow.TaskExecution;
-import io.kojan.workflow.TaskHandler;
-import io.kojan.workflow.TaskTermination;
-import io.kojan.workflow.model.ArtifactType;
-import io.kojan.workflow.model.Parameter;
-import io.kojan.workflow.model.Task;
 
 /**
  * @author Mikolaj Izdebski
@@ -47,12 +46,14 @@ public class GatherTaskHandler implements TaskHandler {
             } else if (param.getName().startsWith("repo-")) {
                 repos.put(param.getName().substring(5), param.getValue());
             } else {
-                throw new IllegalArgumentException("Unknown gather task parameter: " + param.getName());
+                throw new IllegalArgumentException(
+                        "Unknown gather task parameter: " + param.getName());
             }
         }
     }
 
-    private void writeDnfConfig(Path dnfConfPath, Map<String, String> repos) throws TaskTermination {
+    private void writeDnfConfig(Path dnfConfPath, Map<String, String> repos)
+            throws TaskTermination {
         try (BufferedWriter bw = Files.newBufferedWriter(dnfConfPath)) {
             bw.write("[main]\n");
             bw.write("gpgcheck=0\n");
@@ -70,8 +71,12 @@ public class GatherTaskHandler implements TaskHandler {
         }
     }
 
-    private void downloadPackages(TaskExecution taskExecution, List<String> packageNames, Path downloadDir,
-            Path dnfConfPath) throws TaskTermination {
+    private void downloadPackages(
+            TaskExecution taskExecution,
+            List<String> packageNames,
+            Path downloadDir,
+            Path dnfConfPath)
+            throws TaskTermination {
         Command dnf = new Command("dnf5");
         dnf.addArg("--assumeyes");
         dnf.addArg("--releasever", "dummy");
@@ -91,9 +96,15 @@ public class GatherTaskHandler implements TaskHandler {
 
         downloadPackages(taskExecution, packageNames, taskExecution.getResultDir(), dnfConfPath);
 
-        try (var s = Files.find(taskExecution.getResultDir(), 1, (p, bfa) -> p.getFileName().toString().endsWith(".rpm")
-                && !p.getFileName().toString().endsWith(".src.rpm") && bfa.isRegularFile())) {
-            for (var it = s.iterator(); it.hasNext();) {
+        try (var s =
+                Files.find(
+                        taskExecution.getResultDir(),
+                        1,
+                        (p, bfa) ->
+                                p.getFileName().toString().endsWith(".rpm")
+                                        && !p.getFileName().toString().endsWith(".src.rpm")
+                                        && bfa.isRegularFile())) {
+            for (var it = s.iterator(); it.hasNext(); ) {
                 taskExecution.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
             }
         } catch (IOException e) {

@@ -28,7 +28,8 @@ import java.util.function.Function;
 abstract class Report {
     private final StringBuilder sb = new StringBuilder();
 
-    private static final String STATIC = "https://mbi-artifacts.s3.eu-central-1.amazonaws.com/static";
+    private static final String STATIC =
+            "https://mbi-artifacts.s3.eu-central-1.amazonaws.com/static";
 
     public static String link(String href, String text) {
         return "<a href='" + href + "'>" + text + "</a>";
@@ -54,8 +55,14 @@ abstract class Report {
         add("<meta charset='utf-8'>");
         add("<meta name='viewport' content='width=device-width, initial-scale=1'>");
         add("<title>MBI &ndash; ", title, "</title>");
-        add("<link href='", STATIC, "/fontawesome/css/all.min.css' type='text/css' rel='stylesheet'>");
-        add("<link href='", STATIC, "/bootstrap/css/bootstrap.min.css' type='text/css' rel='stylesheet'>");
+        add(
+                "<link href='",
+                STATIC,
+                "/fontawesome/css/all.min.css' type='text/css' rel='stylesheet'>");
+        add(
+                "<link href='",
+                STATIC,
+                "/bootstrap/css/bootstrap.min.css' type='text/css' rel='stylesheet'>");
         add("<link href='", STATIC, "/custom.css' rel='stylesheet'>");
         add("</head>");
 
@@ -64,14 +71,22 @@ abstract class Report {
         add("<div class='container-fluid'>");
 
         add("<svg class='logo' style='font-size:65px' height='47' width='150'>");
-        add("<svg y='0' height='4' width='150' viewbox='0 0 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='6' height='4' width='150' viewbox='0 6 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='12' height='4' width='150' viewbox='0 12 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='18' height='4' width='150' viewbox='0 18 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='24' height='4' width='150' viewbox='0 24 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='30' height='4' width='150' viewbox='0 30 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='36' height='4' width='150' viewbox='0 36 150 4'><text x='-6' y='47'>MBI</text></svg>");
-        add("<svg y='42' height='4' width='150' viewbox='0 42 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='0' height='4' width='150' viewbox='0 0 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='6' height='4' width='150' viewbox='0 6 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='12' height='4' width='150' viewbox='0 12 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='18' height='4' width='150' viewbox='0 18 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='24' height='4' width='150' viewbox='0 24 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='30' height='4' width='150' viewbox='0 30 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='36' height='4' width='150' viewbox='0 36 150 4'><text x='-6' y='47'>MBI</text></svg>");
+        add(
+                "<svg y='42' height='4' width='150' viewbox='0 42 150 4'><text x='-6' y='47'>MBI</text></svg>");
         add("</svg>");
 
         add("<a class='navbar-brand' href='/'>CI Test Results</a>");

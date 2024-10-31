@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.workflow.model.Workflow;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -24,8 +25,6 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
-
-import io.kojan.workflow.model.Workflow;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,11 +38,12 @@ class WebHookDumper extends AbstractDumper {
         this.url = url;
         this.token = token;
 
-        client = HttpClient.newBuilder() //
-                .version(Version.HTTP_1_1) //
-                .followRedirects(Redirect.NORMAL) //
-                .connectTimeout(Duration.ofSeconds(10)) //
-                .build();
+        client =
+                HttpClient.newBuilder() //
+                        .version(Version.HTTP_1_1) //
+                        .followRedirects(Redirect.NORMAL) //
+                        .connectTimeout(Duration.ofSeconds(10)) //
+                        .build();
     }
 
     @Override

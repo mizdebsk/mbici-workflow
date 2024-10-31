@@ -15,32 +15,45 @@
  */
 package io.kojan.mbici.generate;
 
-import java.nio.file.Path;
-import java.util.concurrent.Callable;
-
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Subject;
 import io.kojan.workflow.model.Workflow;
+import java.nio.file.Path;
+import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Command(name = "generate", description = "generate Workflow from given Build Plan, Platform and Test Subject", mixinStandardHelpOptions = true)
+@Command(
+        name = "generate",
+        description = "generate Workflow from given Build Plan, Platform and Test Subject",
+        mixinStandardHelpOptions = true)
 public class GenerateCommand implements Callable<Integer> {
-    @Option(names = {"-m", "--plan"}, required = true, description = "path to a Build Plan in XML format")
+    @Option(
+            names = {"-m", "--plan"},
+            required = true,
+            description = "path to a Build Plan in XML format")
     private Path planPath;
 
-    @Option(names = {"-p", "--platform"}, required = true, description = "path to a Platform in XML format")
+    @Option(
+            names = {"-p", "--platform"},
+            required = true,
+            description = "path to a Platform in XML format")
     private Path platformPath;
 
-    @Option(names = {"-s", "--subject"}, required = true, description = "path to a Test Subject in XML format")
+    @Option(
+            names = {"-s", "--subject"},
+            required = true,
+            description = "path to a Test Subject in XML format")
     private Path subjectPath;
 
-    @Option(names = {"-w",
-            "--workflow"}, required = true, description = "path where generated Workflow should be written")
+    @Option(
+            names = {"-w", "--workflow"},
+            required = true,
+            description = "path where generated Workflow should be written")
     private Path workflowPath;
 
     @Override

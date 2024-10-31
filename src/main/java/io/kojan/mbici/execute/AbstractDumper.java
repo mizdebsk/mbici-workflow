@@ -53,7 +53,7 @@ abstract class AbstractDumper extends Thread implements WorkflowExecutionListene
     @Override
     public void run() {
         try {
-            for (;;) {
+            for (; ; ) {
                 Workflow wf = peek();
 
                 if (wf != null) {

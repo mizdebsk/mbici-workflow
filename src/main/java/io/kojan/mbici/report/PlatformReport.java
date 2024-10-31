@@ -31,18 +31,30 @@ public class PlatformReport extends Report {
     public void body() {
         header("Platform");
 
-        para("Platform is a minimal subset of RPM-based operating system that is ",
-                "enough to build RPM packages listed in ", link("subject.html", "test subject"), ".");
-        para("Platform is defined by one or more YUM repositories with a number ",
-                "of RPM packages that are taken from these repositories, along with ", "their runtime dependencies.");
-        para("Platform is only a small subset of the whole OS for two reasons: to ",
+        para(
+                "Platform is a minimal subset of RPM-based operating system that is ",
+                "enough to build RPM packages listed in ",
+                link("subject.html", "test subject"),
+                ".");
+        para(
+                "Platform is defined by one or more YUM repositories with a number ",
+                "of RPM packages that are taken from these repositories, along with ",
+                "their runtime dependencies.");
+        para(
+                "Platform is only a small subset of the whole OS for two reasons: to ",
                 "improve build performance and to prevent new dependencies on OS ",
                 "packages from getting in unnoticed.");
-        para("Machine-readable information about platform in XML format can be found in ",
-                link("platform.xml", "platform.xml"), ". Human-readable information is included below.");
+        para(
+                "Machine-readable information about platform in XML format can be found in ",
+                link("platform.xml", "platform.xml"),
+                ". Human-readable information is included below.");
 
         subtitle("YUM Repositories");
-        list("", "", platform.getRepos(), repo -> "Name: " + repo.getName() + "<br/>URL: " + repo.getUrl());
+        list(
+                "",
+                "",
+                platform.getRepos(),
+                repo -> "Name: " + repo.getName() + "<br/>URL: " + repo.getUrl());
 
         subtitle("Packages");
         list("", "", platform.getPackages(), pkg -> pkg);

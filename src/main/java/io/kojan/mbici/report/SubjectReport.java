@@ -30,13 +30,19 @@ public class SubjectReport extends Report {
     @Override
     public void body() {
         header("Test subject");
-        para("Test subject is a concrete set of dist-git repository commits which ",
+        para(
+                "Test subject is a concrete set of dist-git repository commits which ",
                 "are used as sources for building RPM packages.");
-        para("For each component that is part of ", link("plan.html", "plan"), ", test subject ",
+        para(
+                "For each component that is part of ",
+                link("plan.html", "plan"),
+                ", test subject ",
                 "specifies dist-git URL and exact commit hash, as well as URL of ",
                 "lookaside cache used to download source blobs from.");
-        para("Machine-readable information about test subject in XML format can be found in ",
-                link("subject.xml", "subject.xml"), ". Human-readable information is included below.");
+        para(
+                "Machine-readable information about test subject in XML format can be found in ",
+                link("subject.xml", "subject.xml"),
+                ". Human-readable information is included below.");
 
         for (var c : subject.getComponentOverrides()) {
             subtitle(c.getName());

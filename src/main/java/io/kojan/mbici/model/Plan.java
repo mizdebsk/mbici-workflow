@@ -15,14 +15,12 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Entity;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamException;
-
-import io.kojan.xml.Entity;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,6 +43,7 @@ public class Plan {
     }
 
     static final Entity<Plan, PlanBuilder> ENTITY = new Entity<>("plan", PlanBuilder::new);
+
     static {
         ENTITY.addRelationship(Phase.ENTITY, Plan::getPhases, PlanBuilder::addPhase);
         ENTITY.addRelationship(Macro.ENTITY, Plan::getMacros, PlanBuilder::addMacro);

@@ -15,6 +15,9 @@
  */
 package io.kojan.mbici.tasks;
 
+import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.ArtifactType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
@@ -25,10 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import io.kojan.workflow.TaskExecution;
-import io.kojan.workflow.TaskTermination;
-import io.kojan.workflow.model.ArtifactType;
 
 /**
  * @author Mikolaj Izdebski
@@ -63,7 +62,8 @@ public class Command {
         this.name = name;
     }
 
-    private void runImpl(TaskExecution taskExecution, int timeoutSeconds, boolean remote) throws TaskTermination {
+    private void runImpl(TaskExecution taskExecution, int timeoutSeconds, boolean remote)
+            throws TaskTermination {
         remote &= kubernetes != null;
 
         List<String> actualCommand = cmd;
@@ -74,7 +74,8 @@ public class Command {
         Path logPath = taskExecution.addArtifact(ArtifactType.LOG, name + ".log");
 
         try (BufferedWriter bw = Files.newBufferedWriter(logPath, StandardOpenOption.CREATE_NEW)) {
-            String intro = remote ? "Running remote command on Kubernetes" : "Running local command";
+            String intro =
+                    remote ? "Running remote command on Kubernetes" : "Running local command";
             bw.write(intro + ": " + String.join(" ", cmd) + "\n\n");
         } catch (IOException e) {
             TaskTermination.error("I/O error while initializing log file: " + e.getMessage());
