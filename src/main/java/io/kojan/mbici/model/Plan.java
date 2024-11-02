@@ -16,11 +16,12 @@
 package io.kojan.mbici.model;
 
 import io.kojan.xml.Entity;
+import io.kojan.xml.Relationship;
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * @author Mikolaj Izdebski
@@ -42,18 +43,18 @@ public class Plan {
         return macros;
     }
 
-    static final Entity<Plan, PlanBuilder> ENTITY = new Entity<>("plan", PlanBuilder::new);
+    static final Entity<Plan, PlanBuilder> ENTITY =
+            Entity.of(
+                    "plan",
+                    PlanBuilder::new,
+                    Relationship.of(Phase.ENTITY, Plan::getPhases, PlanBuilder::addPhase),
+                    Relationship.of(Macro.ENTITY, Plan::getMacros, PlanBuilder::addMacro));
 
-    static {
-        ENTITY.addRelationship(Phase.ENTITY, Plan::getPhases, PlanBuilder::addPhase);
-        ENTITY.addRelationship(Macro.ENTITY, Plan::getMacros, PlanBuilder::addMacro);
-    }
-
-    public static Plan readFromXML(Path path) throws IOException, XMLStreamException {
+    public static Plan readFromXML(Path path) throws IOException, XMLException {
         return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML(Path path) throws IOException, XMLStreamException {
+    public void writeToXML(Path path) throws IOException, XMLException {
         ENTITY.writeToXML(path, this);
     }
 }

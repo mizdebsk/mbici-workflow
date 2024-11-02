@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
 
 /**
@@ -50,14 +51,18 @@ public class SubjectComponent {
     }
 
     static final Entity<SubjectComponent, SubjectComponentBuilder> ENTITY =
-            new Entity<>("component", SubjectComponentBuilder::new);
-
-    static {
-        ENTITY.addAttribute("name", SubjectComponent::getName, SubjectComponentBuilder::setName);
-        ENTITY.addAttribute("scm", SubjectComponent::getScm, SubjectComponentBuilder::setScm);
-        ENTITY.addAttribute(
-                "commit", SubjectComponent::getCommit, SubjectComponentBuilder::setCommit);
-        ENTITY.addAttribute(
-                "lookaside", SubjectComponent::getLookaside, SubjectComponentBuilder::setLookaside);
-    }
+            Entity.of(
+                    "component",
+                    SubjectComponentBuilder::new,
+                    Attribute.of(
+                            "name", SubjectComponent::getName, SubjectComponentBuilder::setName),
+                    Attribute.of("scm", SubjectComponent::getScm, SubjectComponentBuilder::setScm),
+                    Attribute.of(
+                            "commit",
+                            SubjectComponent::getCommit,
+                            SubjectComponentBuilder::setCommit),
+                    Attribute.of(
+                            "lookaside",
+                            SubjectComponent::getLookaside,
+                            SubjectComponentBuilder::setLookaside));
 }

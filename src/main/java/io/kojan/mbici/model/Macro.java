@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
 
 /**
@@ -37,10 +38,10 @@ public class Macro {
         return value;
     }
 
-    static final Entity<Macro, MacroBuilder> ENTITY = new Entity<>("macro", MacroBuilder::new);
-
-    static {
-        ENTITY.addAttribute("name", Macro::getName, MacroBuilder::setName);
-        ENTITY.addAttribute("value", Macro::getValue, MacroBuilder::setValue);
-    }
+    static final Entity<Macro, MacroBuilder> ENTITY =
+            Entity.of(
+                    "macro",
+                    MacroBuilder::new,
+                    Attribute.of("name", Macro::getName, MacroBuilder::setName),
+                    Attribute.of("value", Macro::getValue, MacroBuilder::setValue));
 }

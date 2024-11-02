@@ -15,12 +15,14 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
+import io.kojan.xml.Relationship;
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * @author Mikolaj Izdebski
@@ -43,18 +45,18 @@ public class Platform {
     }
 
     static final Entity<Platform, PlatformBuilder> ENTITY =
-            new Entity<>("platform", PlatformBuilder::new);
+            Entity.of(
+                    "platform",
+                    PlatformBuilder::new,
+                    Relationship.of(Repo.ENTITY, Platform::getRepos, PlatformBuilder::addRepo),
+                    Attribute.ofMulti(
+                            "package", Platform::getPackages, PlatformBuilder::addPackage));
 
-    static {
-        ENTITY.addRelationship(Repo.ENTITY, Platform::getRepos, PlatformBuilder::addRepo);
-        ENTITY.addMultiAttribute("package", Platform::getPackages, PlatformBuilder::addPackage);
-    }
-
-    public static Platform readFromXML(Path path) throws IOException, XMLStreamException {
+    public static Platform readFromXML(Path path) throws IOException, XMLException {
         return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML(Path path) throws IOException, XMLStreamException {
+    public void writeToXML(Path path) throws IOException, XMLException {
         ENTITY.writeToXML(path, this);
     }
 }

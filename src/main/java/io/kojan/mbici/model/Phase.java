@@ -15,7 +15,9 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
+import io.kojan.xml.Relationship;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,11 +47,12 @@ public class Phase {
         return macros;
     }
 
-    static final Entity<Phase, PhaseBuilder> ENTITY = new Entity<>("phase", PhaseBuilder::new);
-
-    static {
-        ENTITY.addAttribute("name", Phase::getName, PhaseBuilder::setName);
-        ENTITY.addMultiAttribute("component", Phase::getComponents, PhaseBuilder::addComponent);
-        ENTITY.addRelationship(Macro.ENTITY, Phase::getMacros, PhaseBuilder::addMacro);
-    }
+    static final Entity<Phase, PhaseBuilder> ENTITY =
+            Entity.of(
+                    "phase",
+                    PhaseBuilder::new,
+                    Attribute.of("name", Phase::getName, PhaseBuilder::setName),
+                    Attribute.ofMulti(
+                            "component", Phase::getComponents, PhaseBuilder::addComponent),
+                    Relationship.of(Macro.ENTITY, Phase::getMacros, PhaseBuilder::addMacro));
 }
