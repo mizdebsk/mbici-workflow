@@ -16,11 +16,12 @@
 package io.kojan.mbici.model;
 
 import io.kojan.xml.Entity;
+import io.kojan.xml.Relationship;
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * @author Mikolaj Izdebski
@@ -47,20 +48,19 @@ public class Subject {
     }
 
     static final Entity<Subject, SubjectBuilder> ENTITY =
-            new Entity<>("subject", SubjectBuilder::new);
+            Entity.of(
+                    "subject",
+                    SubjectBuilder::new,
+                    Relationship.of(
+                            SubjectComponent.ENTITY,
+                            Subject::getComponentOverrides,
+                            SubjectBuilder::addSubjectComponent));
 
-    static {
-        ENTITY.addRelationship(
-                SubjectComponent.ENTITY,
-                Subject::getComponentOverrides,
-                SubjectBuilder::addSubjectComponent);
-    }
-
-    public static Subject readFromXML(Path path) throws IOException, XMLStreamException {
+    public static Subject readFromXML(Path path) throws IOException, XMLException {
         return ENTITY.readFromXML(path);
     }
 
-    public void writeToXML(Path path) throws IOException, XMLStreamException {
+    public void writeToXML(Path path) throws IOException, XMLException {
         ENTITY.writeToXML(path, this);
     }
 }

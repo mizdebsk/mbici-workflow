@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.model;
 
+import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
 
 /**
@@ -37,10 +38,10 @@ public class Repo {
         return url;
     }
 
-    static final Entity<Repo, RepoBuilder> ENTITY = new Entity<>("repo", RepoBuilder::new);
-
-    static {
-        ENTITY.addAttribute("name", Repo::getName, RepoBuilder::setName);
-        ENTITY.addAttribute("url", Repo::getUrl, RepoBuilder::setUrl);
-    }
+    static final Entity<Repo, RepoBuilder> ENTITY =
+            Entity.of(
+                    "repo",
+                    RepoBuilder::new,
+                    Attribute.of("name", Repo::getName, RepoBuilder::setName),
+                    Attribute.of("url", Repo::getUrl, RepoBuilder::setUrl));
 }

@@ -28,7 +28,7 @@
     <dependency>
       <groupId>io.kojan</groupId>
       <artifactId>kojan-xml</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>io.kojan</groupId>
