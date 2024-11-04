@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.mbici.cache.CacheManager;
+import io.kojan.mbici.tasks.AbstractTaskHandler;
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.GatherTaskHandler;
 import io.kojan.mbici.tasks.RepoTaskHandler;
@@ -28,15 +30,18 @@ import java.util.Map;
 import java.util.function.Function;
 
 class TaskHandlerFactoryImpl implements TaskHandlerFactory {
-    private final Map<String, Function<Task, ? extends TaskHandler>> registry =
+    private final Map<String, Function<Task, ? extends AbstractTaskHandler>> registry =
             new LinkedHashMap<>();
+    private final CacheManager cacheManager;
 
     private void registerHandler(
-            Class<? extends TaskHandler> cls, Function<Task, ? extends TaskHandler> ctor) {
+            Class<? extends AbstractTaskHandler> cls,
+            Function<Task, ? extends AbstractTaskHandler> ctor) {
         registry.put(cls.getCanonicalName(), ctor);
     }
 
-    public TaskHandlerFactoryImpl() {
+    public TaskHandlerFactoryImpl(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
         registerHandler(CheckoutTaskHandler.class, CheckoutTaskHandler::new);
         registerHandler(GatherTaskHandler.class, GatherTaskHandler::new);
         registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
@@ -46,10 +51,12 @@ class TaskHandlerFactoryImpl implements TaskHandlerFactory {
 
     @Override
     public TaskHandler createTaskHandler(Task task) {
-        Function<Task, ? extends TaskHandler> ctor = registry.get(task.getHandler());
+        Function<Task, ? extends AbstractTaskHandler> ctor = registry.get(task.getHandler());
         if (ctor == null) {
             throw new IllegalArgumentException("Unsupported task handler: " + task.getHandler());
         }
-        return ctor.apply(task);
+        AbstractTaskHandler taskHandler = ctor.apply(task);
+        taskHandler.setCacheManager(cacheManager);
+        return taskHandler;
     }
 }

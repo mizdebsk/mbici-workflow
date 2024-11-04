@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.execute;
 
-import io.kojan.workflow.CacheManager;
+import io.kojan.mbici.cache.CacheManager;
 import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.Throttle;
 import io.kojan.workflow.WorkflowExecutor;
@@ -84,11 +84,17 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
             description = "Bearer token to use for webhook authorization")
     protected String webhookToken;
 
+    private CacheManager cacheManager;
+
+    public CacheManager getCacheManager() {
+        return cacheManager;
+    }
+
     @Override
     public Integer call() throws Exception {
         Workflow wfd = Workflow.readFromXML(workflowPath);
-        TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl();
-        CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
+        cacheManager = new CacheManager(resultDir, cacheDir, workDir);
+        TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl(cacheManager);
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe =
                 new WorkflowExecutor(wfd, handlerFactory, cacheManager, throttle, batchMode);

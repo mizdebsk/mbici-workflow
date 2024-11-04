@@ -96,6 +96,7 @@ public class KubeExecuteCommand extends AbstractExecuteCommand {
     public Integer call() throws Exception {
         Kubernetes kubernetes =
                 new Kubernetes(
+                        getCacheManager(),
                         namespace,
                         containerImage,
                         cacheVolumeClaimName,

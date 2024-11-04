@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.CacheManager;
+import io.kojan.mbici.cache.CacheManager;
 import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Task;
@@ -26,6 +26,7 @@ import java.util.List;
  * @author Mikolaj Izdebski
  */
 public class Kubernetes {
+    private final CacheManager cacheManager;
     private final String namespace;
     private final String containerImage;
     private final String cacheVolumeClaimName;
@@ -41,6 +42,7 @@ public class Kubernetes {
     private final String rpmMemoryLimit;
 
     public Kubernetes(
+            CacheManager cacheManager,
             String namespace,
             String containerImage,
             String cacheVolumeClaimName,
@@ -54,6 +56,7 @@ public class Kubernetes {
             String srpmMemoryLimit,
             String rpmMemoryRequest,
             String rpmMemoryLimit) {
+        this.cacheManager = cacheManager;
         this.namespace = namespace;
         this.containerImage = containerImage;
         this.cacheVolumeClaimName = cacheVolumeClaimName;
@@ -72,7 +75,6 @@ public class Kubernetes {
     public List<String> wrapCommand(TaskExecutionContext context, List<String> command)
             throws TaskTermination {
         Task task = context.getTask();
-        CacheManager cacheManager = context.getCacheManager();
 
         // Kubernetes doesn't allow underscore in Pod names
         String podName = task.getId().replace('_', '-');

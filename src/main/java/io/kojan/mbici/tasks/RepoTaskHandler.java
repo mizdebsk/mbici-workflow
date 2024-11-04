@@ -16,7 +16,6 @@
 package io.kojan.mbici.tasks;
 
 import io.kojan.workflow.TaskExecutionContext;
-import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Task;
@@ -27,7 +26,7 @@ import java.nio.file.Path;
 /**
  * @author Mikolaj Izdebski
  */
-public class RepoTaskHandler implements TaskHandler {
+public class RepoTaskHandler extends AbstractTaskHandler {
     public RepoTaskHandler(Task task) {
         if (!task.getParameters().isEmpty()) {
             throw new IllegalArgumentException(

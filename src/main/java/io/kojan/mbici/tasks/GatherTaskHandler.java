@@ -16,7 +16,6 @@
 package io.kojan.mbici.tasks;
 
 import io.kojan.workflow.TaskExecutionContext;
-import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Parameter;
@@ -33,7 +32,7 @@ import java.util.Map;
 /**
  * @author Mikolaj Izdebski
  */
-public class GatherTaskHandler implements TaskHandler {
+public class GatherTaskHandler extends AbstractTaskHandler {
     private static final int GATHER_TIMEOUT = 1200;
 
     private final List<String> packageNames = new ArrayList<>();

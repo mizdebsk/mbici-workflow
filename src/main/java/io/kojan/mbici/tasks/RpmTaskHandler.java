@@ -16,7 +16,6 @@
 package io.kojan.mbici.tasks;
 
 import io.kojan.workflow.TaskExecutionContext;
-import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Parameter;
@@ -29,7 +28,7 @@ import java.util.List;
 /**
  * @author Mikolaj Izdebski
  */
-public class RpmTaskHandler implements TaskHandler {
+public class RpmTaskHandler extends AbstractTaskHandler {
     private final List<Parameter> macros;
 
     public RpmTaskHandler(Task task) {

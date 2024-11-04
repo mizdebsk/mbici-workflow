@@ -15,10 +15,10 @@
  */
 package io.kojan.mbici.report;
 
+import io.kojan.mbici.cache.CacheManager;
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Subject;
-import io.kojan.workflow.CacheManager;
 import io.kojan.workflow.FinishedTask;
 import io.kojan.workflow.model.Artifact;
 import io.kojan.workflow.model.ArtifactType;
@@ -114,8 +114,7 @@ public class ReportCommand implements Callable<Integer> {
         for (Result result : workflow.getResults()) {
             Task task = tasksById.get(result.getTaskId());
             FinishedTask finishedTask =
-                    new FinishedTask(
-                            task, result, cacheManager.getResultDir(task.getId(), result.getId()));
+                    new FinishedTask(task, result, cacheManager.getResultDir(task, result.getId()));
             finishedTasks.add(finishedTask);
         }
 

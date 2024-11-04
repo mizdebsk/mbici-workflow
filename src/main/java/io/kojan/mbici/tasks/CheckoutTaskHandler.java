@@ -16,7 +16,6 @@
 package io.kojan.mbici.tasks;
 
 import io.kojan.workflow.TaskExecutionContext;
-import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Parameter;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
 /**
  * @author Mikolaj Izdebski
  */
-public class CheckoutTaskHandler implements TaskHandler {
+public class CheckoutTaskHandler extends AbstractTaskHandler {
     private static final int GIT_TIMEOUT = 300;
 
     private final String scm;
@@ -86,7 +85,7 @@ public class CheckoutTaskHandler implements TaskHandler {
 
     public void handleTask0(TaskExecutionContext context) throws TaskTermination, IOException {
         Curl curl = new Curl(context);
-        Path dgCache = context.getCacheManager().getDistGit(commit);
+        Path dgCache = getCacheManager().getDistGit(commit);
 
         Path artifact = context.addArtifact(ArtifactType.CHECKOUT, "checkout");
         try {
@@ -100,7 +99,7 @@ public class CheckoutTaskHandler implements TaskHandler {
             TaskTermination.success("Commit was found in dist-git cache");
             return;
         }
-        Path workTree = context.getCacheManager().createPending("checkout-" + commit);
+        Path workTree = getCacheManager().createPending("checkout-" + commit);
         runGit("git-init", context, "init", "--bare");
         runGit(
                 "git-fetch",
@@ -120,7 +119,7 @@ public class CheckoutTaskHandler implements TaskHandler {
             if (matcher.matches()) {
                 String fileName = matcher.group(1);
                 String hash = matcher.group(2);
-                Path lasCache = context.getCacheManager().getLookaside(hash);
+                Path lasCache = getCacheManager().getLookaside(hash);
                 Path downloadPath = workTree.resolve(fileName);
                 if (!Files.exists(lasCache)) {
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
