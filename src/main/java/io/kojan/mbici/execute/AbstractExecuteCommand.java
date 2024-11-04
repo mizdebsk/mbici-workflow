@@ -17,7 +17,7 @@ package io.kojan.mbici.execute;
 
 import io.kojan.mbici.cache.CacheManager;
 import io.kojan.workflow.TaskHandlerFactory;
-import io.kojan.workflow.Throttle;
+import io.kojan.workflow.TaskThrottle;
 import io.kojan.workflow.WorkflowExecutor;
 import io.kojan.workflow.model.Workflow;
 import java.nio.file.Path;
@@ -95,7 +95,7 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         Workflow wfd = Workflow.readFromXML(workflowPath);
         cacheManager = new CacheManager(resultDir, cacheDir, workDir);
         TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl(cacheManager);
-        Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
+        TaskThrottle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe =
                 new WorkflowExecutor(wfd, handlerFactory, cacheManager, throttle, batchMode);
         Dumper dumper = new Dumper(workflowPath);

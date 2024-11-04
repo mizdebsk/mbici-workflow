@@ -18,7 +18,7 @@ package io.kojan.mbici.execute;
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
-import io.kojan.workflow.Throttle;
+import io.kojan.workflow.TaskThrottle;
 import io.kojan.workflow.model.Task;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.concurrent.Semaphore;
 /**
  * @author Mikolaj Izdebski
  */
-class ThrottleImpl implements Throttle {
+class ThrottleImpl implements TaskThrottle {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 
     public ThrottleImpl(int maxCheckout, int maxSrpm, int maxRpm) {
