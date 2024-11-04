@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
@@ -65,19 +65,19 @@ public class SrpmTaskHandler implements TaskHandler {
     }
 
     @Override
-    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
-        Path sourcePath = taskExecution.getDependencyArtifact(ArtifactType.CHECKOUT);
+    public void handleTask(TaskExecutionContext context) throws TaskTermination {
+        Path sourcePath = context.getDependencyArtifact(ArtifactType.CHECKOUT);
         Path specPath = findOneFile(sourcePath, ".spec");
         Mock mock = new Mock();
         mock.run(
-                taskExecution,
+                context,
                 "--buildsrpm",
                 "--spec",
                 specPath.toString(),
                 "--sources",
                 sourcePath.toString());
-        Path srpmPath = findOneFile(taskExecution.getResultDir(), ".src.rpm");
-        taskExecution.addArtifact(ArtifactType.SRPM, srpmPath.getFileName().toString());
+        Path srpmPath = findOneFile(context.getResultDir(), ".src.rpm");
+        context.addArtifact(ArtifactType.SRPM, srpmPath.getFileName().toString());
         TaskTermination.success("Source RPM was built in mock");
     }
 }

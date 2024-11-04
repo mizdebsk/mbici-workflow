@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import java.io.BufferedWriter;
@@ -34,11 +34,11 @@ class Mock {
 
     private final Map<String, String> macros = new LinkedHashMap<>();
 
-    public void run(TaskExecution taskExecution, String... mockArgs) throws TaskTermination {
-        Path mockConfPath = taskExecution.addArtifact(ArtifactType.CONFIG, "mock.cfg");
+    public void run(TaskExecutionContext context, String... mockArgs) throws TaskTermination {
+        Path mockConfPath = context.addArtifact(ArtifactType.CONFIG, "mock.cfg");
         try (BufferedWriter bw = Files.newBufferedWriter(mockConfPath)) {
-            bw.write("config_opts['basedir'] = '" + taskExecution.getWorkDir() + "'\n");
-            bw.write("config_opts['cache_topdir'] = '" + taskExecution.getWorkDir() + "'\n");
+            bw.write("config_opts['basedir'] = '" + context.getWorkDir() + "'\n");
+            bw.write("config_opts['cache_topdir'] = '" + context.getWorkDir() + "'\n");
             bw.write("");
             bw.write("config_opts['rpmbuild_networking'] = False\n");
             bw.write("config_opts['use_host_resolv'] = False\n");
@@ -76,7 +76,7 @@ class Mock {
             bw.write("metadata_expire=-1\n");
 
             int priority = 0;
-            for (Path repoPath : taskExecution.getDependencyArtifacts(ArtifactType.REPO)) {
+            for (Path repoPath : context.getDependencyArtifacts(ArtifactType.REPO)) {
                 // FIXME find a better way to determine repo name
                 Path repoName = repoPath.getParent().getParent().getFileName();
                 bw.write("\n");
@@ -93,15 +93,15 @@ class Mock {
         }
 
         for (String logName : Arrays.asList("build.log", "root.log", "hw_info.log", "state.log")) {
-            taskExecution.addArtifact(ArtifactType.LOG, logName);
+            context.addArtifact(ArtifactType.LOG, logName);
         }
 
         Command mock = new Command("mock");
         mock.addArg("--enable-plugin", "tmpfs");
         mock.addArg("-r", mockConfPath.toString());
-        mock.addArg("--resultdir", taskExecution.getResultDir().toString());
+        mock.addArg("--resultdir", context.getResultDir().toString());
         mock.addArg(mockArgs);
-        mock.runRemote(taskExecution, MOCK_TIMEOUT);
+        mock.runRemote(context, MOCK_TIMEOUT);
     }
 
     public void addMacro(String name, String value) {

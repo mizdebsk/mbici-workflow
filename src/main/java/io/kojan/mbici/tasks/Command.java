@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
 import java.io.BufferedWriter;
@@ -62,16 +62,16 @@ public class Command {
         this.name = name;
     }
 
-    private void runImpl(TaskExecution taskExecution, int timeoutSeconds, boolean remote)
+    private void runImpl(TaskExecutionContext context, int timeoutSeconds, boolean remote)
             throws TaskTermination {
         remote &= kubernetes != null;
 
         List<String> actualCommand = cmd;
         if (remote) {
-            actualCommand = kubernetes.wrapCommand(taskExecution, cmd);
+            actualCommand = kubernetes.wrapCommand(context, cmd);
         }
 
-        Path logPath = taskExecution.addArtifact(ArtifactType.LOG, name + ".log");
+        Path logPath = context.addArtifact(ArtifactType.LOG, name + ".log");
 
         try (BufferedWriter bw = Files.newBufferedWriter(logPath, StandardOpenOption.CREATE_NEW)) {
             String intro =
@@ -119,11 +119,11 @@ public class Command {
         }
     }
 
-    public void run(TaskExecution taskExecution, int timeoutSeconds) throws TaskTermination {
-        runImpl(taskExecution, timeoutSeconds, false);
+    public void run(TaskExecutionContext context, int timeoutSeconds) throws TaskTermination {
+        runImpl(context, timeoutSeconds, false);
     }
 
-    public void runRemote(TaskExecution taskExecution, int timeoutSeconds) throws TaskTermination {
-        runImpl(taskExecution, timeoutSeconds, true);
+    public void runRemote(TaskExecutionContext context, int timeoutSeconds) throws TaskTermination {
+        runImpl(context, timeoutSeconds, true);
     }
 }

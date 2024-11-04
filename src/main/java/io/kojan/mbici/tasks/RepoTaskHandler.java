@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
@@ -36,8 +36,8 @@ public class RepoTaskHandler implements TaskHandler {
     }
 
     @Override
-    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
-        Path repoPath = taskExecution.addArtifact(ArtifactType.REPO, "repo");
+    public void handleTask(TaskExecutionContext context) throws TaskTermination {
+        Path repoPath = context.addArtifact(ArtifactType.REPO, "repo");
         try {
             Files.createDirectories(repoPath);
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public class RepoTaskHandler implements TaskHandler {
                     "I/O error when creating directory " + repoPath + ": " + e.getMessage());
         }
 
-        for (Path rpmPath : taskExecution.getDependencyArtifacts(ArtifactType.RPM)) {
+        for (Path rpmPath : context.getDependencyArtifacts(ArtifactType.RPM)) {
             Path rpmLinkPath = repoPath.resolve(rpmPath.getFileName());
 
             try {
@@ -59,7 +59,7 @@ public class RepoTaskHandler implements TaskHandler {
             }
         }
 
-        Createrepo createrepo = new Createrepo(taskExecution);
+        Createrepo createrepo = new Createrepo(context);
         createrepo.run(repoPath);
 
         TaskTermination.success("Repo created successfully");

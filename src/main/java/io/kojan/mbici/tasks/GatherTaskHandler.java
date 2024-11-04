@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
@@ -72,7 +72,7 @@ public class GatherTaskHandler implements TaskHandler {
     }
 
     private void downloadPackages(
-            TaskExecution taskExecution,
+            TaskExecutionContext context,
             List<String> packageNames,
             Path downloadDir,
             Path dnfConfPath)
@@ -80,32 +80,32 @@ public class GatherTaskHandler implements TaskHandler {
         Command dnf = new Command("dnf5");
         dnf.addArg("--assumeyes");
         dnf.addArg("--releasever", "dummy");
-        dnf.addArg("--installroot", taskExecution.getWorkDir().toString());
+        dnf.addArg("--installroot", context.getWorkDir().toString());
         dnf.addArg("--config", dnfConfPath.toString());
         dnf.addArg("--setopt", "destdir=" + downloadDir.toString());
         dnf.addArg("install");
         dnf.addArg("--downloadonly");
         dnf.addArg(packageNames);
-        dnf.runRemote(taskExecution, GATHER_TIMEOUT);
+        dnf.runRemote(context, GATHER_TIMEOUT);
     }
 
     @Override
-    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
-        Path dnfConfPath = taskExecution.addArtifact(ArtifactType.CONFIG, "dnf.conf");
+    public void handleTask(TaskExecutionContext context) throws TaskTermination {
+        Path dnfConfPath = context.addArtifact(ArtifactType.CONFIG, "dnf.conf");
         writeDnfConfig(dnfConfPath, repos);
 
-        downloadPackages(taskExecution, packageNames, taskExecution.getResultDir(), dnfConfPath);
+        downloadPackages(context, packageNames, context.getResultDir(), dnfConfPath);
 
         try (var s =
                 Files.find(
-                        taskExecution.getResultDir(),
+                        context.getResultDir(),
                         1,
                         (p, bfa) ->
                                 p.getFileName().toString().endsWith(".rpm")
                                         && !p.getFileName().toString().endsWith(".src.rpm")
                                         && bfa.isRegularFile())) {
             for (var it = s.iterator(); it.hasNext(); ) {
-                taskExecution.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
+                context.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
             }
         } catch (IOException e) {
             throw TaskTermination.error("I/O error when looknig for RPM files: " + e.getMessage());

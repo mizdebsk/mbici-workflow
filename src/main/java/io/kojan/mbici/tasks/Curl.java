@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import java.nio.file.Path;
 
@@ -25,11 +25,11 @@ import java.nio.file.Path;
 class Curl {
     private static final int CURL_TIMEOUT = 300;
 
-    private final TaskExecution taskExecution;
+    private final TaskExecutionContext context;
     private int counter;
 
-    public Curl(TaskExecution taskExecution) {
-        this.taskExecution = taskExecution;
+    public Curl(TaskExecutionContext context) {
+        this.context = context;
     }
 
     public void downloadFile(String url, Path targetPath) throws TaskTermination {
@@ -40,6 +40,6 @@ class Curl {
             curl.setName("curl-" + counter);
         }
 
-        curl.run(taskExecution, CURL_TIMEOUT);
+        curl.run(context, CURL_TIMEOUT);
     }
 }

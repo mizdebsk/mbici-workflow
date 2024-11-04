@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
@@ -75,20 +75,20 @@ public class CheckoutTaskHandler implements TaskHandler {
         this.lookaside = lookaside;
     }
 
-    private void runGit(String logName, TaskExecution taskExecution, String... args)
+    private void runGit(String logName, TaskExecutionContext context, String... args)
             throws TaskTermination {
         Command git = new Command("git");
         git.setName(logName);
-        git.addArg("--git-dir", taskExecution.getWorkDir().resolve("git").toString());
+        git.addArg("--git-dir", context.getWorkDir().resolve("git").toString());
         git.addArg(args);
-        git.run(taskExecution, GIT_TIMEOUT);
+        git.run(context, GIT_TIMEOUT);
     }
 
-    public void handleTask0(TaskExecution taskExecution) throws TaskTermination, IOException {
-        Curl curl = new Curl(taskExecution);
-        Path dgCache = taskExecution.getCacheManager().getDistGit(commit);
+    public void handleTask0(TaskExecutionContext context) throws TaskTermination, IOException {
+        Curl curl = new Curl(context);
+        Path dgCache = context.getCacheManager().getDistGit(commit);
 
-        Path artifact = taskExecution.addArtifact(ArtifactType.CHECKOUT, "checkout");
+        Path artifact = context.addArtifact(ArtifactType.CHECKOUT, "checkout");
         try {
             Files.createSymbolicLink(artifact, dgCache);
         } catch (IOException e) {
@@ -100,11 +100,11 @@ public class CheckoutTaskHandler implements TaskHandler {
             TaskTermination.success("Commit was found in dist-git cache");
             return;
         }
-        Path workTree = taskExecution.getCacheManager().createPending("checkout-" + commit);
-        runGit("git-init", taskExecution, "init", "--bare");
+        Path workTree = context.getCacheManager().createPending("checkout-" + commit);
+        runGit("git-init", context, "init", "--bare");
         runGit(
                 "git-fetch",
-                taskExecution,
+                context,
                 "-c",
                 "http.version=HTTP/1.1",
                 "remote",
@@ -113,21 +113,14 @@ public class CheckoutTaskHandler implements TaskHandler {
                 "origin",
                 scm);
         Files.createDirectories(workTree);
-        runGit(
-                "git-reset",
-                taskExecution,
-                "--work-tree",
-                workTree.toString(),
-                "reset",
-                "--hard",
-                commit);
+        runGit("git-reset", context, "--work-tree", workTree.toString(), "reset", "--hard", commit);
         for (String line : Files.readAllLines(workTree.resolve("sources"))) {
             Pattern pattern = Pattern.compile("^SHA512 \\(([^)]+)\\) = ([0-9a-f]{128})$");
             Matcher matcher = pattern.matcher(line);
             if (matcher.matches()) {
                 String fileName = matcher.group(1);
                 String hash = matcher.group(2);
-                Path lasCache = taskExecution.getCacheManager().getLookaside(hash);
+                Path lasCache = context.getCacheManager().getLookaside(hash);
                 Path downloadPath = workTree.resolve(fileName);
                 if (!Files.exists(lasCache)) {
                     String url = lookaside + "/" + fileName + "/sha512/" + hash + "/" + fileName;
@@ -156,9 +149,9 @@ public class CheckoutTaskHandler implements TaskHandler {
     }
 
     @Override
-    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
+    public void handleTask(TaskExecutionContext context) throws TaskTermination {
         try {
-            handleTask0(taskExecution);
+            handleTask0(context);
         } catch (IOException e) {
             TaskTermination.error("I/O error during checkout: " + e.getMessage());
         }

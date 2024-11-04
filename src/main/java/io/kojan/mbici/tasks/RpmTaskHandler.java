@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskHandler;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.ArtifactType;
@@ -37,23 +37,23 @@ public class RpmTaskHandler implements TaskHandler {
     }
 
     @Override
-    public void handleTask(TaskExecution taskExecution) throws TaskTermination {
-        Path srpmPath = taskExecution.getDependencyArtifact(ArtifactType.SRPM);
+    public void handleTask(TaskExecutionContext context) throws TaskTermination {
+        Path srpmPath = context.getDependencyArtifact(ArtifactType.SRPM);
         Mock mock = new Mock();
         for (Parameter param : macros) {
             mock.addMacro(param.getName(), param.getValue());
         }
-        mock.run(taskExecution, "--rebuild", srpmPath.toString());
+        mock.run(context, "--rebuild", srpmPath.toString());
         try (var s =
                 Files.find(
-                        taskExecution.getResultDir(),
+                        context.getResultDir(),
                         1,
                         (p, bfa) ->
                                 p.getFileName().toString().endsWith(".rpm")
                                         && !p.getFileName().toString().endsWith(".src.rpm")
                                         && bfa.isRegularFile())) {
             for (var it = s.iterator(); it.hasNext(); ) {
-                taskExecution.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
+                context.addArtifact(ArtifactType.RPM, it.next().getFileName().toString());
             }
         } catch (IOException e) {
             throw TaskTermination.error("I/O error when looknig for RPM files: " + e.getMessage());

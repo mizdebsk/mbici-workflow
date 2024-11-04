@@ -15,7 +15,7 @@
  */
 package io.kojan.mbici.tasks;
 
-import io.kojan.workflow.TaskExecution;
+import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import java.nio.file.Path;
 
@@ -25,15 +25,15 @@ import java.nio.file.Path;
 class Createrepo {
     private static final int CREATEREPO_TIMEOUT = 60;
 
-    private final TaskExecution taskExecution;
+    private final TaskExecutionContext context;
 
-    public Createrepo(TaskExecution taskExecution) {
-        this.taskExecution = taskExecution;
+    public Createrepo(TaskExecutionContext context) {
+        this.context = context;
     }
 
     public void run(Path repoPath) throws TaskTermination {
         Command createrepo = new Command("createrepo_c", repoPath.toString());
         createrepo.setName("createrepo");
-        createrepo.runRemote(taskExecution, CREATEREPO_TIMEOUT);
+        createrepo.runRemote(context, CREATEREPO_TIMEOUT);
     }
 }
