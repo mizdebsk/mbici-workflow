@@ -88,6 +88,11 @@ abstract class AbstractDumper extends Thread implements WorkflowExecutionListene
     }
 
     @Override
+    public void workflowRunning(Workflow workflow) {
+        // Nothing to do
+    }
+
+    @Override
     public void workflowSucceeded(Workflow workflow) {
         terminate();
     }
