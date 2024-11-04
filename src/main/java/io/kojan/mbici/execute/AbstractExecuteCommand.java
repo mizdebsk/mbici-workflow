@@ -91,8 +91,7 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         CacheManager cacheManager = new CacheManager(resultDir, cacheDir, workDir);
         Throttle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe =
-                new WorkflowExecutor(
-                        wfd, workflowPath, handlerFactory, cacheManager, throttle, batchMode);
+                new WorkflowExecutor(wfd, handlerFactory, cacheManager, throttle, batchMode);
         Dumper dumper = new Dumper(workflowPath);
         dumper.setDaemon(true);
         dumper.start();
