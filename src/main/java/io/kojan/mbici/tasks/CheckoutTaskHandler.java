@@ -15,9 +15,9 @@
  */
 package io.kojan.mbici.tasks;
 
+import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
-import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Parameter;
 import io.kojan.workflow.model.Task;
 import java.io.IOException;

@@ -15,13 +15,13 @@
  */
 package io.kojan.mbici.report;
 
+import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.mbici.cache.CacheManager;
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Subject;
 import io.kojan.workflow.FinishedTask;
 import io.kojan.workflow.model.Artifact;
-import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.TaskOutcome;
@@ -132,8 +132,8 @@ public class ReportCommand implements Callable<Integer> {
                 continue;
             }
             for (Artifact artifact : result.getArtifacts()) {
-                if (artifact.getType() == ArtifactType.LOG
-                        || artifact.getType() == ArtifactType.CONFIG) {
+                if (artifact.getType().equals(ArtifactType.LOG)
+                        || artifact.getType().equals(ArtifactType.CONFIG)) {
                     Files.createDirectories(subDir);
                     System.err.println(
                             "Publishing " + result.getTaskId() + "/" + artifact.getName());

@@ -15,8 +15,8 @@
  */
 package io.kojan.mbici.report;
 
+import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.workflow.model.Artifact;
-import io.kojan.workflow.model.ArtifactType;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
@@ -73,8 +73,8 @@ public class TmtResultsReport extends Report {
             add("    - " + result.getTaskId() + "/testout.log");
 
             for (Artifact artifact : result.getArtifacts()) {
-                if (artifact.getType() == ArtifactType.LOG
-                        || artifact.getType() == ArtifactType.CONFIG) {
+                if (artifact.getType().equals(ArtifactType.LOG)
+                        || artifact.getType().equals(ArtifactType.CONFIG)) {
                     add("    - " + result.getTaskId() + "/" + artifact.getName());
                 }
             }
