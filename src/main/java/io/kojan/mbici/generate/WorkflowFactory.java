@@ -41,10 +41,13 @@ class WorkflowFactory {
         Map<String, Task> checkouts = new LinkedHashMap<>();
 
         Task gather = taskFactory.createGatherTask(platform);
-        Task gatherRepo = taskFactory.createRepoTask("platform", Collections.singletonList(gather));
+        Task gatherRepo =
+                taskFactory.createRepoTask("platform-repo", Collections.singletonList(gather));
 
         LinkedList<Task> repos = new LinkedList<>();
         repos.add(gatherRepo);
+
+        Map<String, Task> rpmsByName = new LinkedHashMap<>();
 
         for (Phase phase : plan.getPhases()) {
             List<Task> rpms = new ArrayList<>();
@@ -68,11 +71,14 @@ class WorkflowFactory {
                                 plan.getMacros(),
                                 phase.getMacros());
                 rpms.add(rpm);
+                rpmsByName.put(component, rpm);
             }
 
-            Task repo = taskFactory.createRepoTask(phase.getName(), rpms);
+            Task repo = taskFactory.createRepoTask(phase.getName() + "-repo", rpms);
             repos.addFirst(repo);
         }
+
+        taskFactory.createRepoTask("compose", rpmsByName.values());
 
         return workflowBuilder.build();
     }

@@ -64,9 +64,9 @@ class TaskFactory {
         return taskDescriptor;
     }
 
-    public Task createRepoTask(String phase, List<Task> rpms) {
+    public Task createRepoTask(String id, Iterable<Task> rpms) {
         TaskBuilder task = new TaskBuilder();
-        task.setId(phase + "-repo");
+        task.setId(id);
         task.setHandler(REPO_HANDLER);
 
         for (Task rpm : rpms) {
