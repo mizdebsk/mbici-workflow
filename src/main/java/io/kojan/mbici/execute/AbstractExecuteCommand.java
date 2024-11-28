@@ -55,6 +55,12 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
     protected Path workDir;
 
     @Option(
+            names = {"-L", "--link-dir"},
+            description =
+                    "path to a directory where symbolic links to successful task results are created")
+    protected Path linkerDir;
+
+    @Option(
             names = {"--max-checkout-tasks"},
             description = "limit number of parrallel git checkout tasks")
     protected Integer maxCheckoutTasks = 3;
@@ -110,6 +116,10 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
             webhook.setDaemon(true);
             webhook.start();
             wfe.addExecutionListener(webhook);
+        }
+        if (linkerDir != null) {
+            Linker linker = new Linker(linkerDir);
+            wfe.addExecutionListener(linker);
         }
         Workflow wf = wfe.execute();
         wf.writeToXML(workflowPath);
