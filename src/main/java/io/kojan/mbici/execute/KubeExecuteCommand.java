@@ -92,8 +92,7 @@ public class KubeExecuteCommand extends AbstractExecuteCommand {
             description = "Max memory for running RPM Pods")
     private String rpmMemoryLimit = "6Gi";
 
-    @Override
-    public Integer call() throws Exception {
+    protected void init() {
         Kubernetes kubernetes =
                 new Kubernetes(
                         getCacheManager(),
@@ -111,6 +110,5 @@ public class KubeExecuteCommand extends AbstractExecuteCommand {
                         rpmMemoryRequest,
                         rpmMemoryLimit);
         io.kojan.mbici.tasks.Command.kubernetes = kubernetes;
-        return super.call();
     }
 }

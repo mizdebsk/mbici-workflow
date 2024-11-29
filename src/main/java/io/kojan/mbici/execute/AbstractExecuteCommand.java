@@ -90,10 +90,13 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
         return cacheManager;
     }
 
+    protected void initialize() {}
+
     @Override
     public Integer call() throws Exception {
         Workflow wfd = Workflow.readFromXML(workflowPath);
         cacheManager = new CacheManager(resultDir, cacheDir, workDir);
+        initialize();
         TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl(cacheManager);
         TaskThrottle throttle = new ThrottleImpl(maxCheckoutTasks, maxSrpmTasks, maxRpmTasks);
         WorkflowExecutor wfe =
