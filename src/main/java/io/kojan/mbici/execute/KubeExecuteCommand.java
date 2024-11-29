@@ -92,7 +92,7 @@ public class KubeExecuteCommand extends AbstractExecuteCommand {
             description = "Max memory for running RPM Pods")
     private String rpmMemoryLimit = "6Gi";
 
-    protected void init() {
+    protected void initialize() {
         Kubernetes kubernetes =
                 new Kubernetes(
                         getCacheManager(),
