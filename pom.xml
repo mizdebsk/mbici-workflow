@@ -23,6 +23,13 @@
   </parent>
   <artifactId>mbici-workflow</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <name>MBICI Workflow</name>
+  <description>Continuous Integration (CI) for Maven Bootstrap Initiative (MBI)</description>
+  <url>https://github.com/mizdebsk/mbici-workflow</url>
+  <inceptionYear>2021</inceptionYear>
+  <scm>
+    <url>https://github.com/mizdebsk/mbici-workflow.git</url>
+  </scm>
 
   <dependencies>
     <dependency>
