@@ -18,7 +18,7 @@ package io.kojan.mbici.workspace;
 import java.nio.file.Path;
 import picocli.CommandLine.Option;
 
-public class AbstractConfigCommand {
+public class AbstractWorkspaceCommand {
     @Option(
             names = {"--subject-path"},
             description = "")
@@ -90,7 +90,7 @@ public class AbstractConfigCommand {
     private Integer maxSrpmTasks;
 
     @Option(
-            names = {"--max-rpm-casks"},
+            names = {"--max-rpm-tasks"},
             description = "")
     private Integer maxRpmTasks;
 

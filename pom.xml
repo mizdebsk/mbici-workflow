@@ -81,7 +81,7 @@
             </goals>
             <phase>package</phase>
             <configuration>
-              <finalName>${project.name}</finalName>
+              <finalName>${project.artifactId}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
               <attach>false</attach>
               <archive>

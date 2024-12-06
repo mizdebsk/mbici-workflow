@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
 @Command(name = "init", description = "initialize MBI workspace", mixinStandardHelpOptions = true)
-public class InitCommand extends AbstractConfigCommand implements Callable<Integer> {
+public class InitCommand extends AbstractWorkspaceCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
@@ -55,6 +55,7 @@ public class InitCommand extends AbstractConfigCommand implements Callable<Integ
 
         ws = Workspace.create(cwd, c);
         ws.write();
+        System.err.println("Initialized workspace at " + ws.getWorkspaceDir());
         return 0;
     }
 }
