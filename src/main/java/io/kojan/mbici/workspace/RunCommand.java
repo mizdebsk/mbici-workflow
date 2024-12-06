@@ -121,6 +121,7 @@ public class RunCommand implements Callable<Integer> {
         report.setResultDir(c.getResultDir());
         report.setReportDir(c.getReportDir());
         report.setFull(true);
+        report.setQuiet(true);
 
         System.err.println("Running report command...");
         ret = report.call();

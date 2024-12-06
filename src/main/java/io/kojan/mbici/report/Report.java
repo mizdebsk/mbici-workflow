@@ -146,8 +146,6 @@ abstract class Report {
     public void publish(Path path) throws IOException {
         body();
 
-        System.err.println("Publishing " + path.getFileName());
-
         try (Writer writer = Files.newBufferedWriter(path)) {
             writer.write(sb.toString());
         }

@@ -85,6 +85,11 @@ public class ReportCommand implements Callable<Integer> {
             description = "generate tmt results.yaml and include build logs")
     private boolean full;
 
+    @Option(
+            names = {"-q", "--quiet"},
+            description = "limit the amount of logging")
+    private boolean quiet;
+
     public Path getPlanPath() {
         return planPath;
     }
@@ -141,6 +146,14 @@ public class ReportCommand implements Callable<Integer> {
         this.full = full;
     }
 
+    public boolean isQuiet() {
+        return quiet;
+    }
+
+    public void setQuiet(boolean quiet) {
+        this.quiet = quiet;
+    }
+
     @Override
     public Integer call() throws Exception {
         Files.createDirectories(reportDir);
@@ -152,13 +165,21 @@ public class ReportCommand implements Callable<Integer> {
         Subject subject = Subject.readFromXML(subjectPath);
         Workflow workflow = Workflow.readFromXML(workflowPath);
 
-        System.err.println("Publishing platform.xml");
+        if (!quiet) {
+            System.err.println("Publishing platform.xml");
+        }
         platform.writeToXML(reportDir.resolve("platform.xml"));
-        System.err.println("Publishing plan.xml");
+        if (!quiet) {
+            System.err.println("Publishing plan.xml");
+        }
         plan.writeToXML(reportDir.resolve("plan.xml"));
-        System.err.println("Publishing subject.xml");
+        if (!quiet) {
+            System.err.println("Publishing subject.xml");
+        }
         subject.writeToXML(reportDir.resolve("subject.xml"));
-        System.err.println("Publishing workflow.xml");
+        if (!quiet) {
+            System.err.println("Publishing workflow.xml");
+        }
         workflow.writeToXML(reportDir.resolve("workflow.xml"));
 
         Map<String, Task> tasksById = new LinkedHashMap<>();
@@ -191,8 +212,10 @@ public class ReportCommand implements Callable<Integer> {
                 if (artifact.getType().equals(ArtifactType.LOG)
                         || artifact.getType().equals(ArtifactType.CONFIG)) {
                     Files.createDirectories(subDir);
-                    System.err.println(
-                            "Publishing " + result.getTaskId() + "/" + artifact.getName());
+                    if (!quiet) {
+                        System.err.println(
+                                "Publishing " + result.getTaskId() + "/" + artifact.getName());
+                    }
                     Files.copy(
                             finishedTask.getArtifact(artifact), subDir.resolve(artifact.getName()));
                 }
