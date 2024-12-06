@@ -79,6 +79,10 @@ public class InitCommand extends AbstractWorkspaceCommand implements Callable<In
 
         updateConfig(c);
 
+        Files.createDirectories(c.getCacheDir());
+        Files.createDirectories(c.getResultDir());
+        Files.createDirectories(c.getWorkDir());
+
         ws = Workspace.create(cwd, c);
         ws.write();
         System.err.println("Initialized workspace at " + ws.getWorkspaceDir());
