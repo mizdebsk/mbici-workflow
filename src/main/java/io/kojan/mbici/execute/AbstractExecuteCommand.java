@@ -90,6 +90,94 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
             description = "Bearer token to use for webhook authorization")
     protected String webhookToken;
 
+    public Path getWorkflowPath() {
+        return workflowPath;
+    }
+
+    public void setWorkflowPath(Path workflowPath) {
+        this.workflowPath = workflowPath;
+    }
+
+    public Path getResultDir() {
+        return resultDir;
+    }
+
+    public void setResultDir(Path resultDir) {
+        this.resultDir = resultDir;
+    }
+
+    public Path getCacheDir() {
+        return cacheDir;
+    }
+
+    public void setCacheDir(Path cacheDir) {
+        this.cacheDir = cacheDir;
+    }
+
+    public Path getWorkDir() {
+        return workDir;
+    }
+
+    public void setWorkDir(Path workDir) {
+        this.workDir = workDir;
+    }
+
+    public Path getLinkerDir() {
+        return linkerDir;
+    }
+
+    public void setLinkerDir(Path linkerDir) {
+        this.linkerDir = linkerDir;
+    }
+
+    public Integer getMaxCheckoutTasks() {
+        return maxCheckoutTasks;
+    }
+
+    public void setMaxCheckoutTasks(Integer maxCheckoutTasks) {
+        this.maxCheckoutTasks = maxCheckoutTasks;
+    }
+
+    public Integer getMaxSrpmTasks() {
+        return maxSrpmTasks;
+    }
+
+    public void setMaxSrpmTasks(Integer maxSrpmTasks) {
+        this.maxSrpmTasks = maxSrpmTasks;
+    }
+
+    public Integer getMaxRpmTasks() {
+        return maxRpmTasks;
+    }
+
+    public void setMaxRpmTasks(Integer maxRpmTasks) {
+        this.maxRpmTasks = maxRpmTasks;
+    }
+
+    public boolean isBatchMode() {
+        return batchMode;
+    }
+
+    public void setBatchMode(boolean batchMode) {
+        this.batchMode = batchMode;
+    }
+
+    public String getWebhookUrl() {
+        return webhookUrl;
+    }
+
+    public void setWebhookUrl(String webhookUrl) {
+        this.webhookUrl = webhookUrl;
+    }
+
+    public String getWebhookToken() {
+        return webhookToken;
+    }
+
+    public void setWebhookToken(String webhookToken) {
+        this.webhookToken = webhookToken;
+    }
+
     private CacheManager cacheManager;
 
     public CacheManager getCacheManager() {

@@ -56,6 +56,38 @@ public class GenerateCommand implements Callable<Integer> {
             description = "path where generated Workflow should be written")
     private Path workflowPath;
 
+    public Path getPlanPath() {
+        return planPath;
+    }
+
+    public void setPlanPath(Path planPath) {
+        this.planPath = planPath;
+    }
+
+    public Path getPlatformPath() {
+        return platformPath;
+    }
+
+    public void setPlatformPath(Path platformPath) {
+        this.platformPath = platformPath;
+    }
+
+    public Path getSubjectPath() {
+        return subjectPath;
+    }
+
+    public void setSubjectPath(Path subjectPath) {
+        this.subjectPath = subjectPath;
+    }
+
+    public Path getWorkflowPath() {
+        return workflowPath;
+    }
+
+    public void setWorkflowPath(Path workflowPath) {
+        this.workflowPath = workflowPath;
+    }
+
     @Override
     public Integer call() throws Exception {
         Plan plan = Plan.readFromXML(planPath);

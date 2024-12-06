@@ -85,6 +85,62 @@ public class ReportCommand implements Callable<Integer> {
             description = "generate tmt results.yaml and include build logs")
     private boolean full;
 
+    public Path getPlanPath() {
+        return planPath;
+    }
+
+    public void setPlanPath(Path planPath) {
+        this.planPath = planPath;
+    }
+
+    public Path getPlatformPath() {
+        return platformPath;
+    }
+
+    public void setPlatformPath(Path platformPath) {
+        this.platformPath = platformPath;
+    }
+
+    public Path getSubjectPath() {
+        return subjectPath;
+    }
+
+    public void setSubjectPath(Path subjectPath) {
+        this.subjectPath = subjectPath;
+    }
+
+    public Path getWorkflowPath() {
+        return workflowPath;
+    }
+
+    public void setWorkflowPath(Path workflowPath) {
+        this.workflowPath = workflowPath;
+    }
+
+    public Path getResultDir() {
+        return resultDir;
+    }
+
+    public void setResultDir(Path resultDir) {
+        this.resultDir = resultDir;
+    }
+
+    public Path getReportDir() {
+        return reportDir;
+    }
+
+    public void setReportDir(Path reportDir) {
+        this.reportDir = reportDir;
+    }
+
+    public boolean isFull() {
+        return full;
+    }
+
+    public void setFull(boolean full) {
+        this.full = full;
+    }
+
     @Override
     public Integer call() throws Exception {
         Files.createDirectories(reportDir);
