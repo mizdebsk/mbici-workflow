@@ -57,7 +57,7 @@ public class Linker implements WorkflowExecutionListener {
 
     @Override
     public void taskFailed(Workflow workflow, FinishedTask finishedTask) {
-        // Nothing to do
+        taskSucceeded(workflow, finishedTask);
     }
 
     @Override
