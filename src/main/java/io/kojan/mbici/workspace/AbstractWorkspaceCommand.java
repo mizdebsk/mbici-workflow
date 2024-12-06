@@ -94,51 +94,68 @@ public class AbstractWorkspaceCommand {
             description = "")
     private Integer maxRpmTasks;
 
-    void updateConfig(WorkspaceConfig config) {
+    boolean updateConfig(WorkspaceConfig config) {
+        boolean updated = false;
         if (subjectPath != null) {
             config.setSubjectPath(subjectPath);
+            updated = true;
         }
         if (workflowPath != null) {
             config.setWorkflowPath(workflowPath);
+            updated = true;
         }
         if (planPath != null) {
             config.setPlanPath(planPath);
+            updated = true;
         }
         if (platformPath != null) {
             config.setPlatformPath(platformPath);
+            updated = true;
         }
         if (resultDir != null) {
             config.setResultDir(resultDir);
+            updated = true;
         }
         if (cacheDir != null) {
             config.setCacheDir(cacheDir);
+            updated = true;
         }
         if (workDir != null) {
             config.setWorkDir(workDir);
+            updated = true;
         }
         if (linkDir != null) {
             config.setLinkDir(linkDir);
+            updated = true;
         }
         if (reportDir != null) {
             config.setReportDir(reportDir);
+            updated = true;
         }
         if (lookaside != null) {
             config.setLookaside(lookaside);
+            updated = true;
         }
         if (scmDir != null) {
             config.setScmDir(scmDir);
+            updated = true;
         }
         if (scmRef != null) {
             config.setScmRef(scmRef);
+            updated = true;
         }
         if (maxCheckoutTasks != null) {
             config.setMaxCheckoutTasks(maxCheckoutTasks);
+            updated = true;
         }
         if (maxSrpmTasks != null) {
             config.setMaxSrpmTasks(maxSrpmTasks);
+            updated = true;
         }
         if (maxRpmTasks != null) {
             config.setMaxRpmTasks(maxRpmTasks);
+            updated = true;
         }
+        return updated;
     }
 }

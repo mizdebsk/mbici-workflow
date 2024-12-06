@@ -58,6 +58,14 @@ public class Workspace {
         return find(Path.of(".").toAbsolutePath().getParent());
     }
 
+    public static Workspace findOrAbort() throws IOException, XMLException {
+        Workspace ws = find();
+        if (ws == null) {
+            throw new RuntimeException("This must be ran in a workspace");
+        }
+        return ws;
+    }
+
     public static Workspace find(Path pp) throws IOException, XMLException {
         for (Path p = pp; p != null; p = p.getParent()) {
             if (Files.isDirectory(p.resolve(".mbi"))) {

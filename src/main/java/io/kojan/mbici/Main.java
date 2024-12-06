@@ -20,6 +20,7 @@ import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
 import io.kojan.mbici.subject.LocalSubjectCommand;
+import io.kojan.mbici.workspace.ConfigCommand;
 import io.kojan.mbici.workspace.InitCommand;
 import java.nio.file.Path;
 import picocli.CommandLine;
@@ -32,6 +33,7 @@ import picocli.CommandLine.Command;
         name = "mbici-wf",
         subcommands = {
             InitCommand.class,
+            ConfigCommand.class,
             LocalSubjectCommand.class,
             GenerateCommand.class,
             LocalExecuteCommand.class,
