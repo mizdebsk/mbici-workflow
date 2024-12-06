@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.workspace;
 
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
@@ -81,6 +82,27 @@ public class InitCommand extends AbstractWorkspaceCommand implements Callable<In
 
         ws = Workspace.create(cwd, c);
         ws.write();
+
+        Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
+        try (Writer w = Files.newBufferedWriter(yamlPath)) {
+            w.write("platform:\n");
+            if (fedora) {
+                w.write(
+                        "  Everything: https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Everything/x86_64/os/\n");
+            }
+            if (centos || rhel) {
+                w.write(
+                        "  BaseOS: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/BaseOS/x86_64/os/\n");
+                w.write(
+                        "  AppStream: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/AppStream/x86_64/os/\n");
+                w.write(
+                        "  CRB: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/CRB/x86_64/os/\n");
+            }
+            w.write("  packages:\n");
+            w.write("    - rpm-build\n");
+            w.write("    - glibc-minimal-langpack\n");
+        }
+
         System.err.println("Initialized workspace at " + ws.getWorkspaceDir());
         return 0;
     }
