@@ -45,6 +45,22 @@ public class LocalSubjectCommand extends AbstractSubjectCommand {
             description = "git ref to use in each dist-git repository")
     protected String ref = "rawhide";
 
+    public Path getScmPath() {
+        return scmPath;
+    }
+
+    public void setScmPath(Path scmPath) {
+        this.scmPath = scmPath;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
     private String resolveRef(Path repo, String ref) throws InterruptedException, IOException {
         List<String> command = Arrays.asList("git", "-C", repo.toString(), "rev-parse", ref);
 

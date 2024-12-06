@@ -18,6 +18,12 @@ package io.kojan.mbici.workspace;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
+import io.kojan.mbici.subject.LocalSubjectCommand;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -33,6 +39,17 @@ public class RunCommand implements Callable<Integer> {
             description = "Run in non-interactive mode")
     protected boolean batchMode;
 
+    private static void deleteDir(Path path) throws IOException {
+        if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            try (DirectoryStream<Path> ds = Files.newDirectoryStream(path)) {
+                for (Path child : ds) {
+                    deleteDir(child);
+                }
+            }
+        }
+        Files.delete(path);
+    }
+
     @Override
     public Integer call() throws Exception {
 
@@ -40,6 +57,29 @@ public class RunCommand implements Callable<Integer> {
         WorkspaceConfig c = ws.getConfig();
         System.err.println("Using workspace at " + ws.getWorkspaceDir());
 
+        Files.createDirectories(c.getCacheDir());
+        Files.createDirectories(c.getResultDir());
+        Files.createDirectories(c.getWorkDir());
+        Files.createDirectories(c.getLinkDir());
+
+        Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
+        YamlConf yaml = YamlConf.load(yamlPath);
+        yaml.getPlan().writeToXML(c.getPlanPath());
+        yaml.getPlatform().writeToXML(c.getPlatformPath());
+
+        LocalSubjectCommand subject = new LocalSubjectCommand();
+        subject.setSubjectPath(c.getSubjectPath());
+        subject.setPlanPath(c.getPlanPath());
+        subject.setLookaside(c.getLookaside());
+        subject.setScmPath(c.getScmDir());
+        subject.setRef(c.getScmRef());
+
+        System.err.println("Running local-subject command...");
+        int ret = subject.call();
+        if (ret != 0) {
+            System.err.println("The local-subject command failed");
+            return ret;
+        }
         GenerateCommand generate = new GenerateCommand();
         generate.setPlanPath(c.getPlanPath());
         generate.setPlatformPath(c.getPlatformPath());
@@ -47,7 +87,7 @@ public class RunCommand implements Callable<Integer> {
         generate.setWorkflowPath(c.getWorkflowPath());
 
         System.err.println("Running generate command...");
-        int ret = generate.call();
+        ret = generate.call();
         if (ret != 0) {
             System.err.println("The generate command failed");
             return ret;
@@ -70,6 +110,8 @@ public class RunCommand implements Callable<Integer> {
             System.err.println("The execute command failed");
             return ret;
         }
+
+        deleteDir(c.getReportDir());
 
         ReportCommand report = new ReportCommand();
         report.setPlanPath(c.getPlanPath());

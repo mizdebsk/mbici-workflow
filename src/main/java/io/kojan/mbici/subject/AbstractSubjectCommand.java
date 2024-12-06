@@ -42,6 +42,30 @@ abstract class AbstractSubjectCommand implements Callable<Integer> {
             description = "lookaside cache base URL")
     protected String lookaside = "https://src.fedoraproject.org/lookaside/pkgs/rpms";
 
+    public Path getSubjectPath() {
+        return subjectPath;
+    }
+
+    public void setSubjectPath(Path subjectPath) {
+        this.subjectPath = subjectPath;
+    }
+
+    public Path getPlanPath() {
+        return planPath;
+    }
+
+    public void setPlanPath(Path planPath) {
+        this.planPath = planPath;
+    }
+
+    public String getLookaside() {
+        return lookaside;
+    }
+
+    public void setLookaside(String lookaside) {
+        this.lookaside = lookaside;
+    }
+
     protected abstract Subject generateSubject(Set<String> components) throws Exception;
 
     @Override
