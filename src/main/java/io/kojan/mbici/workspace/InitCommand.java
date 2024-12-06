@@ -19,9 +19,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(name = "init", description = "initialize MBI workspace", mixinStandardHelpOptions = true)
 public class InitCommand extends AbstractWorkspaceCommand implements Callable<Integer> {
+
+    @Option(
+            names = {"--fedora"},
+            description = "assume Fedora SCM configuration")
+    private boolean fedora;
+
+    @Option(
+            names = {"--centos"},
+            description = "assume CentOS Stream SCM configuration")
+    private boolean centos;
+
+    @Option(
+            names = {"--rhel"},
+            description = "assume RHEL SCM configuration")
+    private boolean rhel;
 
     @Override
     public Integer call() throws Exception {
@@ -44,9 +60,19 @@ public class InitCommand extends AbstractWorkspaceCommand implements Callable<In
         c.setWorkDir(Path.of("/tmp"));
         c.setLinkDir(cwd.resolve("result"));
         c.setReportDir(cwd.resolve("report"));
-        c.setLookaside("");
+
+        if (fedora) {
+            c.setLookaside("https://src.fedoraproject.org/lookaside/pkgs/rpms");
+        } else if (centos) {
+            c.setLookaside("https://sources.stream.centos.org/sources/rpms");
+        } else if (rhel) {
+            c.setLookaside("https://pkgs.devel.redhat.com/repo/pkgs");
+        } else {
+            c.setLookaside("");
+        }
         c.setScmDir(cwd.resolve("rpms"));
         c.setScmRef("HEAD");
+
         c.setMaxCheckoutTasks(20);
         c.setMaxSrpmTasks(10);
         c.setMaxRpmTasks(5);
