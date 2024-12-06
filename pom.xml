@@ -30,6 +30,9 @@
   <scm>
     <url>https://github.com/mizdebsk/mbici-workflow.git</url>
   </scm>
+  <properties>
+    <kojan.javaRelease>22</kojan.javaRelease>
+  </properties>
 
   <dependencies>
     <dependency>
