@@ -38,8 +38,8 @@ public class TmtResultsReport extends Report {
     @Override
     public void body() {
         boolean failed =
-                workflow.getResults().stream() //
-                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                workflow.getResults().stream()
+                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS)
                         .findAny()
                         .isPresent();
 
@@ -61,7 +61,7 @@ public class TmtResultsReport extends Report {
             String durationString =
                     "%d:%02d:%02d"
                             .formatted(
-                                    duration.toHours(), //
+                                    duration.toHours(),
                                     duration.toMinutesPart(),
                                     duration.toSecondsPart());
 

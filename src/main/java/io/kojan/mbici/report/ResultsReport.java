@@ -36,8 +36,8 @@ public class ResultsReport extends Report {
     @Override
     public void body() {
         List<Result> failed =
-                workflow.getResults().stream() //
-                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS) //
+                workflow.getResults().stream()
+                        .filter(result -> result.getOutcome() != TaskOutcome.SUCCESS)
                         .collect(Collectors.toList());
 
         header("Test outcome");

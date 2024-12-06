@@ -29,19 +29,19 @@ import picocli.CommandLine.Command;
  */
 @Command(
         name = "mbici-wf",
-        subcommands = { //
-            LocalSubjectCommand.class, //
-            GenerateCommand.class, //
-            LocalExecuteCommand.class, //
-            KubeExecuteCommand.class, //
-            ReportCommand.class, //
+        subcommands = {
+            LocalSubjectCommand.class,
+            GenerateCommand.class,
+            LocalExecuteCommand.class,
+            KubeExecuteCommand.class,
+            ReportCommand.class,
         },
         mixinStandardHelpOptions = true)
 public class Main {
     public static void main(String... args) {
         int exitCode =
-                new CommandLine(new Main()) //
-                        .registerConverter(Path.class, arg -> Path.of(arg).toAbsolutePath()) //
+                new CommandLine(new Main())
+                        .registerConverter(Path.class, arg -> Path.of(arg).toAbsolutePath())
                         .execute(args);
         System.exit(exitCode);
     }
