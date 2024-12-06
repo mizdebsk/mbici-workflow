@@ -16,12 +16,15 @@
 package io.kojan.mbici.tasks;
 
 import io.kojan.mbici.cache.ArtifactType;
+import io.kojan.workflow.FinishedTask;
 import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Mikolaj Izdebski
@@ -44,7 +47,15 @@ public class RepoTaskHandler extends AbstractTaskHandler {
                     "I/O error when creating directory " + repoPath + ": " + e.getMessage());
         }
 
-        for (Path rpmPath : context.getDependencyArtifacts(ArtifactType.RPM)) {
+        Set<Path> rpmPaths = new LinkedHashSet<>();
+        rpmPaths.addAll(context.getDependencyArtifacts(ArtifactType.RPM));
+        if (context.getDependencies().stream()
+                .map(FinishedTask::getTask)
+                .map(Task::getHandler)
+                .anyMatch(SrpmTaskHandler.class.getName()::equals)) {
+            rpmPaths.addAll(context.getDependencyArtifacts(ArtifactType.SRPM));
+        }
+        for (Path rpmPath : rpmPaths) {
             Path rpmLinkPath = repoPath.resolve(rpmPath.getFileName());
 
             try {

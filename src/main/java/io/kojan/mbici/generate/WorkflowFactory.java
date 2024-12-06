@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Mikolaj Izdebski
@@ -78,7 +79,9 @@ class WorkflowFactory {
             repos.addFirst(repo);
         }
 
-        taskFactory.createRepoTask("compose", rpmsByName.values());
+        taskFactory.createRepoTask(
+                "compose",
+                Stream.concat(srpms.values().stream(), rpmsByName.values().stream()).toList());
 
         return workflowBuilder.build();
     }
