@@ -111,6 +111,7 @@ public class RunCommand implements Callable<Integer> {
             return ret;
         }
 
+        Files.createDirectories(c.getReportDir());
         deleteDir(c.getReportDir());
 
         ReportCommand report = new ReportCommand();
