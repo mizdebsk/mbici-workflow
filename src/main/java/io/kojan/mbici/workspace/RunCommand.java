@@ -54,7 +54,7 @@ public class RunCommand extends AbstractCommand {
 
         Workspace ws = Workspace.findOrAbort();
         WorkspaceConfig c = ws.getConfig();
-        System.err.println("Using workspace at " + ws.getWorkspaceDir());
+        info("Using workspace at " + ws.getWorkspaceDir());
 
         Files.createDirectories(c.getCacheDir());
         Files.createDirectories(c.getResultDir());
@@ -73,10 +73,10 @@ public class RunCommand extends AbstractCommand {
         subject.setScmPath(c.getScmDir());
         subject.setRef(c.getScmRef());
 
-        System.err.println("Running local-subject command...");
+        info("Running local-subject command...");
         int ret = subject.call();
         if (ret != 0) {
-            System.err.println("The local-subject command failed");
+            error("The local-subject command failed");
             return ret;
         }
         GenerateCommand generate = new GenerateCommand();
@@ -85,10 +85,10 @@ public class RunCommand extends AbstractCommand {
         generate.setSubjectPath(c.getSubjectPath());
         generate.setWorkflowPath(c.getWorkflowPath());
 
-        System.err.println("Running generate command...");
+        info("Running generate command...");
         ret = generate.call();
         if (ret != 0) {
-            System.err.println("The generate command failed");
+            error("The generate command failed");
             return ret;
         }
 
@@ -103,10 +103,10 @@ public class RunCommand extends AbstractCommand {
         execute.setMaxRpmTasks(c.getMaxRpmTasks());
         execute.setBatchMode(batchMode);
 
-        System.err.println("Running execute command...");
+        info("Running execute command...");
         ret = execute.call();
         if (ret != 0) {
-            System.err.println("The execute command failed");
+            error("The execute command failed");
             return ret;
         }
 
@@ -123,10 +123,10 @@ public class RunCommand extends AbstractCommand {
         report.setFull(true);
         report.setQuiet(true);
 
-        System.err.println("Running report command...");
+        info("Running report command...");
         ret = report.call();
         if (ret != 0) {
-            System.err.println("The report command failed");
+            error("The report command failed");
             return ret;
         }
 

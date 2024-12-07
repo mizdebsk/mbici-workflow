@@ -15,6 +15,25 @@
  */
 package io.kojan.mbici.workspace;
 
+import java.util.List;
 import java.util.concurrent.Callable;
+import picocli.CommandLine.Help;
+import picocli.CommandLine.Help.Ansi;
+import picocli.CommandLine.Help.Ansi.Style;
+import picocli.CommandLine.Help.ColorScheme;
 
-public abstract class AbstractCommand implements Callable<Integer> {}
+public abstract class AbstractCommand implements Callable<Integer> {
+    protected final ColorScheme cs = Help.defaultColorScheme(Ansi.AUTO);
+
+    public void error(String msg) {
+        System.err.println(cs.errorText(msg));
+    }
+
+    public void success(String msg) {
+        System.err.println(cs.apply(msg, List.of(Style.fg_green)));
+    }
+
+    public void info(String msg) {
+        System.err.println(msg);
+    }
+}

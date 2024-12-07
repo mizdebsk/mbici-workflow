@@ -34,6 +34,15 @@ public class ConfigCommand extends AbstractConfigCommand {
             description = "print shell code for setting variables")
     private boolean env;
 
+    private void printEnv(String key, Object value) {
+        System.out.println(key + "=\"" + value + "\"");
+    }
+
+    private void printHuman(int n, String key, Object value) {
+        String padding = " ".repeat(Math.max(n - key.length(), 0));
+        System.out.println("  " + cs.optionText(key) + padding + " : " + value);
+    }
+
     @Override
     public Integer call() throws Exception {
         Workspace ws = Workspace.findOrAbort();
@@ -41,45 +50,45 @@ public class ConfigCommand extends AbstractConfigCommand {
 
         boolean updated = updateConfig(c);
         if (updated) {
-            System.err.println("Configuration updated");
+            success("Configuration updated");
             ws.write();
         }
 
         if (env) {
-            System.out.println("mbiSubjectPath=\"" + c.getSubjectPath() + "\"");
-            System.out.println("mbiWorkflowPath=\"" + c.getWorkflowPath() + "\"");
-            System.out.println("mbiPlanPath=\"" + c.getPlanPath() + "\"");
-            System.out.println("mbiPlatformPath=\"" + c.getPlatformPath() + "\"");
-            System.out.println("mbiResultDir=\"" + c.getResultDir() + "\"");
-            System.out.println("mbiCacheDir=\"" + c.getCacheDir() + "\"");
-            System.out.println("mbiWorkDir=\"" + c.getWorkDir() + "\"");
-            System.out.println("mbiLinkDir=\"" + c.getLinkDir() + "\"");
-            System.out.println("mbiReportDir=\"" + c.getReportDir() + "\"");
-            System.out.println("mbiLookaside=\"" + c.getLookaside() + "\"");
-            System.out.println("mbiScmDir=\"" + c.getScmDir() + "\"");
-            System.out.println("mbiScmRef=\"" + c.getScmRef() + "\"");
+            printEnv("mbiSubjectPath", c.getSubjectPath());
+            printEnv("mbiWorkflowPath", c.getWorkflowPath());
+            printEnv("mbiPlanPath", c.getPlanPath());
+            printEnv("mbiPlatformPath", c.getPlatformPath());
+            printEnv("mbiResultDir", c.getResultDir());
+            printEnv("mbiCacheDir", c.getCacheDir());
+            printEnv("mbiWorkDir", c.getWorkDir());
+            printEnv("mbiLinkDir", c.getLinkDir());
+            printEnv("mbiReportDir", c.getReportDir());
+            printEnv("mbiLookaside", c.getLookaside());
+            printEnv("mbiScmDir", c.getScmDir());
+            printEnv("mbiScmRef", c.getScmRef());
             return 0;
         }
 
         if (show || !updated) {
             System.out.println("Paths:");
-            System.out.println("  subject path  : " + c.getSubjectPath());
-            System.out.println("  workflow path : " + c.getWorkflowPath());
-            System.out.println("  plan path     : " + c.getPlanPath());
-            System.out.println("  platform path : " + c.getPlatformPath());
-            System.out.println("  result dir    : " + c.getResultDir());
-            System.out.println("  cache dir     : " + c.getCacheDir());
-            System.out.println("  work dir      : " + c.getWorkDir());
-            System.out.println("  link dir      : " + c.getLinkDir());
-            System.out.println("  report dir    : " + c.getReportDir());
+            printHuman(13, "subject path", c.getSubjectPath());
+            printHuman(13, "workflow path", c.getWorkflowPath());
+            printHuman(13, "plan path", c.getPlanPath());
+            printHuman(13, "platform path", c.getPlatformPath());
+            printHuman(13, "result dir", c.getResultDir());
+            printHuman(13, "cache dir", c.getCacheDir());
+            printHuman(13, "work dir", c.getWorkDir());
+            printHuman(13, "link dir", c.getLinkDir());
+            printHuman(13, "report dir", c.getReportDir());
             System.out.println("SCM config:");
-            System.out.println("  lookaside : " + c.getLookaside());
-            System.out.println("  SCM dir   : " + c.getScmDir());
-            System.out.println("  SCM ref   : " + c.getScmRef());
+            printHuman(9, "lookaside", c.getLookaside());
+            printHuman(9, "SCM dir", c.getScmDir());
+            printHuman(9, "SCM ref", c.getScmRef());
             System.out.println("Limits:");
-            System.out.println("  max checkout tasks : " + c.getMaxCheckoutTasks());
-            System.out.println("  max SRPM tasks     : " + c.getMaxSrpmTasks());
-            System.out.println("  max RPM tasks      : " + c.getMaxRpmTasks());
+            printHuman(18, "max checkout tasks", c.getMaxCheckoutTasks());
+            printHuman(18, "max SRPM tasks", c.getMaxSrpmTasks());
+            printHuman(18, "max RPM tasks", c.getMaxRpmTasks());
         }
 
         return 0;

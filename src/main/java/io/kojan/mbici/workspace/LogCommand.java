@@ -76,7 +76,7 @@ public class LogCommand extends AbstractCommand {
             }
         }
         if (component == null) {
-            System.err.println("Unable to determine component to show logs of");
+            error("Unable to determine component to show logs of");
             return 1;
         }
 
@@ -88,12 +88,13 @@ public class LogCommand extends AbstractCommand {
                             .map(Phase::getName)
                             .toList();
             if (phases.isEmpty()) {
-                System.err.println("Component " + component + " is not part of any phase");
+                error("Component " + component + " is not part of any phase");
                 return 1;
             }
             if (phases.size() > 1) {
-                System.err.println("Ambigous phase, specify explicit phase with --phase or -p");
-                System.err.println("Component " + component + " belongs to phases: " + phases);
+                error("Ambigous phase for component " + component);
+                info("Please specify explicit phase with --phase or -p");
+                info("The component belongs to phases: " + phases);
                 return 1;
             }
             phase = phases.getFirst();
@@ -105,8 +106,8 @@ public class LogCommand extends AbstractCommand {
                 taskDir.resolve(artifact != null ? artifact : rootLog ? "root.log" : "build.log");
 
         if (!Files.isRegularFile(logPath)) {
-            System.err.println("Unable to find the log");
-            System.err.println("It was expected to be found at " + logPath);
+            error("Unable to find " + logPath.getFileName());
+            info("It was expected to be found at " + logPath);
             return 1;
         }
 

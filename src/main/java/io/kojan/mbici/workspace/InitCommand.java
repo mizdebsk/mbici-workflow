@@ -43,7 +43,7 @@ public class InitCommand extends AbstractConfigCommand {
     public Integer call() throws Exception {
         Workspace ws = Workspace.find();
         if (ws != null) {
-            System.err.println("Workspace already exists at path " + ws.getWorkspaceDir());
+            error("Workspace already exists at path " + ws.getWorkspaceDir());
             return 1;
         }
 
@@ -121,7 +121,7 @@ public class InitCommand extends AbstractConfigCommand {
             w.write("  - component1\n");
         }
 
-        System.err.println("Initialized workspace at " + ws.getWorkspaceDir());
+        success("Initialized workspace at " + ws.getWorkspaceDir());
         return 0;
     }
 }
