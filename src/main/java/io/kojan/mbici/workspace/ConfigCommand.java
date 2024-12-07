@@ -15,7 +15,6 @@
  */
 package io.kojan.mbici.workspace;
 
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -23,7 +22,7 @@ import picocli.CommandLine.Option;
         name = "config",
         description = "display or update MBI workspace configuration",
         mixinStandardHelpOptions = true)
-public class ConfigCommand extends AbstractConfigCommand implements Callable<Integer> {
+public class ConfigCommand extends AbstractConfigCommand {
 
     @Option(
             names = {"-s", "--show"},

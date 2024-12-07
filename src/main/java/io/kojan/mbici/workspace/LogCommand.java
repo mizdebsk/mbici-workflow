@@ -20,13 +20,12 @@ import io.kojan.mbici.model.Plan;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(name = "log", description = "display build logs", mixinStandardHelpOptions = true)
-public class LogCommand implements Callable<Integer> {
+public class LogCommand extends AbstractCommand {
 
     @Option(
             names = {"-P", "--path"},

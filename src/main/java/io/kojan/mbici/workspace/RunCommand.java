@@ -24,7 +24,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -32,7 +31,7 @@ import picocli.CommandLine.Option;
         name = "run",
         description = "generate and execute MBI workflow",
         mixinStandardHelpOptions = true)
-public class RunCommand implements Callable<Integer> {
+public class RunCommand extends AbstractCommand {
 
     @Option(
             names = {"-B", "--batch-mode"},

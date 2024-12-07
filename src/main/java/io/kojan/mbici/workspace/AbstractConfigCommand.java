@@ -18,7 +18,7 @@ package io.kojan.mbici.workspace;
 import java.nio.file.Path;
 import picocli.CommandLine.Option;
 
-public class AbstractConfigCommand {
+public abstract class AbstractConfigCommand extends AbstractCommand {
     @Option(
             names = {"--subject-path"},
             description = "")
