@@ -49,6 +49,11 @@ public class LogCommand implements Callable<Integer> {
     private boolean rootLog;
 
     @Option(
+            names = {"-a", "--artifact"},
+            description = "print custom artifact instead of build.log")
+    private String artifact;
+
+    @Option(
             names = {"-s", "--srpm"},
             description = "print SRPM logs instead of RPM logs")
     private boolean srpm;
@@ -97,7 +102,8 @@ public class LogCommand implements Callable<Integer> {
 
         Path resDir = c.getLinkDir();
         Path taskDir = resDir.resolve(component + (srpm ? "-srpm" : "-" + phase + "-rpm"));
-        Path logPath = taskDir.resolve(rootLog ? "root.log" : "build.log");
+        Path logPath =
+                taskDir.resolve(artifact != null ? artifact : rootLog ? "root.log" : "build.log");
 
         if (!Files.isRegularFile(logPath)) {
             System.err.println("Unable to find the log");
