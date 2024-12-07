@@ -93,20 +93,33 @@ public class InitCommand extends AbstractWorkspaceCommand implements Callable<In
         try (Writer w = Files.newBufferedWriter(yamlPath)) {
             w.write("platform:\n");
             if (fedora) {
+                // String mirror = "https://dl.fedoraproject.org/pub/fedora";
+                String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/fedora";
                 w.write(
-                        "  Everything: https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Everything/x86_64/os/\n");
-            }
-            if (centos || rhel) {
-                w.write(
-                        "  BaseOS: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/BaseOS/x86_64/os/\n");
-                w.write(
-                        "  AppStream: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/AppStream/x86_64/os/\n");
-                w.write(
-                        "  CRB: https://ftp.icm.edu.pl/pub/Linux/dist/almalinux/9/CRB/x86_64/os/\n");
+                        "  Everything: "
+                                + mirror
+                                + "/linux/development/rawhide/Everything/x86_64/os/\n");
+            } else if (centos || rhel) {
+                String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/almalinux";
+                w.write("  BaseOS: " + mirror + "/9/BaseOS/x86_64/os/\n");
+                w.write("  AppStream: " + mirror + "/9/AppStream/x86_64/os/\n");
+                w.write("  CRB: " + mirror + "/9/CRB/x86_64/os/\n");
+            } else {
+                w.write("  myrepo: https://...\n");
             }
             w.write("  packages:\n");
             w.write("    - rpm-build\n");
             w.write("    - glibc-minimal-langpack\n");
+            w.write("\n");
+            w.write("macros:\n");
+            w.write("  vendor: MBI\n");
+            w.write("#  my_global_macro: value\n");
+            w.write("\n");
+            w.write("#p0-macros:\n");
+            w.write("#  _with_bootstrap: 1\n");
+            w.write("\n");
+            w.write("p0:\n");
+            w.write("  - component1\n");
         }
 
         System.err.println("Initialized workspace at " + ws.getWorkspaceDir());
