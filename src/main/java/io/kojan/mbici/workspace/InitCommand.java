@@ -23,7 +23,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "init", description = "initialize MBI workspace", mixinStandardHelpOptions = true)
-public class InitCommand extends AbstractWorkspaceCommand implements Callable<Integer> {
+public class InitCommand extends AbstractConfigCommand implements Callable<Integer> {
 
     @Option(
             names = {"--fedora"},

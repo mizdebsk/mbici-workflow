@@ -23,7 +23,7 @@ import picocli.CommandLine.Option;
         name = "config",
         description = "display or update MBI workspace configuration",
         mixinStandardHelpOptions = true)
-public class ConfigCommand extends AbstractWorkspaceCommand implements Callable<Integer> {
+public class ConfigCommand extends AbstractConfigCommand implements Callable<Integer> {
 
     @Option(
             names = {"-s", "--show"},
