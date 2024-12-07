@@ -30,17 +30,39 @@ public class ConfigCommand extends AbstractWorkspaceCommand implements Callable<
             description = "display configuration")
     private boolean show;
 
+    @Option(
+            names = {"--env"},
+            description = "print shell code for setting variables")
+    private boolean env;
+
     @Override
     public Integer call() throws Exception {
         Workspace ws = Workspace.findOrAbort();
-        boolean updated = updateConfig(ws.getConfig());
+        WorkspaceConfig c = ws.getConfig();
+
+        boolean updated = updateConfig(c);
         if (updated) {
             System.err.println("Configuration updated");
             ws.write();
         }
 
+        if (env) {
+            System.out.println("mbiSubjectPath=\"" + c.getSubjectPath() + "\"");
+            System.out.println("mbiWorkflowPath=\"" + c.getWorkflowPath() + "\"");
+            System.out.println("mbiPlanPath=\"" + c.getPlanPath() + "\"");
+            System.out.println("mbiPlatformPath=\"" + c.getPlatformPath() + "\"");
+            System.out.println("mbiResultDir=\"" + c.getResultDir() + "\"");
+            System.out.println("mbiCacheDir=\"" + c.getCacheDir() + "\"");
+            System.out.println("mbiWorkDir=\"" + c.getWorkDir() + "\"");
+            System.out.println("mbiLinkDir=\"" + c.getLinkDir() + "\"");
+            System.out.println("mbiReportDir=\"" + c.getReportDir() + "\"");
+            System.out.println("mbiLookaside=\"" + c.getLookaside() + "\"");
+            System.out.println("mbiScmDir=\"" + c.getScmDir() + "\"");
+            System.out.println("mbiScmRef=\"" + c.getScmRef() + "\"");
+            return 0;
+        }
+
         if (show || !updated) {
-            WorkspaceConfig c = ws.getConfig();
             System.out.println("Paths:");
             System.out.println("  subject path  : " + c.getSubjectPath());
             System.out.println("  workflow path : " + c.getWorkflowPath());
