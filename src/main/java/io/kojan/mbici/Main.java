@@ -22,6 +22,7 @@ import io.kojan.mbici.report.ReportCommand;
 import io.kojan.mbici.subject.LocalSubjectCommand;
 import io.kojan.mbici.workspace.ConfigCommand;
 import io.kojan.mbici.workspace.InitCommand;
+import io.kojan.mbici.workspace.LogCommand;
 import io.kojan.mbici.workspace.RunCommand;
 import java.nio.file.Path;
 import picocli.CommandLine;
@@ -36,6 +37,7 @@ import picocli.CommandLine.Command;
             InitCommand.class,
             ConfigCommand.class,
             RunCommand.class,
+            LogCommand.class,
             LocalSubjectCommand.class,
             GenerateCommand.class,
             LocalExecuteCommand.class,
