@@ -65,6 +65,11 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
     private Path reportDir;
 
     @Option(
+            names = {"--compose-dir"},
+            description = "")
+    private Path composeDir;
+
+    @Option(
             names = {"--lookaside"},
             description = "")
     private String lookaside;
@@ -130,6 +135,10 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
         }
         if (reportDir != null) {
             config.setReportDir(reportDir);
+            updated = true;
+        }
+        if (composeDir != null) {
+            config.setComposeDir(composeDir);
             updated = true;
         }
         if (lookaside != null) {

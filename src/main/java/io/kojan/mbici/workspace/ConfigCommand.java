@@ -64,6 +64,7 @@ public class ConfigCommand extends AbstractConfigCommand {
             printEnv("mbiWorkDir", c.getWorkDir());
             printEnv("mbiLinkDir", c.getLinkDir());
             printEnv("mbiReportDir", c.getReportDir());
+            printEnv("mbiComposeDir", c.getComposeDir());
             printEnv("mbiLookaside", c.getLookaside());
             printEnv("mbiScmDir", c.getScmDir());
             printEnv("mbiScmRef", c.getScmRef());
@@ -81,6 +82,7 @@ public class ConfigCommand extends AbstractConfigCommand {
             printHuman(13, "work dir", c.getWorkDir());
             printHuman(13, "link dir", c.getLinkDir());
             printHuman(13, "report dir", c.getReportDir());
+            printHuman(13, "compose dir", c.getComposeDir());
             System.out.println("SCM config:");
             printHuman(9, "lookaside", c.getLookaside());
             printHuman(9, "SCM dir", c.getScmDir());

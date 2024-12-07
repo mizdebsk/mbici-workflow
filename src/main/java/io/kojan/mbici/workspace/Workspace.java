@@ -134,6 +134,12 @@ public class Workspace {
                             Path::toString,
                             Path::of),
                     Attribute.of(
+                            "composeDir",
+                            WorkspaceConfig::getComposeDir,
+                            WorkspaceConfig::setComposeDir,
+                            Path::toString,
+                            Path::of),
+                    Attribute.of(
                             "lookaside",
                             WorkspaceConfig::getLookaside,
                             WorkspaceConfig::setLookaside),

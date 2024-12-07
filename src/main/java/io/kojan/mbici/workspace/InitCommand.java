@@ -60,6 +60,7 @@ public class InitCommand extends AbstractConfigCommand {
         c.setWorkDir(Path.of("/tmp"));
         c.setLinkDir(cwd.resolve("result"));
         c.setReportDir(cwd.resolve("report"));
+        c.setComposeDir(cwd.resolve("compose"));
 
         if (fedora) {
             c.setLookaside("https://src.fedoraproject.org/lookaside/pkgs/rpms");
