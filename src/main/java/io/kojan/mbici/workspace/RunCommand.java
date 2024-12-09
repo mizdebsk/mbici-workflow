@@ -136,7 +136,10 @@ public class RunCommand extends AbstractCommand {
 
         Files.createDirectories(c.getComposeDir());
         deleteDir(c.getComposeDir());
-        copyDir(c.getLinkDir().resolve("compose").resolve("repo"), c.getComposeDir());
+        Path composeRepoDir = c.getLinkDir().resolve("compose").resolve("repo");
+        if (Files.isDirectory(composeRepoDir)) {
+            copyDir(composeRepoDir, c.getComposeDir());
+        }
 
         info("Running report command...");
         ret = report.call();
