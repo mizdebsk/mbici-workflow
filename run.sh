@@ -13,13 +13,13 @@ echo
 
 set -x
 
-mbici-wf generate \
+mbi generate \
 	 -plan plan.xml \
 	 -platform platform.xml \
 	 -subject subject.xml \
 	 -workflow workflow.xml
 
-mbici-wf run \
+mbi run \
 	 -batch \
 	 -maxCheckoutTasks 10 \
 	 -maxSrpmTasks 1 \
@@ -29,7 +29,7 @@ mbici-wf run \
 	 -cacheDir cache \
 	 -workDir work
 
-mbici-wf report \
+mbi report \
 	 -full \
 	 -plan plan.xml \
 	 -platform platform.xml \

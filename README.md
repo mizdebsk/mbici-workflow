@@ -29,33 +29,33 @@ Optional dependencies:
 Quick Start
 -----------
 
-Compile the sources and assemble binary executable `mbici-wf`:
+Compile the sources and assemble binary executable `mbi`:
 
     mvn clean verify
 
 Generate Workflow from example Build Plan, Platform and Test Subject:
 
-    ./target/mbici-wf generate \
+    ./target/mbi generate \
         --plan examples/dummy-plan.xml \
         --platform examples/dummy-platform.xml \
         --subject examples/dummy-subject.xml \
-        --workflow /tmp/mbici-wf.xml
+        --workflow /tmp/mbi.xml
 
 Execute generated workflow:
 
-    ./target/mbici-wf run \
-        --workflow /tmp/mbici-wf.xml \
+    ./target/mbi run \
+        --workflow /tmp/mbi.xml \
         --result-dir /tmp/mbici-result \
         --cache-dir /tmp/mbici-cache \
         --work-dir /tmp/mbici-work
 
 Generate a HTML report:
 
-    ./target/mbici-wf report \
+    ./target/mbi report \
         --plan examples/dummy-plan.xml
         --platform examples/dummy-platform.xml \
         --subject examples/dummy-subject.xml \
-        --workflow /tmp/mbici-wf.xml \
+        --workflow /tmp/mbi.xml \
         --result-dir /tmp/mbici-result \
         --report-dir /tmp/mbici-report
 
@@ -170,13 +170,13 @@ packages from sources specified by Test Subject on given Platform, in
 the way defined by Build Plan.
 
 Workflow can be generated from Build Plan, Platform and Test Subject
-by `mbici-wf generate` command.
+by `mbi generate` command.
 
 
 Usage
 -----
 
-* `mbici-wf generate` - generate Workflow from given Build Plan,
+* `mbi generate` - generate Workflow from given Build Plan,
   Platform and Test Subject
 
   Parameters:
@@ -190,7 +190,7 @@ Usage
   * `--workflow <path>` - path where generated Workflow should be
     written
 
-* `mbici-wf run` - execute Workflow and update it in-place
+* `mbi run` - execute Workflow and update it in-place
 
   Parameters:
 
@@ -208,7 +208,7 @@ Usage
   * `--kubernetes-ns` - build SRPM and RPM packages on external Kubernetes
     cluster instead of local machine (requires `kubectl`)
 
-* `mbici-wf report` - generate a simple HTML report describing given
+* `mbi report` - generate a simple HTML report describing given
   Workflow
 
   Parameters:

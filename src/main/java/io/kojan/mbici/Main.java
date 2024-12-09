@@ -32,7 +32,7 @@ import picocli.CommandLine.Command;
  * @author Mikolaj Izdebski
  */
 @Command(
-        name = "mbici-wf",
+        name = "mbi",
         subcommands = {
             InitCommand.class,
             ConfigCommand.class,

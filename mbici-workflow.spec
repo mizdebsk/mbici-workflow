@@ -50,7 +50,7 @@ java -cp target/mbici-workflow.jar picocli.AutoComplete io.kojan.mbici.Main
 %install
 # Install native binary
 install -d -m 755 %{buildroot}%{_bindir}
-install -p -m 755 mbici-workflow %{buildroot}%{_bindir}/mbici-wf
+install -p -m 755 mbici-workflow %{buildroot}%{_bindir}/mbi
 
 # Install manpages
 install -d -m 755 %{buildroot}%{_mandir}/man1/
@@ -58,11 +58,11 @@ cp -a man/*.1 %{buildroot}%{_mandir}/man1/
 
 # Install bash completion
 install -d -m 755 %{buildroot}%{_datadir}/bash-completion/completions/
-install -p -m 644 mbici-wf_completion %{buildroot}%{_datadir}/bash-completion/completions/mbici-wf
+install -p -m 644 mbi_completion %{buildroot}%{_datadir}/bash-completion/completions/mbi
 
 
 %files
-%{_bindir}/mbici-wf
+%{_bindir}/mbi
 %{_mandir}/man1/*
 %{_datadir}/bash-completion/completions/*
 %license LICENSE AUTHORS
