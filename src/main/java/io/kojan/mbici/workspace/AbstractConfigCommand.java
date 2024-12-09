@@ -70,6 +70,16 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
     private Path composeDir;
 
     @Option(
+            names = {"--test-plan-dir"},
+            description = "")
+    private Path testPlanDir;
+
+    @Option(
+            names = {"--test-result-dir"},
+            description = "")
+    private Path testResultDir;
+
+    @Option(
             names = {"--lookaside"},
             description = "")
     private String lookaside;
@@ -139,6 +149,14 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
         }
         if (composeDir != null) {
             config.setComposeDir(composeDir);
+            updated = true;
+        }
+        if (testPlanDir != null) {
+            config.setTestPlanDir(testPlanDir);
+            updated = true;
+        }
+        if (testResultDir != null) {
+            config.setTestResultDir(testResultDir);
             updated = true;
         }
         if (lookaside != null) {

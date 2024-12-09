@@ -24,6 +24,8 @@ import io.kojan.mbici.workspace.ConfigCommand;
 import io.kojan.mbici.workspace.InitCommand;
 import io.kojan.mbici.workspace.LogCommand;
 import io.kojan.mbici.workspace.RunCommand;
+import io.kojan.mbici.workspace.TestCommand;
+import io.kojan.mbici.workspace.ValidateCommand;
 import java.nio.file.Path;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -38,6 +40,8 @@ import picocli.CommandLine.Command;
             ConfigCommand.class,
             RunCommand.class,
             LogCommand.class,
+            ValidateCommand.class,
+            TestCommand.class,
             LocalSubjectCommand.class,
             GenerateCommand.class,
             LocalExecuteCommand.class,

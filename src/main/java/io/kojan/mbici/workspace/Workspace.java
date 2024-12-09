@@ -140,6 +140,18 @@ public class Workspace {
                             Path::toString,
                             Path::of),
                     Attribute.of(
+                            "testResultDir",
+                            WorkspaceConfig::getTestResultDir,
+                            WorkspaceConfig::setTestResultDir,
+                            Path::toString,
+                            Path::of),
+                    Attribute.of(
+                            "maxCheckoutTasks",
+                            WorkspaceConfig::getMaxCheckoutTasks,
+                            WorkspaceConfig::setMaxCheckoutTasks,
+                            Number::toString,
+                            Integer::parseInt),
+                    Attribute.of(
                             "lookaside",
                             WorkspaceConfig::getLookaside,
                             WorkspaceConfig::setLookaside),
@@ -151,11 +163,11 @@ public class Workspace {
                             Path::of),
                     Attribute.of("scmRef", WorkspaceConfig::getScmRef, WorkspaceConfig::setScmRef),
                     Attribute.of(
-                            "maxCheckoutTasks",
-                            WorkspaceConfig::getMaxCheckoutTasks,
-                            WorkspaceConfig::setMaxCheckoutTasks,
-                            Number::toString,
-                            Integer::parseInt),
+                            "testPlanDir",
+                            WorkspaceConfig::getTestPlanDir,
+                            WorkspaceConfig::setTestPlanDir,
+                            Path::toString,
+                            Path::of),
                     Attribute.of(
                             "maxSrpmTasks",
                             WorkspaceConfig::getMaxSrpmTasks,

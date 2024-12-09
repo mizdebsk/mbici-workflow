@@ -65,6 +65,8 @@ public class ConfigCommand extends AbstractConfigCommand {
             printEnv("mbiLinkDir", c.getLinkDir());
             printEnv("mbiReportDir", c.getReportDir());
             printEnv("mbiComposeDir", c.getComposeDir());
+            printEnv("mbiTestPlanDir", c.getTestPlanDir());
+            printEnv("mbiTestResultDir", c.getTestResultDir());
             printEnv("mbiLookaside", c.getLookaside());
             printEnv("mbiScmDir", c.getScmDir());
             printEnv("mbiScmRef", c.getScmRef());
@@ -72,17 +74,19 @@ public class ConfigCommand extends AbstractConfigCommand {
         }
 
         if (show || !updated) {
-            System.out.println("Paths:");
-            printHuman(13, "subject path", c.getSubjectPath());
-            printHuman(13, "workflow path", c.getWorkflowPath());
-            printHuman(13, "plan path", c.getPlanPath());
-            printHuman(13, "platform path", c.getPlatformPath());
-            printHuman(13, "result dir", c.getResultDir());
-            printHuman(13, "cache dir", c.getCacheDir());
-            printHuman(13, "work dir", c.getWorkDir());
-            printHuman(13, "link dir", c.getLinkDir());
-            printHuman(13, "report dir", c.getReportDir());
-            printHuman(13, "compose dir", c.getComposeDir());
+            System.out.println("Directory structure:");
+            printHuman(15, "subject path", c.getSubjectPath());
+            printHuman(15, "workflow path", c.getWorkflowPath());
+            printHuman(15, "plan path", c.getPlanPath());
+            printHuman(15, "platform path", c.getPlatformPath());
+            printHuman(15, "result dir", c.getResultDir());
+            printHuman(15, "cache dir", c.getCacheDir());
+            printHuman(15, "work dir", c.getWorkDir());
+            printHuman(15, "link dir", c.getLinkDir());
+            printHuman(15, "report dir", c.getReportDir());
+            printHuman(15, "compose dir", c.getComposeDir());
+            printHuman(15, "test plan dir", c.getTestPlanDir());
+            printHuman(15, "test result dir", c.getTestResultDir());
             System.out.println("SCM config:");
             printHuman(9, "lookaside", c.getLookaside());
             printHuman(9, "SCM dir", c.getScmDir());

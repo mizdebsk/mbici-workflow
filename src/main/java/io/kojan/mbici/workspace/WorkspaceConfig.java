@@ -29,6 +29,8 @@ public class WorkspaceConfig {
     private Path linkDir;
     private Path reportDir;
     private Path composeDir;
+    private Path testPlanDir;
+    private Path testResultDir;
     private String lookaside;
     private Path scmDir;
     private String scmRef;
@@ -114,6 +116,22 @@ public class WorkspaceConfig {
 
     public void setComposeDir(Path composeDir) {
         this.composeDir = composeDir;
+    }
+
+    public Path getTestPlanDir() {
+        return testPlanDir;
+    }
+
+    public void setTestPlanDir(Path testPlanDir) {
+        this.testPlanDir = testPlanDir;
+    }
+
+    public Path getTestResultDir() {
+        return testResultDir;
+    }
+
+    public void setTestResultDir(Path testResultDir) {
+        this.testResultDir = testResultDir;
     }
 
     public String getLookaside() {
