@@ -21,22 +21,25 @@ import java.nio.file.Path;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "init", description = "initialize MBI workspace", mixinStandardHelpOptions = true)
+@Command(
+        name = "init",
+        description = "Initialize MBI workspace directory.",
+        mixinStandardHelpOptions = true)
 public class InitCommand extends AbstractConfigCommand {
 
     @Option(
             names = {"--fedora"},
-            description = "assume Fedora SCM configuration")
+            description = "Assume Fedora SCM configuration.")
     private boolean fedora;
 
     @Option(
             names = {"--centos"},
-            description = "assume CentOS Stream SCM configuration")
+            description = "Assume CentOS Stream SCM configuration.")
     private boolean centos;
 
     @Option(
             names = {"--rhel"},
-            description = "assume RHEL SCM configuration")
+            description = "Assume RHEL SCM configuration.")
     private boolean rhel;
 
     @Override

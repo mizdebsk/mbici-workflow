@@ -31,63 +31,60 @@ abstract class AbstractExecuteCommand implements Callable<Integer> {
     @Option(
             names = {"-w", "--workflow"},
             required = true,
-            description = " path to Workflow")
+            description = "An absolute path to Workflow in XML format.")
     protected Path workflowPath;
 
     @Option(
             names = {"-R", "--result-dir"},
             required = true,
-            description = "path to a directory where task results and artifacts are written")
+            description = "An absolute path to directory where build results are kept.")
     protected Path resultDir;
 
     @Option(
             names = {"-C", "--cache-dir"},
             required = true,
-            description =
-                    "path to a directory where dist-git commits and lookaside blobs are cached")
+            description = "An absolute path to directory where cached build inputs are kept.")
     protected Path cacheDir;
 
     @Option(
             names = {"-W", "--work-dir"},
             required = true,
-            description =
-                    "path to a directory under which temporary working directories for tasks are created")
+            description = "An absolute path to directory where task workding dirs are created.")
     protected Path workDir;
 
     @Option(
             names = {"-L", "--link-dir"},
-            description =
-                    "path to a directory where symbolic links to successful task results are created")
+            description = "An absolute path to directory where links to task results are created.")
     protected Path linkerDir;
 
     @Option(
             names = {"--max-checkout-tasks"},
-            description = "limit number of parrallel git checkout tasks")
+            description = "Max number of checkout tasks running at the same time.")
     protected Integer maxCheckoutTasks = 3;
 
     @Option(
             names = {"--max-srpm-tasks"},
-            description = "limit number of parrallel SRPM build tasks")
+            description = "Max number of SRPM build tasks running at the same time.")
     protected Integer maxSrpmTasks = 5;
 
     @Option(
             names = {"--max-rpm-tasks"},
-            description = "limit number of parrallel RPM build tasks")
+            description = "Max number of RPM build tasks running at the same time.")
     protected Integer maxRpmTasks = 2;
 
     @Option(
             names = {"-B", "--batch-mode"},
-            description = "Run in non-interactive mode")
+            description = "Run in non-interactive mode.")
     protected boolean batchMode;
 
     @Option(
             names = {"-h", "--webhook-url"},
-            description = "Notify webhook about workflow state changes")
+            description = "Notify HTTP webhook about Workflow state changes.")
     protected String webhookUrl;
 
     @Option(
             names = {"-t", "--webhook-token"},
-            description = "Bearer token to use for webhook authorization")
+            description = "Bearer token to use for webhook authorization.")
     protected String webhookToken;
 
     public Path getWorkflowPath() {

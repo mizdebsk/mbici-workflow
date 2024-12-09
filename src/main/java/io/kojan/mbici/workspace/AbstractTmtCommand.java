@@ -23,12 +23,12 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
     @Option(
             names = {"-e", "--environment"},
-            description = "Environment to pass to tmt")
+            description = "Environment to pass to tmt, in format key=val.")
     private List<String> environment = new ArrayList<>();
 
     @Option(
             names = {"-c", "--context"},
-            description = "Context to pass to tmt")
+            description = "Context to pass to tmt, in format key=val.")
     private List<String> context = new ArrayList<>();
 
     protected abstract String getTestPlan();

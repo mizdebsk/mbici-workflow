@@ -19,7 +19,7 @@ import picocli.CommandLine.Command;
 
 @Command(
         name = "validate",
-        description = "run javapackages-validator on built packages",
+        description = "Run javapackages-validator on built packages.",
         mixinStandardHelpOptions = true)
 public class ValidateCommand extends AbstractTmtCommand {
 

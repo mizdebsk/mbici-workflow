@@ -30,19 +30,19 @@ import picocli.CommandLine.Option;
 
 @Command(
         name = "local-subject",
-        description = "generate Subject from local dist-git repos",
+        description = "Generate Subject from local dist-git repos.",
         mixinStandardHelpOptions = true)
 public class LocalSubjectCommand extends AbstractSubjectCommand {
 
     @Option(
             names = {"-S", "--scm"},
             required = true,
-            description = "path to directory containing dist-git repositories")
+            description = "Path to directory containing dist-git repositories.")
     protected Path scmPath;
 
     @Option(
             names = {"-r", "--ref"},
-            description = "git ref to use in each dist-git repository")
+            description = "Git ref to use in each dist-git repository.")
     protected String ref = "rawhide";
 
     public Path getScmPath() {

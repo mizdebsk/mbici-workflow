@@ -29,13 +29,13 @@ import picocli.CommandLine.Option;
 
 @Command(
         name = "run",
-        description = "generate and execute MBI workflow",
+        description = "Generate and execute MBI workflow from YAML definition.",
         mixinStandardHelpOptions = true)
 public class RunCommand extends AbstractCommand {
 
     @Option(
             names = {"-B", "--batch-mode"},
-            description = "Run in non-interactive mode")
+            description = "Run in non-interactive mode.")
     protected boolean batchMode;
 
     private static void deleteDir(Path path) throws IOException {

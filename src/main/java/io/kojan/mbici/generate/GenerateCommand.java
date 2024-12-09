@@ -29,31 +29,31 @@ import picocli.CommandLine.Option;
  */
 @Command(
         name = "generate",
-        description = "generate Workflow from given Build Plan, Platform and Test Subject",
+        description = "Generate Workflow from given Plan, Platform and Subject.",
         mixinStandardHelpOptions = true)
 public class GenerateCommand implements Callable<Integer> {
     @Option(
             names = {"-m", "--plan"},
             required = true,
-            description = "path to a Build Plan in XML format")
+            description = "Path to a Plan in XML format.")
     private Path planPath;
 
     @Option(
             names = {"-p", "--platform"},
             required = true,
-            description = "path to a Platform in XML format")
+            description = "Path to a Platform in XML format.")
     private Path platformPath;
 
     @Option(
             names = {"-s", "--subject"},
             required = true,
-            description = "path to a Test Subject in XML format")
+            description = "Path to a Subject in XML format")
     private Path subjectPath;
 
     @Option(
             names = {"-w", "--workflow"},
             required = true,
-            description = "path where generated Workflow should be written")
+            description = "Path where generated Workflow should be written.")
     private Path workflowPath;
 
     public Path getPlanPath() {

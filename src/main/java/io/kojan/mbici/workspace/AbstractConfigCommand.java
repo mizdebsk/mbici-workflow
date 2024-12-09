@@ -21,92 +21,92 @@ import picocli.CommandLine.Option;
 public abstract class AbstractConfigCommand extends AbstractCommand {
     @Option(
             names = {"--subject-path"},
-            description = "")
+            description = "An absolute path to auto-generated Subject in XML format.")
     private Path subjectPath;
 
     @Option(
             names = {"--workflow-path"},
-            description = "")
+            description = "An absolute path to auto-generated Workflow in XML format.")
     private Path workflowPath;
 
     @Option(
             names = {"--plan-path"},
-            description = "")
+            description = "An absolute path to auto-generated Plan in XML format.")
     private Path planPath;
 
     @Option(
             names = {"--platform-path"},
-            description = "")
+            description = "An absolute path to auto-generated Platform in XML format.")
     private Path platformPath;
 
     @Option(
             names = {"--result-dir"},
-            description = "")
+            description = "An absolute path to directory where build results are kept.")
     private Path resultDir;
 
     @Option(
             names = {"--cache-dir"},
-            description = "")
+            description = "An absolute path to directory where cached build inputs are kept.")
     private Path cacheDir;
 
     @Option(
             names = {"--work-dir"},
-            description = "")
+            description = "An absolute path to directory where task workding dirs are created.")
     private Path workDir;
 
     @Option(
             names = {"--link-dir"},
-            description = "")
+            description = "An absolute path to directory where links to task results are created.")
     private Path linkDir;
 
     @Option(
             names = {"--report-dir"},
-            description = "")
+            description = "An absolute path to directory where workflow HTML reports are created.")
     private Path reportDir;
 
     @Option(
             names = {"--compose-dir"},
-            description = "")
+            description = "An absolute path to directory where RPM compose is created.")
     private Path composeDir;
 
     @Option(
             names = {"--test-plan-dir"},
-            description = "")
+            description = "An absolute path to directory where tmt test plans are stored.")
     private Path testPlanDir;
 
     @Option(
             names = {"--test-result-dir"},
-            description = "")
+            description = "An absolute path to directory where tmt tes results are stored.")
     private Path testResultDir;
 
     @Option(
             names = {"--lookaside"},
-            description = "")
+            description = "The URL of upstream lookaside cache.")
     private String lookaside;
 
     @Option(
             names = {"--scm-dir"},
-            description = "")
+            description = "An absolute path to directory where RPM dist-git repos are stored.")
     private Path scmDir;
 
     @Option(
             names = {"--scm-ref"},
-            description = "")
+            description = "Git ref to use when checking out RPM dist-git repos.")
     private String scmRef;
 
     @Option(
             names = {"--max-checkout-tasks"},
-            description = "")
+            description = "Max number of checkout tasks running at the same time.")
     private Integer maxCheckoutTasks;
 
     @Option(
             names = {"--max-srpm-tasks"},
-            description = "")
+            description = "Max number of SRPM build tasks running at the same time.")
     private Integer maxSrpmTasks;
 
     @Option(
             names = {"--max-rpm-tasks"},
-            description = "")
+            description = "Max number of RPM build tasks running at the same time.")
     private Integer maxRpmTasks;
 
     boolean updateConfig(WorkspaceConfig config) {

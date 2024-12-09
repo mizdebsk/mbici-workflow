@@ -24,40 +24,46 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "log", description = "display build logs", mixinStandardHelpOptions = true)
+@Command(
+        name = "log",
+        description = "Display or locate build logs or other task artifacts.",
+        mixinStandardHelpOptions = true)
 public class LogCommand extends AbstractCommand {
 
     @Option(
             names = {"-P", "--path"},
-            description = "print log path")
+            description = "Print path to the log instead of displaying log contents.")
     private boolean printPath;
 
     @Option(
             names = {"--no-pager"},
-            description = "don't use pager to display the log")
+            description = "Dump the log to stdout instead of using a pager to display it.")
     private boolean noPager;
 
     @Option(
             names = {"-p", "--phase"},
-            description = "print logs of given phase")
+            description = "Print logs of given phase.")
     private String phase;
 
     @Option(
             names = {"-r", "--root"},
-            description = "print root.log instead of build.log")
+            description = "Display root.log instead of build.log.")
     private boolean rootLog;
 
     @Option(
             names = {"-a", "--artifact"},
-            description = "print custom artifact instead of build.log")
+            description = "Print custom artifact instead of build.log.")
     private String artifact;
 
     @Option(
             names = {"-s", "--srpm"},
-            description = "print SRPM logs instead of RPM logs")
+            description = "Print SRPM task logs instead of RPM task logs.")
     private boolean srpm;
 
-    @Parameters(index = "0", arity = "0..1")
+    @Parameters(
+            index = "0",
+            arity = "0..1",
+            description = "The component to print logs of, can be auto-guessed.")
     private String component;
 
     @Override

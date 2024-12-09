@@ -20,18 +20,18 @@ import picocli.CommandLine.Option;
 
 @Command(
         name = "config",
-        description = "display or update MBI workspace configuration",
+        description = "Display or update MBI workspace configuration.",
         mixinStandardHelpOptions = true)
 public class ConfigCommand extends AbstractConfigCommand {
 
     @Option(
             names = {"-s", "--show"},
-            description = "display configuration")
+            description = "Display configuration in human-readable form.")
     private boolean show;
 
     @Option(
             names = {"--env"},
-            description = "print shell code for setting variables")
+            description = "Dump shell code for setting configuration as shell variables.")
     private boolean env;
 
     private void printEnv(String key, Object value) {

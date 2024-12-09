@@ -41,53 +41,53 @@ import picocli.CommandLine.Option;
  */
 @Command(
         name = "report",
-        description = "generate a simple HTML report describing given Workflow",
+        description = "Generate a simple HTML report describing given Workflow.",
         mixinStandardHelpOptions = true)
 public class ReportCommand implements Callable<Integer> {
     @Option(
             names = {"-m", "--plan"},
             required = true,
-            description = "path to a Build Plan in XML format")
+            description = "Path to a Build Plan in XML format.")
     private Path planPath;
 
     @Option(
             names = {"-p", "--platform"},
             required = true,
-            description = "path to a Platform in XML format")
+            description = "Path to a Platform in XML format.")
     private Path platformPath;
 
     @Option(
             names = {"-s", "--subject"},
             required = true,
-            description = "path to a Test Subject in XML format")
+            description = "Path to a Test Subject in XML format.")
     private Path subjectPath;
 
     @Option(
             names = {"-w", "--workflow"},
             required = true,
-            description = "path where generated Workflow should be written")
+            description = "Path where generated Workflow should be written.")
     private Path workflowPath;
 
     @Option(
             names = {"-R", "--result-dir"},
             required = true,
-            description = "path to a directory with task results and artifacts")
+            description = "Path to a directory with task results and artifacts.")
     private Path resultDir;
 
     @Option(
             names = {"-r", "--report-dir"},
             required = true,
-            description = "path to a directory where generated report should be written")
+            description = "Path to a directory where generated report should be written.")
     private Path reportDir;
 
     @Option(
             names = {"-t", "--tmt"},
-            description = "generate tmt results.yaml and include build logs")
+            description = "Cenerate tmt results.yaml and include build logs.")
     private boolean full;
 
     @Option(
             names = {"-q", "--quiet"},
-            description = "limit the amount of logging")
+            description = "Limit the amount of logging.")
     private boolean quiet;
 
     public Path getPlanPath() {

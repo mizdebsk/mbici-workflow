@@ -22,6 +22,6 @@ import picocli.CommandLine.Command;
  */
 @Command(
         name = "execute",
-        description = "execute Workflow and update it in-place",
+        description = "Execute Workflow locally and update it in-place.",
         mixinStandardHelpOptions = true)
 public class LocalExecuteCommand extends AbstractExecuteCommand {}

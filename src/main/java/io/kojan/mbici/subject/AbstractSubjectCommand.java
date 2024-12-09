@@ -28,18 +28,18 @@ abstract class AbstractSubjectCommand implements Callable<Integer> {
     @Option(
             names = {"-s", "--subject"},
             required = true,
-            description = "where to store generated Test Subject")
+            description = "Where to store generated Subject.")
     private Path subjectPath;
 
     @Option(
             names = {"-m", "--plan"},
             required = true,
-            description = "path to a Build Plan in XML format")
+            description = "Path to a Build Plan in XML format.")
     private Path planPath;
 
     @Option(
             names = {"-L", "--lookaside"},
-            description = "lookaside cache base URL")
+            description = "Lookaside cache base URL.")
     protected String lookaside = "https://src.fedoraproject.org/lookaside/pkgs/rpms";
 
     public Path getSubjectPath() {

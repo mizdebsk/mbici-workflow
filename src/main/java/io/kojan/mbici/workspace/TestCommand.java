@@ -21,21 +21,21 @@ import picocli.CommandLine.Parameters;
 
 @Command(
         name = "test",
-        description = "run tmt test plan on built packages",
+        description = "Run tmt test plan on built packages.",
         mixinStandardHelpOptions = true)
 public class TestCommand extends AbstractTmtCommand {
 
-    @Parameters(index = "0", description = "name of tmt test plan to run")
+    @Parameters(index = "0", description = "Name of tmt test plan to run.")
     private String testPlan;
 
     @Option(
             names = {"--image"},
-            description = "Container image to use for running tests")
+            description = "Container image to use for running tests.")
     protected String image = "mbitmt:1";
 
     @Option(
             names = {"--playbook"},
-            description = "Ansible playbook to use to prepare test container")
+            description = "Ansible playbook to use to prepare test container.")
     protected String playbook = "ansible.yaml";
 
     @Override
