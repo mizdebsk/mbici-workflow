@@ -20,6 +20,8 @@ Requires:       dnf5
 Requires:       mock
 Requires:       createrepo_c
 
+Provides:       mbi
+
 %description
 MBICI implements Continuous Integration (CI) for Maven Bootstrap
 Initiative (MBI).
