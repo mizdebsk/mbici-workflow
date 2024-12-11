@@ -75,7 +75,7 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
         cmd.add("plans");
         cmd.add("--name");
-        cmd.add("/" + testPlan);
+        cmd.add("^/" + testPlan + "$");
 
         if (getImage() != null) {
             cmd.add("provision");
