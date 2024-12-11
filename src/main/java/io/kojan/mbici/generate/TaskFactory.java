@@ -91,12 +91,16 @@ class TaskFactory {
         return taskDescriptor;
     }
 
-    public Task createSrpmTask(String component, Task checkout, Task repo) {
+    public Task createSrpmTask(String component, Task checkout, Task repo, List<Macro> planMacros) {
         TaskBuilder task = new TaskBuilder();
         task.setId(component + "-srpm");
         task.setHandler(SRPM_HANDLER);
         task.addDependency(checkout.getId());
         task.addDependency(repo.getId());
+
+        for (Macro macro : planMacros) {
+            task.addParameter(macro.getName(), macro.getValue());
+        }
 
         Task taskDescriptor = task.build();
         workflowBuilder.addTask(taskDescriptor);

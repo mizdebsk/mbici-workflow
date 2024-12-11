@@ -59,7 +59,9 @@ class WorkflowFactory {
                     SubjectComponent componentSubject = subject.getSubjectComponent(component);
                     Task checkout = taskFactory.createCheckoutTask(componentSubject);
                     checkouts.put(component, checkout);
-                    srpm = taskFactory.createSrpmTask(component, checkout, gatherRepo);
+                    srpm =
+                            taskFactory.createSrpmTask(
+                                    component, checkout, gatherRepo, plan.getMacros());
                     srpms.put(component, srpm);
                 }
 

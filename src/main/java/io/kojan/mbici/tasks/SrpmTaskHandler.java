@@ -18,21 +18,22 @@ package io.kojan.mbici.tasks;
 import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.Parameter;
 import io.kojan.workflow.model.Task;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class SrpmTaskHandler extends AbstractTaskHandler {
+    private final List<Parameter> macros;
+
     public SrpmTaskHandler(Task task) {
-        if (!task.getParameters().isEmpty()) {
-            throw new IllegalArgumentException(
-                    getClass().getName() + " does not take any parameters");
-        }
+        macros = task.getParameters();
     }
 
     private Path findOneFile(Path baseDir, String extension) throws TaskTermination {
@@ -68,6 +69,9 @@ public class SrpmTaskHandler extends AbstractTaskHandler {
         Path sourcePath = context.getDependencyArtifact(ArtifactType.CHECKOUT);
         Path specPath = findOneFile(sourcePath, ".spec");
         Mock mock = new Mock();
+        for (Parameter param : macros) {
+            mock.addMacro(param.getName(), param.getValue());
+        }
         mock.run(
                 context,
                 "--buildsrpm",
