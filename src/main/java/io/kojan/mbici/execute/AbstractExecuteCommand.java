@@ -15,19 +15,19 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.cache.CacheManager;
 import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.TaskThrottle;
 import io.kojan.workflow.WorkflowExecutor;
 import io.kojan.workflow.model.Workflow;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
-abstract class AbstractExecuteCommand implements Callable<Integer> {
+abstract class AbstractExecuteCommand extends AbstractCommand {
     @Option(
             names = {"-w", "--workflow"},
             required = true,

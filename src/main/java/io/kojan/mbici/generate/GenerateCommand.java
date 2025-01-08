@@ -15,12 +15,13 @@
  */
 package io.kojan.mbici.generate;
 
+import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.Main;
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Platform;
 import io.kojan.mbici.model.Subject;
 import io.kojan.workflow.model.Workflow;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -30,8 +31,9 @@ import picocli.CommandLine.Option;
 @Command(
         name = "generate",
         description = "Generate Workflow from given Plan, Platform and Subject.",
-        mixinStandardHelpOptions = true)
-public class GenerateCommand implements Callable<Integer> {
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
+public class GenerateCommand extends AbstractCommand {
     @Option(
             names = {"-m", "--plan"},
             required = true,

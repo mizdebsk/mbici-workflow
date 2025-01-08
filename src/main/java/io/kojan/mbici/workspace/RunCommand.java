@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.Main;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
@@ -30,7 +32,8 @@ import picocli.CommandLine.Option;
 @Command(
         name = "run",
         description = "Generate and execute MBI workflow from YAML definition.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class RunCommand extends AbstractCommand {
 
     @Option(

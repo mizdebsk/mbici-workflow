@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.Main;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +25,8 @@ import picocli.CommandLine.Option;
 @Command(
         name = "init",
         description = "Initialize MBI workspace directory.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class InitCommand extends AbstractConfigCommand {
 
     @Option(

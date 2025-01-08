@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.mbici.Main;
 import io.kojan.mbici.tasks.Kubernetes;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -25,7 +26,8 @@ import picocli.CommandLine.Option;
 @Command(
         name = "kube-exec",
         description = "Execute Workflow on Kubernetes cluster.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class KubeExecuteCommand extends AbstractExecuteCommand {
     @Option(
             names = {"--namespace"},

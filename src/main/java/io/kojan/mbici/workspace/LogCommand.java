@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.Main;
 import io.kojan.mbici.model.Phase;
 import io.kojan.mbici.model.Plan;
 import java.nio.file.Files;
@@ -27,7 +29,8 @@ import picocli.CommandLine.Parameters;
 @Command(
         name = "log",
         description = "Display or locate build logs or other task artifacts.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class LogCommand extends AbstractCommand {
 
     @Option(

@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.Main;
 import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.workflow.model.Artifact;
 import io.kojan.workflow.model.Result;
@@ -27,7 +29,8 @@ import picocli.CommandLine.Command;
 @Command(
         name = "status",
         description = "Display workspace status.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class StatusCommand extends AbstractCommand {
 
     @Override

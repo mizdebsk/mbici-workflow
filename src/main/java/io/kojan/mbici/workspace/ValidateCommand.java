@@ -15,12 +15,14 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
 
 @Command(
         name = "validate",
         description = "Run javapackages-validator on built packages.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class ValidateCommand extends AbstractTmtCommand {
 
     @Override

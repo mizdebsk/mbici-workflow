@@ -15,16 +15,16 @@
  */
 package io.kojan.mbici.subject;
 
+import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.model.Phase;
 import io.kojan.mbici.model.Plan;
 import io.kojan.mbici.model.Subject;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Option;
 
-abstract class AbstractSubjectCommand implements Callable<Integer> {
+abstract class AbstractSubjectCommand extends AbstractCommand {
     @Option(
             names = {"-s", "--subject"},
             required = true,

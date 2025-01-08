@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.AbstractCommand;
 import java.nio.file.Path;
 import picocli.CommandLine.Option;
 

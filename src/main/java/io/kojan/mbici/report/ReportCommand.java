@@ -15,6 +15,8 @@
  */
 package io.kojan.mbici.report;
 
+import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.Main;
 import io.kojan.mbici.cache.ArtifactType;
 import io.kojan.mbici.cache.CacheManager;
 import io.kojan.mbici.model.Plan;
@@ -32,7 +34,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -42,8 +43,9 @@ import picocli.CommandLine.Option;
 @Command(
         name = "report",
         description = "Generate a simple HTML report describing given Workflow.",
-        mixinStandardHelpOptions = true)
-public class ReportCommand implements Callable<Integer> {
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
+public class ReportCommand extends AbstractCommand {
     @Option(
             names = {"-m", "--plan"},
             required = true,

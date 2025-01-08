@@ -15,13 +15,15 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(
         name = "config",
         description = "Display or update MBI workspace configuration.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class ConfigCommand extends AbstractConfigCommand {
 
     @Option(

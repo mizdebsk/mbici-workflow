@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.subject;
 
+import io.kojan.mbici.Main;
 import io.kojan.mbici.model.Subject;
 import io.kojan.mbici.model.SubjectComponent;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +32,8 @@ import picocli.CommandLine.Option;
 @Command(
         name = "local-subject",
         description = "Generate Subject from local dist-git repos.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class LocalSubjectCommand extends AbstractSubjectCommand {
 
     @Option(

@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.workspace;
 
+import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -22,7 +23,8 @@ import picocli.CommandLine.Parameters;
 @Command(
         name = "test",
         description = "Run tmt test plan on built packages.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class TestCommand extends AbstractTmtCommand {
 
     @Parameters(index = "0", description = "Name of tmt test plan to run.")

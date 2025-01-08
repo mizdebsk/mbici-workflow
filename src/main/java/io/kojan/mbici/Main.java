@@ -27,9 +27,12 @@ import io.kojan.mbici.workspace.RunCommand;
 import io.kojan.mbici.workspace.StatusCommand;
 import io.kojan.mbici.workspace.TestCommand;
 import io.kojan.mbici.workspace.ValidateCommand;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Properties;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.IVersionProvider;
 
 /**
  * @author Mikolaj Izdebski
@@ -50,13 +53,33 @@ import picocli.CommandLine.Command;
             KubeExecuteCommand.class,
             ReportCommand.class,
         },
-        mixinStandardHelpOptions = true)
-public class Main {
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
+public class Main implements IVersionProvider {
     public static void main(String... args) {
         int exitCode =
                 new CommandLine(new Main())
                         .registerConverter(Path.class, arg -> Path.of(arg).toAbsolutePath())
                         .execute(args);
         System.exit(exitCode);
+    }
+
+    @Override
+    public String[] getVersion() throws Exception {
+        String ver = "UNKNOWN";
+        try (InputStream is =
+                Main.class.getResourceAsStream(
+                        "/META-INF/maven/io.kojan/mbici-workflow/pom.properties")) {
+            if (is != null) {
+                Properties properties = new Properties();
+                properties.load(is);
+                ver = properties.getProperty("version");
+            }
+        }
+        return new String[] {
+            "MBI version " + ver,
+            "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+            "OS: ${os.name} ${os.version} ${os.arch}"
+        };
     }
 }

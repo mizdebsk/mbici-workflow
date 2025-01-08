@@ -15,6 +15,7 @@
  */
 package io.kojan.mbici.execute;
 
+import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
 
 /**
@@ -23,5 +24,6 @@ import picocli.CommandLine.Command;
 @Command(
         name = "execute",
         description = "Execute Workflow locally and update it in-place.",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = Main.class)
 public class LocalExecuteCommand extends AbstractExecuteCommand {}
