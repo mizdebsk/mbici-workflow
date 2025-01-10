@@ -125,7 +125,7 @@ public class LogCommand extends AbstractCommand {
             return 0;
         }
 
-        String pager = noPager ? "cat" : "less";
+        String pager = noPager ? "cat" : System.getenv().getOrDefault("PAGER", "less");
 
         return new ProcessBuilder(pager, logPath.toString()).inheritIO().start().waitFor();
     }
