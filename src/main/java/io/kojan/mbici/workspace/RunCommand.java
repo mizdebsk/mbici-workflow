@@ -43,6 +43,11 @@ public class RunCommand extends AbstractCommand {
             description = "Run in non-interactive mode.")
     protected boolean batchMode;
 
+    @Option(
+            names = {"-k", "--kubernetes"},
+            description = "Run on Kubernetes.")
+    protected boolean kube;
+
     private static void deleteDir(Path path) throws IOException {
         if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
             try (DirectoryStream<Path> ds = Files.newDirectoryStream(path)) {
@@ -109,9 +114,11 @@ public class RunCommand extends AbstractCommand {
         }
 
         AbstractExecuteCommand execute;
-        if (c.getKubeNamespace() != null) {
+        if (kube) {
             KubeExecuteCommand e = new KubeExecuteCommand();
-            e.setNamespace(c.getKubeNamespace());
+            if (c.getKubeNamespace() != null) {
+                e.setNamespace(c.getKubeNamespace());
+            }
             if (c.getKubeContainerImage() != null) {
                 e.setContainerImage(c.getKubeContainerImage());
             }
@@ -158,8 +165,8 @@ public class RunCommand extends AbstractCommand {
         execute.setWorkDir(c.getWorkDir());
         execute.setLinkerDir(c.getLinkDir());
         execute.setMaxCheckoutTasks(c.getMaxCheckoutTasks());
-        execute.setMaxSrpmTasks(c.getMaxSrpmTasks());
-        execute.setMaxRpmTasks(c.getMaxRpmTasks());
+        execute.setMaxSrpmTasks(kube ? 200 : c.getMaxSrpmTasks());
+        execute.setMaxRpmTasks(kube ? 200 : c.getMaxRpmTasks());
         execute.setBatchMode(batchMode);
 
         info("Running execute command...");
