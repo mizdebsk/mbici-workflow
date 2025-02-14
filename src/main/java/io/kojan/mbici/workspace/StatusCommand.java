@@ -25,6 +25,7 @@ import io.kojan.workflow.model.Workflow;
 import java.util.List;
 import java.util.stream.Collectors;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(
         name = "status",
@@ -32,6 +33,11 @@ import picocli.CommandLine.Command;
         mixinStandardHelpOptions = true,
         versionProvider = Main.class)
 public class StatusCommand extends AbstractCommand {
+
+    @Option(
+            names = {"-a", "--all"},
+            description = "Show all failed tasks instead of first 3.")
+    private boolean all;
 
     @Override
     public Integer call() throws Exception {
@@ -54,7 +60,12 @@ public class StatusCommand extends AbstractCommand {
         }
 
         if (!failed.isEmpty()) {
-            info("Failed tasks:");
+            if (!all && failed.size() > 3) {
+                info("First 3 failed tasks (there are " + failed.size() + " total):");
+                failed = failed.subList(0, 3);
+            } else {
+                info("Failed tasks:");
+            }
             for (Result result : failed) {
                 info("  - task: " + result.getTaskId());
                 info("    reason: " + result.getOutcomeReason());
