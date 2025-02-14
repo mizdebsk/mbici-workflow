@@ -17,6 +17,8 @@ package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.Main;
+import io.kojan.mbici.execute.AbstractExecuteCommand;
+import io.kojan.mbici.execute.KubeExecuteCommand;
 import io.kojan.mbici.execute.LocalExecuteCommand;
 import io.kojan.mbici.generate.GenerateCommand;
 import io.kojan.mbici.report.ReportCommand;
@@ -106,7 +108,50 @@ public class RunCommand extends AbstractCommand {
             return ret;
         }
 
-        LocalExecuteCommand execute = new LocalExecuteCommand();
+        AbstractExecuteCommand execute;
+        if (c.getKubeNamespace() != null) {
+            KubeExecuteCommand e = new KubeExecuteCommand();
+            e.setNamespace(c.getKubeNamespace());
+            if (c.getKubeContainerImage() != null) {
+                e.setContainerImage(c.getKubeContainerImage());
+            }
+            if (c.getKubeCacheVolumeClaimName() != null) {
+                e.setCacheVolumeClaimName(c.getKubeCacheVolumeClaimName());
+            }
+            if (c.getKubeResultVolumeClaimName() != null) {
+                e.setResultVolumeClaimName(c.getKubeResultVolumeClaimName());
+            }
+            if (c.getKubePodRunningTimeout() != null) {
+                e.setPodRunningTimeout(c.getKubePodRunningTimeout());
+            }
+            if (c.getKubeSrpmCpuRequest() != null) {
+                e.setSrpmCpuRequest(c.getKubeSrpmCpuRequest());
+            }
+            if (c.getKubeSrpmCpuLimit() != null) {
+                e.setSrpmCpuLimit(c.getKubeSrpmCpuLimit());
+            }
+            if (c.getKubeRpmCpuRequest() != null) {
+                e.setRpmCpuRequest(c.getKubeRpmCpuRequest());
+            }
+            if (c.getKubeRpmCpuLimit() != null) {
+                e.setRpmCpuLimit(c.getKubeRpmCpuLimit());
+            }
+            if (c.getKubeSrpmMemoryRequest() != null) {
+                e.setSrpmMemoryRequest(c.getKubeSrpmMemoryRequest());
+            }
+            if (c.getKubeSrpmMemoryLimit() != null) {
+                e.setSrpmMemoryLimit(c.getKubeSrpmMemoryLimit());
+            }
+            if (c.getKubeRpmMemoryRequest() != null) {
+                e.setRpmMemoryRequest(c.getKubeRpmMemoryRequest());
+            }
+            if (c.getKubeRpmMemoryLimit() != null) {
+                e.setRpmMemoryLimit(c.getKubeRpmMemoryLimit());
+            }
+            execute = e;
+        } else {
+            execute = new LocalExecuteCommand();
+        }
         execute.setWorkflowPath(c.getWorkflowPath());
         execute.setResultDir(c.getResultDir());
         execute.setCacheDir(c.getCacheDir());

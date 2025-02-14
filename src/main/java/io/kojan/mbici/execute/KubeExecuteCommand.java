@@ -94,6 +94,110 @@ public class KubeExecuteCommand extends AbstractExecuteCommand {
             description = "Max memory for running RPM Pods.")
     private String rpmMemoryLimit = "6Gi";
 
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getContainerImage() {
+        return containerImage;
+    }
+
+    public void setContainerImage(String containerImage) {
+        this.containerImage = containerImage;
+    }
+
+    public String getCacheVolumeClaimName() {
+        return cacheVolumeClaimName;
+    }
+
+    public void setCacheVolumeClaimName(String cacheVolumeClaimName) {
+        this.cacheVolumeClaimName = cacheVolumeClaimName;
+    }
+
+    public String getResultVolumeClaimName() {
+        return resultVolumeClaimName;
+    }
+
+    public void setResultVolumeClaimName(String resultVolumeClaimName) {
+        this.resultVolumeClaimName = resultVolumeClaimName;
+    }
+
+    public String getPodRunningTimeout() {
+        return podRunningTimeout;
+    }
+
+    public void setPodRunningTimeout(String podRunningTimeout) {
+        this.podRunningTimeout = podRunningTimeout;
+    }
+
+    public String getSrpmCpuRequest() {
+        return srpmCpuRequest;
+    }
+
+    public void setSrpmCpuRequest(String srpmCpuRequest) {
+        this.srpmCpuRequest = srpmCpuRequest;
+    }
+
+    public String getSrpmCpuLimit() {
+        return srpmCpuLimit;
+    }
+
+    public void setSrpmCpuLimit(String srpmCpuLimit) {
+        this.srpmCpuLimit = srpmCpuLimit;
+    }
+
+    public String getRpmCpuRequest() {
+        return rpmCpuRequest;
+    }
+
+    public void setRpmCpuRequest(String rpmCpuRequest) {
+        this.rpmCpuRequest = rpmCpuRequest;
+    }
+
+    public String getRpmCpuLimit() {
+        return rpmCpuLimit;
+    }
+
+    public void setRpmCpuLimit(String rpmCpuLimit) {
+        this.rpmCpuLimit = rpmCpuLimit;
+    }
+
+    public String getSrpmMemoryRequest() {
+        return srpmMemoryRequest;
+    }
+
+    public void setSrpmMemoryRequest(String srpmMemoryRequest) {
+        this.srpmMemoryRequest = srpmMemoryRequest;
+    }
+
+    public String getSrpmMemoryLimit() {
+        return srpmMemoryLimit;
+    }
+
+    public void setSrpmMemoryLimit(String srpmMemoryLimit) {
+        this.srpmMemoryLimit = srpmMemoryLimit;
+    }
+
+    public String getRpmMemoryRequest() {
+        return rpmMemoryRequest;
+    }
+
+    public void setRpmMemoryRequest(String rpmMemoryRequest) {
+        this.rpmMemoryRequest = rpmMemoryRequest;
+    }
+
+    public String getRpmMemoryLimit() {
+        return rpmMemoryLimit;
+    }
+
+    public void setRpmMemoryLimit(String rpmMemoryLimit) {
+        this.rpmMemoryLimit = rpmMemoryLimit;
+    }
+
     protected void initialize() {
         Kubernetes kubernetes =
                 new Kubernetes(

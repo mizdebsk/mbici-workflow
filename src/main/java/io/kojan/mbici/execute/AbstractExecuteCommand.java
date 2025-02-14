@@ -27,7 +27,7 @@ import picocli.CommandLine.Option;
 /**
  * @author Mikolaj Izdebski
  */
-abstract class AbstractExecuteCommand extends AbstractCommand {
+public abstract class AbstractExecuteCommand extends AbstractCommand {
     @Option(
             names = {"-w", "--workflow"},
             required = true,
