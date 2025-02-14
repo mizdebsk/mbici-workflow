@@ -16,6 +16,7 @@
 package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import picocli.CommandLine.Option;
@@ -49,6 +50,11 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         Workspace ws = Workspace.findOrAbort();
         WorkspaceConfig c = ws.getConfig();
         info("Using workspace at " + ws.getWorkspaceDir());
+
+        if (!Files.isDirectory(c.getComposeDir())) {
+            error("Compose is absent");
+            return 1;
+        }
 
         List<String> cmd = new ArrayList<>();
         cmd.add("tmt");
