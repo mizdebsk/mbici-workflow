@@ -33,6 +33,7 @@ import org.yaml.snakeyaml.Yaml;
 public class YamlConf {
     private final Plan plan;
     private final Platform platform;
+    private final Platform testPlatform;
 
     public Plan getPlan() {
         return plan;
@@ -42,9 +43,31 @@ public class YamlConf {
         return platform;
     }
 
-    private YamlConf(Plan plan, Platform platform) {
+    public Platform getTestPlatform() {
+        return testPlatform;
+    }
+
+    private YamlConf(Plan plan, Platform platform, Platform testPlatform) {
         this.plan = plan;
         this.platform = platform;
+        this.testPlatform = testPlatform;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Platform loadPlatform(Map<String, Object> platform) {
+        PlatformBuilder platformBuilder = new PlatformBuilder();
+
+        List<String> repos = platform.keySet().stream().filter(k -> !k.equals("packages")).toList();
+        for (String repo : repos) {
+            platformBuilder.addRepo(new Repo(repo, (String) platform.get(repo)));
+        }
+
+        List<String> packages = (List<String>) platform.get("packages");
+        for (String pkg : packages) {
+            platformBuilder.addPackage(pkg);
+        }
+
+        return platformBuilder.build();
     }
 
     @SuppressWarnings("unchecked")
@@ -58,13 +81,13 @@ public class YamlConf {
         Map<String, Object> conf = (Map<String, Object>) obj;
 
         PlanBuilder planBuilder = new PlanBuilder();
-        PlatformBuilder platformBuilder = new PlatformBuilder();
 
         List<String> phases =
                 conf.keySet().stream()
                         .filter(k -> !k.endsWith("-macros"))
                         .filter(k -> !k.equals("macros"))
                         .filter(k -> !k.equals("platform"))
+                        .filter(k -> !k.equals("test-platform"))
                         .toList();
 
         for (String phase : phases) {
@@ -83,18 +106,9 @@ public class YamlConf {
         Map<String, Object> macros = (Map<String, Object>) conf.getOrDefault("macros", Map.of());
         macros.forEach((key, val) -> planBuilder.addMacro(new Macro(key, val.toString())));
 
-        Map<String, Object> platform = (Map<String, Object>) conf.get("platform");
-
-        List<String> repos = platform.keySet().stream().filter(k -> !k.equals("packages")).toList();
-        for (String repo : repos) {
-            platformBuilder.addRepo(new Repo(repo, (String) platform.get(repo)));
-        }
-
-        List<String> packages = (List<String>) platform.get("packages");
-        for (String pkg : packages) {
-            platformBuilder.addPackage(pkg);
-        }
-
-        return new YamlConf(planBuilder.build(), platformBuilder.build());
+        return new YamlConf(
+                planBuilder.build(),
+                loadPlatform((Map<String, Object>) conf.get("platform")),
+                loadPlatform((Map<String, Object>) conf.get("test-platform")));
     }
 }

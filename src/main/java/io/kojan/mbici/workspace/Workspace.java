@@ -104,6 +104,12 @@ public class Workspace {
                             Path::toString,
                             Path::of),
                     Attribute.of(
+                            "testPlatformPath",
+                            WorkspaceConfig::getTestPlatformPath,
+                            WorkspaceConfig::setTestPlatformPath,
+                            Path::toString,
+                            Path::of),
+                    Attribute.of(
                             "resultDir",
                             WorkspaceConfig::getResultDir,
                             WorkspaceConfig::setResultDir,

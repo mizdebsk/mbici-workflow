@@ -23,6 +23,7 @@ public class WorkspaceConfig {
     private Path workflowPath;
     private Path planPath;
     private Path platformPath;
+    private Path testPlatformPath;
     private Path resultDir;
     private Path cacheDir;
     private Path workDir;
@@ -81,6 +82,14 @@ public class WorkspaceConfig {
 
     public void setPlatformPath(Path platformPath) {
         this.platformPath = platformPath;
+    }
+
+    public Path getTestPlatformPath() {
+        return testPlatformPath;
+    }
+
+    public void setTestPlatformPath(Path testPlatformPath) {
+        this.testPlatformPath = testPlatformPath;
     }
 
     public Path getResultDir() {

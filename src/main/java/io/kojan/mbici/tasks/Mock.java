@@ -33,6 +33,11 @@ class Mock {
     private static final int MOCK_TIMEOUT = 1800;
 
     private final Map<String, String> macros = new LinkedHashMap<>();
+    String chrootSetupCmd = "install rpm-build";
+    int timeout = MOCK_TIMEOUT;
+    boolean installWeakDeps = false;
+    Path bindMount;
+    String authorizedSshKey;
 
     public void run(TaskExecutionContext context, String... mockArgs) throws TaskTermination {
         Path mockConfPath = context.addArtifact(ArtifactType.CONFIG, "mock.cfg");
@@ -54,8 +59,22 @@ class Mock {
             // bw.write( "config_opts['nosync_force'] = True\n" );
             bw.write("config_opts['root'] = 'mock-chroot'\n");
             bw.write("config_opts['target_arch'] = 'x86_64'\n");
-            bw.write("config_opts['chroot_setup_cmd'] = 'install rpm-build'\n");
+            bw.write("config_opts['chroot_setup_cmd'] = '" + chrootSetupCmd + "'\n");
             bw.write("\n");
+            if (bindMount != null) {
+                bw.write(
+                        "config_opts['plugin_conf']['bind_mount_opts']['dirs'].append(('"
+                                + bindMount
+                                + "', '"
+                                + bindMount
+                                + "'))\n");
+            }
+            if (authorizedSshKey != null) {
+                bw.write(
+                        "config_opts['files']['root/.ssh/authorized_keys'] = '"
+                                + authorizedSshKey
+                                + "'\n");
+            }
             for (var macro : macros.entrySet()) {
                 bw.write(
                         "config_opts['macros']['%"
@@ -72,7 +91,7 @@ class Mock {
             bw.write("reposdir=/dev/null\n");
             bw.write("gpgcheck=0\n");
             bw.write("assumeyes=1\n");
-            bw.write("install_weak_deps=0\n");
+            bw.write("install_weak_deps=" + (installWeakDeps ? 1 : 0) + "\n");
             bw.write("metadata_expire=-1\n");
 
             int priority = 0;
@@ -92,16 +111,18 @@ class Mock {
             TaskTermination.error("I/O error when writing mock config: " + e.getMessage());
         }
 
-        for (String logName : Arrays.asList("build.log", "root.log", "hw_info.log", "state.log")) {
-            context.addArtifact(ArtifactType.LOG, logName);
-        }
-
         Command mock = new Command("mock");
         mock.addArg("--enable-plugin", "tmpfs");
         mock.addArg("-r", mockConfPath.toString());
         mock.addArg("--resultdir", context.getResultDir().toString());
         mock.addArg(mockArgs);
-        mock.runRemote(context, MOCK_TIMEOUT);
+        mock.runRemote(context, timeout);
+
+        for (String logName : Arrays.asList("build.log", "root.log", "hw_info.log", "state.log")) {
+            if (Files.isRegularFile(context.getResultDir().resolve(logName))) {
+                context.addArtifact(ArtifactType.LOG, logName);
+            }
+        }
     }
 
     public void addMacro(String name, String value) {

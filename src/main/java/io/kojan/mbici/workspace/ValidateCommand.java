@@ -31,12 +31,7 @@ public class ValidateCommand extends AbstractTmtCommand {
     }
 
     @Override
-    protected String getImage() {
-        return null;
-    }
-
-    @Override
-    protected String getPlaybook() {
-        return null;
+    protected boolean requiresGuest() {
+        return false;
     }
 }

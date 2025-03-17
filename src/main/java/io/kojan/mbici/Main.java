@@ -24,6 +24,7 @@ import io.kojan.mbici.workspace.ConfigCommand;
 import io.kojan.mbici.workspace.InitCommand;
 import io.kojan.mbici.workspace.LogCommand;
 import io.kojan.mbici.workspace.RunCommand;
+import io.kojan.mbici.workspace.ShellCommand;
 import io.kojan.mbici.workspace.StatusCommand;
 import io.kojan.mbici.workspace.TestCommand;
 import io.kojan.mbici.workspace.ValidateCommand;
@@ -52,6 +53,7 @@ import picocli.CommandLine.IVersionProvider;
             LocalExecuteCommand.class,
             KubeExecuteCommand.class,
             ReportCommand.class,
+            ShellCommand.class,
         },
         mixinStandardHelpOptions = true,
         versionProvider = Main.class)

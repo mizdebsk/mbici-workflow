@@ -2,7 +2,7 @@
 
 Name:           mbici-workflow
 Version:        1.0.0~SNAPSHOT
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        MBICI Workflow
 License:        Apache-2.0
 URL:            https://github.com/mizdebsk/mbici-workflow

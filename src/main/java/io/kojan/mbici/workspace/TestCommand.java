@@ -17,7 +17,6 @@ package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(
@@ -30,28 +29,13 @@ public class TestCommand extends AbstractTmtCommand {
     @Parameters(index = "0", description = "Name of tmt test plan to run.")
     private String testPlan;
 
-    @Option(
-            names = {"--image"},
-            description = "Container image to use for running tests.")
-    protected String image = "mbitmt:1";
-
-    @Option(
-            names = {"--playbook"},
-            description = "Ansible playbook to use to prepare test container.")
-    protected String playbook = "ansible.yaml";
-
     @Override
     protected String getTestPlan() {
         return testPlan;
     }
 
     @Override
-    protected String getImage() {
-        return image;
-    }
-
-    @Override
-    protected String getPlaybook() {
-        return playbook;
+    protected boolean requiresGuest() {
+        return true;
     }
 }

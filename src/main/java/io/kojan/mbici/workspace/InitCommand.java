@@ -16,6 +16,7 @@
 package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.Main;
+import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +45,63 @@ public class InitCommand extends AbstractConfigCommand {
             description = "Assume RHEL SCM configuration.")
     private boolean rhel;
 
+    private void writePlatformRepos(Writer w) throws IOException {
+        if (fedora) {
+            // String mirror = "https://dl.fedoraproject.org/pub/fedora";
+            String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/fedora";
+            w.write(
+                    "  Everything: "
+                            + mirror
+                            + "/linux/development/rawhide/Everything/x86_64/os/\n");
+        } else if (centos || rhel) {
+            String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/almalinux";
+            w.write("  # CentOS Stream:\n");
+            w.write(
+                    "  c9s-build: https://kojihub.stream.centos.org/kojifiles/repos/c9s-build/latest/x86_64/\n");
+            w.write("  # AlmaLinux:\n");
+            w.write("  #BaseOS: " + mirror + "/9/BaseOS/x86_64/os/\n");
+            w.write("  #AppStream: " + mirror + "/9/AppStream/x86_64/os/\n");
+            w.write("  #CRB: " + mirror + "/9/CRB/x86_64/os/\n");
+            w.write("  #devel: " + mirror + "/9/CRB/x86_64/os/\n");
+            w.write("  # RHEL:\n");
+            w.write(
+                    "  #rhel-9.6.0-build: https://download.eng.brq.redhat.com/brewroot/repos/rhel-9.6.0-build/latest/x86_64/\n");
+        } else {
+            w.write("  myrepo: https://...\n");
+        }
+    }
+
+    private void writeConfig(Writer w) throws IOException {
+
+        w.write("platform:\n");
+        writePlatformRepos(w);
+        w.write("  packages:\n");
+        w.write("    - rpm-build\n");
+        w.write("    - glibc-minimal-langpack\n");
+        w.write("\n");
+
+        w.write("test-platform:\n");
+        writePlatformRepos(w);
+        w.write("  packages:\n");
+        w.write("    - glibc-minimal-langpack\n");
+        w.write("    - openssh-server\n");
+        w.write("    - rsync\n");
+        w.write("    - dnf\n");
+        w.write("    - beakerlib\n");
+        w.write("    - util-linux-core\n");
+        w.write("\n");
+
+        w.write("macros:\n");
+        w.write("  vendor: MBI\n");
+        w.write("#  my_global_macro: value\n");
+        w.write("\n");
+        w.write("#p0-macros:\n");
+        w.write("#  _with_bootstrap: 1\n");
+        w.write("\n");
+        w.write("p0:\n");
+        w.write("  - component1\n");
+    }
+
     @Override
     public Integer call() throws Exception {
         Workspace ws = Workspace.find();
@@ -60,6 +118,7 @@ public class InitCommand extends AbstractConfigCommand {
         c.setWorkflowPath(cwd.resolve(".mbi").resolve("workflow.xml"));
         c.setPlanPath(cwd.resolve(".mbi").resolve("plan.xml"));
         c.setPlatformPath(cwd.resolve(".mbi").resolve("platform.xml"));
+        c.setTestPlatformPath(cwd.resolve(".mbi").resolve("test-platform.xml"));
         c.setResultDir(cwd.resolve(".mbi").resolve("result"));
         c.setCacheDir(cwd.resolve(".mbi").resolve("cache"));
         c.setWorkDir(Path.of("/tmp"));
@@ -100,60 +159,7 @@ public class InitCommand extends AbstractConfigCommand {
         Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
         if (!Files.exists(yamlPath)) {
             try (Writer w = Files.newBufferedWriter(yamlPath)) {
-                w.write("platform:\n");
-                if (fedora) {
-                    // String mirror = "https://dl.fedoraproject.org/pub/fedora";
-                    String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/fedora";
-                    w.write(
-                            "  Everything: "
-                                    + mirror
-                                    + "/linux/development/rawhide/Everything/x86_64/os/\n");
-                } else if (centos || rhel) {
-                    String mirror = "https://ftp.icm.edu.pl/pub/Linux/dist/almalinux";
-                    w.write("  BaseOS: " + mirror + "/9/BaseOS/x86_64/os/\n");
-                    w.write("  AppStream: " + mirror + "/9/AppStream/x86_64/os/\n");
-                    w.write("  CRB: " + mirror + "/9/CRB/x86_64/os/\n");
-                } else {
-                    w.write("  myrepo: https://...\n");
-                }
-                w.write("  packages:\n");
-                w.write("    - rpm-build\n");
-                w.write("    - glibc-minimal-langpack\n");
-                w.write("\n");
-                w.write("macros:\n");
-                w.write("  vendor: MBI\n");
-                w.write("#  my_global_macro: value\n");
-                w.write("\n");
-                w.write("#p0-macros:\n");
-                w.write("#  _with_bootstrap: 1\n");
-                w.write("\n");
-                w.write("p0:\n");
-                w.write("  - component1\n");
-            }
-        }
-
-        Path playbookPath = c.getTestPlanDir().resolve("ansible.yaml");
-        if (!Files.exists(playbookPath)) {
-            try (Writer w = Files.newBufferedWriter(playbookPath)) {
-                w.write(
-                        """
-- name: prepare hosts
-  hosts: all
-  tasks:
-    - name: rsync compose
-      ansible.builtin.synchronize:
-        src: "{{ lookup('ansible.builtin.env', 'TEST_ARTIFACTS') }}/"
-        dest: /tmp/mbi-compose/
-    - name: repo
-      ansible.builtin.copy:
-        content: |
-          [mbi-compose]
-          name=mbi-compose
-          baseurl=/tmp/mbi-compose
-          priority=1
-          gpgcheck=0
-        dest: /etc/yum.repos.d/mbici-compose.repo
-                        """);
+                writeConfig(w);
             }
         }
 

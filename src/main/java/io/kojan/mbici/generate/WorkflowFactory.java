@@ -35,13 +35,18 @@ import java.util.stream.Stream;
  * @author Mikolaj Izdebski
  */
 class WorkflowFactory {
-    public Workflow createFromPlan(Platform platform, Plan plan, Subject subject) {
+    public Workflow createFromPlan(
+            Platform platform,
+            Platform testPlatform,
+            Plan plan,
+            Subject subject,
+            boolean includeProvision) {
         WorkflowBuilder workflowBuilder = new WorkflowBuilder();
         TaskFactory taskFactory = new TaskFactory(workflowBuilder);
         Map<String, Task> srpms = new LinkedHashMap<>();
         Map<String, Task> checkouts = new LinkedHashMap<>();
 
-        Task gather = taskFactory.createGatherTask(platform);
+        Task gather = taskFactory.createGatherTask("platform", platform);
         Task gatherRepo =
                 taskFactory.createRepoTask("platform-repo", Collections.singletonList(gather));
 
@@ -81,9 +86,19 @@ class WorkflowFactory {
             repos.addFirst(repo);
         }
 
-        taskFactory.createRepoTask(
-                "compose",
-                Stream.concat(srpms.values().stream(), rpmsByName.values().stream()).toList());
+        Task compose =
+                taskFactory.createRepoTask(
+                        "compose",
+                        Stream.concat(srpms.values().stream(), rpmsByName.values().stream())
+                                .toList());
+
+        if (includeProvision) {
+            Task gatherTest = taskFactory.createGatherTask("test-platform", testPlatform);
+            Task gatherTestRepo =
+                    taskFactory.createRepoTask(
+                            "test-platform-repo", Collections.singletonList(gatherTest));
+            taskFactory.createProvisionTask(gatherTestRepo, compose);
+        }
 
         return workflowBuilder.build();
     }

@@ -41,6 +41,11 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
     private Path platformPath;
 
     @Option(
+            names = {"--test-platform-path"},
+            description = "An absolute path to auto-generated test Platform in XML format.")
+    private Path testPlatformPath;
+
+    @Option(
             names = {"--result-dir"},
             description = "An absolute path to directory where build results are kept.")
     private Path resultDir;
@@ -126,6 +131,10 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
         }
         if (platformPath != null) {
             config.setPlatformPath(platformPath);
+            updated = true;
+        }
+        if (testPlatformPath != null) {
+            config.setTestPlatformPath(testPlatformPath);
             updated = true;
         }
         if (resultDir != null) {

@@ -16,6 +16,7 @@
 package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
+import io.kojan.mbici.tasks.Guest;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +36,19 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
     protected abstract String getTestPlan();
 
-    protected abstract String getImage();
-
-    protected abstract String getPlaybook();
+    protected abstract boolean requiresGuest();
 
     @Override
     public Integer call() throws Exception {
+
+        ShellCommand shell = null;
+        if (requiresGuest()) {
+            shell = new ShellCommand();
+            Integer ret = shell.provision();
+            if (ret != 0) {
+                return ret;
+            }
+        }
 
         String testPlan = getTestPlan();
         if (testPlan.startsWith("/")) {
@@ -58,7 +66,7 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
         List<String> cmd = new ArrayList<>();
         cmd.add("tmt");
-        if (getImage() == null) {
+        if (!requiresGuest()) {
             cmd.add("--feeling-safe");
         }
         cmd.add("-r");
@@ -84,30 +92,23 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         cmd.add("--name");
         cmd.add("^/" + testPlan + "$");
 
-        if (getImage() != null) {
+        if (requiresGuest()) {
             cmd.add("provision");
             cmd.add("--how");
-            cmd.add("container");
-            cmd.add("--image");
-            cmd.add(getImage());
+            cmd.add("connect");
+            cmd.add("--guest");
+            cmd.add(Guest.SSH_HOST);
+            cmd.add("--port");
+            cmd.add(Guest.SSH_PORT);
+            cmd.add("--user");
+            cmd.add(Guest.SSH_USER);
+            cmd.add("--key");
+            cmd.add(Guest.SSH_PRIV_KEY);
+            cmd.add("-vvv");
         } else {
             cmd.add("provision");
             cmd.add("--how");
             cmd.add("local");
-        }
-
-        if (getPlaybook() != null) {
-            cmd.add("prepare");
-            cmd.add("--insert");
-            cmd.add("--order");
-            cmd.add("0");
-            cmd.add("--name");
-            cmd.add("mbici");
-            cmd.add("--how");
-            cmd.add("ansible");
-            cmd.add("--playbook");
-            cmd.add(getPlaybook());
-            cmd.add("-vvv");
         }
 
         cmd.add("execute");
@@ -116,6 +117,10 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         cmd.add("report");
         cmd.add("-vv");
 
-        return new ProcessBuilder(cmd).inheritIO().start().waitFor();
+        int ret = new ProcessBuilder(cmd).inheritIO().start().waitFor();
+        if (shell != null) {
+            shell.terminate();
+        }
+        return ret;
     }
 }

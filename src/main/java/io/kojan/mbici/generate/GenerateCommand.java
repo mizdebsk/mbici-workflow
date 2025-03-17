@@ -58,6 +58,8 @@ public class GenerateCommand extends AbstractCommand {
             description = "Path where generated Workflow should be written.")
     private Path workflowPath;
 
+    private Path testPlatformPath;
+
     public Path getPlanPath() {
         return planPath;
     }
@@ -90,14 +92,25 @@ public class GenerateCommand extends AbstractCommand {
         this.workflowPath = workflowPath;
     }
 
+    public Path getTestPlatformPath() {
+        return testPlatformPath;
+    }
+
+    public void setTestPlatformPath(Path testPlatformPath) {
+        this.testPlatformPath = testPlatformPath;
+    }
+
     @Override
     public Integer call() throws Exception {
         Plan plan = Plan.readFromXML(planPath);
         Platform platform = Platform.readFromXML(platformPath);
+        Platform testPlatform =
+                testPlatformPath == null ? null : Platform.readFromXML(testPlatformPath);
         Subject subject = Subject.readFromXML(subjectPath);
 
         WorkflowFactory wff = new WorkflowFactory();
-        Workflow wfd = wff.createFromPlan(platform, plan, subject);
+        Workflow wfd =
+                wff.createFromPlan(platform, testPlatform, plan, subject, testPlatform != null);
         wfd.writeToXML(workflowPath);
 
         return 0;

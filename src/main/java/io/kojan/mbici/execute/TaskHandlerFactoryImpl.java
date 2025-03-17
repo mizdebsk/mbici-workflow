@@ -19,6 +19,7 @@ import io.kojan.mbici.cache.CacheManager;
 import io.kojan.mbici.tasks.AbstractTaskHandler;
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.GatherTaskHandler;
+import io.kojan.mbici.tasks.ProvisionTaskHandler;
 import io.kojan.mbici.tasks.RepoTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
@@ -47,6 +48,7 @@ class TaskHandlerFactoryImpl implements TaskHandlerFactory {
         registerHandler(RepoTaskHandler.class, RepoTaskHandler::new);
         registerHandler(RpmTaskHandler.class, RpmTaskHandler::new);
         registerHandler(SrpmTaskHandler.class, SrpmTaskHandler::new);
+        registerHandler(ProvisionTaskHandler.class, ProvisionTaskHandler::new);
     }
 
     @Override

@@ -21,6 +21,7 @@ import io.kojan.mbici.model.Repo;
 import io.kojan.mbici.model.SubjectComponent;
 import io.kojan.mbici.tasks.CheckoutTaskHandler;
 import io.kojan.mbici.tasks.GatherTaskHandler;
+import io.kojan.mbici.tasks.ProvisionTaskHandler;
 import io.kojan.mbici.tasks.RepoTaskHandler;
 import io.kojan.mbici.tasks.RpmTaskHandler;
 import io.kojan.mbici.tasks.SrpmTaskHandler;
@@ -38,6 +39,7 @@ class TaskFactory {
     private static final String GATHER_HANDLER = GatherTaskHandler.class.getName();
     private static final String CHECKOUT_HANDLER = CheckoutTaskHandler.class.getName();
     private static final String REPO_HANDLER = RepoTaskHandler.class.getName();
+    private static final String PROVISION_HANDLER = ProvisionTaskHandler.class.getName();
 
     private final WorkflowBuilder workflowBuilder;
 
@@ -45,9 +47,9 @@ class TaskFactory {
         this.workflowBuilder = workflowBuilder;
     }
 
-    public Task createGatherTask(Platform platform) {
+    public Task createGatherTask(String id, Platform platform) {
         TaskBuilder task = new TaskBuilder();
-        task.setId("platform");
+        task.setId(id);
         task.setHandler(GATHER_HANDLER);
 
         for (Repo repo : platform.getRepos()) {
@@ -130,6 +132,17 @@ class TaskFactory {
             task.addParameter(macro.getName(), macro.getValue());
         }
 
+        Task taskDescriptor = task.build();
+        workflowBuilder.addTask(taskDescriptor);
+        return taskDescriptor;
+    }
+
+    public Task createProvisionTask(Task platformRepo, Task composeRepo) {
+        TaskBuilder task = new TaskBuilder();
+        task.setId("provision");
+        task.setHandler(PROVISION_HANDLER);
+        task.addDependency(composeRepo.getId());
+        task.addDependency(platformRepo.getId());
         Task taskDescriptor = task.build();
         workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;
