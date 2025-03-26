@@ -64,6 +64,7 @@ public class GatherTaskHandler extends AbstractTaskHandler {
                 bw.write("[" + repo.getKey() + "]\n");
                 bw.write("name=" + repo.getKey() + "\n");
                 bw.write("baseurl=" + repo.getValue() + "\n");
+                bw.write("module_hotfixes=1\n");
             }
         } catch (IOException e) {
             TaskTermination.error("I/O error when writing DNF config: " + e.getMessage());
