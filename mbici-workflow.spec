@@ -2,7 +2,7 @@
 
 Name:           mbici-workflow
 Version:        1.0.0~SNAPSHOT
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        MBICI Workflow
 License:        Apache-2.0
 URL:            https://github.com/mizdebsk/mbici-workflow
@@ -10,7 +10,7 @@ URL:            https://github.com/mizdebsk/mbici-workflow
 # git archive HEAD --prefix mbici-workflow-1.0.0~SNAPSHOT/ | gzip -9nc >mbici-workflow.tar.gz
 Source0:        mbici-workflow.tar.gz
 
-BuildRequires:  java-23-mandrel-devel
+BuildRequires:  java-24-mandrel-devel
 BuildRequires:  maven
 BuildRequires:  rubygem-asciidoctor
 
@@ -33,7 +33,7 @@ for continuously testing bootstrapping of Maven RPM packages.
 %setup -q
 
 %build
-export JAVA_HOME=%{_jvmdir}/java-23-mandrel
+export JAVA_HOME=%{_jvmdir}/java-24-mandrel
 export PATH=${JAVA_HOME}/bin:${PATH}
 
 # Bulid Java JAR

@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: docker.io/library/eclipse-temurin:22-jdk-ubi9-minimal
+    container: docker.io/library/eclipse-temurin:24-jdk-ubi9-minimal
     steps:
       - name: Install dependencies
         run: microdnf -y install git-core maven rpm-libs
