@@ -18,6 +18,7 @@ package io.kojan.mbici.workspace;
 import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.tasks.Guest;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import picocli.CommandLine.Option;
@@ -59,8 +60,10 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         WorkspaceConfig c = ws.getConfig();
         info("Using workspace at " + ws.getWorkspaceDir());
 
-        if (!Files.isDirectory(c.getComposeDir())) {
+        Path composeRepoDir = c.getLinkDir().resolve("compose").resolve("repo");
+        if (!Files.isDirectory(composeRepoDir)) {
             error("Compose is absent");
+            info("You should run the \"mbi run\" command to generate the compose");
             return 1;
         }
 
@@ -82,7 +85,7 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         cmd.add("-i");
         cmd.add(c.getTestResultDir().resolve(testPlan).toString());
         cmd.add("-e");
-        cmd.add("TEST_ARTIFACTS=" + c.getComposeDir());
+        cmd.add("TEST_ARTIFACTS=" + composeRepoDir);
         for (String env : environment) {
             cmd.add("-e");
             cmd.add(env);
