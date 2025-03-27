@@ -57,14 +57,17 @@ public class YamlConf {
     private static Platform loadPlatform(Map<String, Object> platform) {
         PlatformBuilder platformBuilder = new PlatformBuilder();
 
-        List<String> repos = platform.keySet().stream().filter(k -> !k.equals("packages")).toList();
-        for (String repo : repos) {
-            platformBuilder.addRepo(new Repo(repo, (String) platform.get(repo)));
-        }
+        if (platform != null) {
+            List<String> repos =
+                    platform.keySet().stream().filter(k -> !k.equals("packages")).toList();
+            for (String repo : repos) {
+                platformBuilder.addRepo(new Repo(repo, (String) platform.get(repo)));
+            }
 
-        List<String> packages = (List<String>) platform.get("packages");
-        for (String pkg : packages) {
-            platformBuilder.addPackage(pkg);
+            List<String> packages = (List<String>) platform.getOrDefault("packages", List.of());
+            for (String pkg : packages) {
+                platformBuilder.addPackage(pkg);
+            }
         }
 
         return platformBuilder.build();

@@ -46,13 +46,14 @@ class WorkflowFactory {
         Map<String, Task> srpms = new LinkedHashMap<>();
         Map<String, Task> checkouts = new LinkedHashMap<>();
 
-        Task gather = taskFactory.createGatherTask("platform", platform);
-        Task gatherRepo =
-                taskFactory.createRepoTask("platform-repo", Collections.singletonList(gather));
-
+        Task gatherRepo = null;
         LinkedList<Task> repos = new LinkedList<>();
-        repos.add(gatherRepo);
-
+        if (!plan.getPhases().isEmpty()) {
+            Task gather = taskFactory.createGatherTask("platform", platform);
+            gatherRepo =
+                    taskFactory.createRepoTask("platform-repo", Collections.singletonList(gather));
+            repos.add(gatherRepo);
+        }
         Map<String, Task> rpmsByName = new LinkedHashMap<>();
 
         for (Phase phase : plan.getPhases()) {
