@@ -82,9 +82,10 @@ public class GatherTaskHandler extends AbstractTaskHandler {
         dnf.addArg("--releasever", "dummy");
         dnf.addArg("--installroot", context.getWorkDir().toString());
         dnf.addArg("--config", dnfConfPath.toString());
-        dnf.addArg("--setopt", "destdir=" + downloadDir.toString());
-        dnf.addArg("install");
-        dnf.addArg("--downloadonly");
+        dnf.addArg("download");
+        dnf.addArg("--resolve");
+        dnf.addArg("--alldeps");
+        dnf.addArg("--destdir=" + downloadDir.toString());
         dnf.addArg(packageNames);
         dnf.runRemote(context, GATHER_TIMEOUT);
     }
