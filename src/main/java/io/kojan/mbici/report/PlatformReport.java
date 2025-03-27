@@ -17,9 +17,7 @@ package io.kojan.mbici.report;
 
 import io.kojan.mbici.model.Platform;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class PlatformReport extends Report {
     private final Platform platform;
 

@@ -23,9 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class CacheManager implements TaskStorage {
     private final Path resultRootDir;
     private final Path cacheRootDir;

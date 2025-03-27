@@ -31,9 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class WorkflowFactory {
     public Workflow createFromPlan(
             Platform platform,

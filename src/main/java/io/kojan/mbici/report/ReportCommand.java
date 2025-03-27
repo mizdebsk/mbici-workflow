@@ -37,9 +37,7 @@ import java.util.Map;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 @Command(
         name = "report",
         description = "Generate a simple HTML report describing given Workflow.",

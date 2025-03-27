@@ -29,9 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class GatherTaskHandler extends AbstractTaskHandler {
     private static final int GATHER_TIMEOUT = 1200;
 

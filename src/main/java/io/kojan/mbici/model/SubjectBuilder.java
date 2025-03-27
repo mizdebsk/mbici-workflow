@@ -19,9 +19,7 @@ import io.kojan.xml.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class SubjectBuilder implements Builder<Subject> {
     private final List<SubjectComponent> subjectComponents = new ArrayList<>();
 

@@ -20,11 +20,9 @@ import io.kojan.workflow.model.Parameter;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.Task;
 
-/**
- * Produces testout.log file with compact description of test result.
- *
- * @author Mikolaj Izdebski
- */
+/// Produces `testout.log` file with compact description of test result.
+///
+/// @author Mikolaj Izdebski
 public class TmtTestoutReport extends Report {
     private final FinishedTask finishedTask;
 

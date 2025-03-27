@@ -17,9 +17,7 @@ package io.kojan.mbici.model;
 
 import io.kojan.xml.Builder;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class SubjectComponentBuilder implements Builder<SubjectComponent> {
     private String name;
     private String scm;

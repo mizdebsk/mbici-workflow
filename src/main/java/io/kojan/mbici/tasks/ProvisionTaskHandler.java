@@ -20,9 +20,7 @@ import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Task;
 import java.io.IOException;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class ProvisionTaskHandler extends AbstractTaskHandler {
 
     private static ProvisionTaskHandler instance;

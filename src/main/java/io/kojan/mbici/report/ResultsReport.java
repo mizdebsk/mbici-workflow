@@ -23,9 +23,7 @@ import io.kojan.workflow.model.Workflow;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class ResultsReport extends Report {
     private final Workflow workflow;
 

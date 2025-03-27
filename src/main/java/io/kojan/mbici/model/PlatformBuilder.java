@@ -19,9 +19,7 @@ import io.kojan.xml.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class PlatformBuilder implements Builder<Platform> {
     private final List<Repo> repos = new ArrayList<>();
     private final List<String> packages = new ArrayList<>();

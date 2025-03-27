@@ -22,9 +22,7 @@ import io.kojan.workflow.model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Kubernetes {
     private final CacheManager cacheManager;
     private final String namespace;

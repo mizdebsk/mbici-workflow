@@ -18,9 +18,7 @@ package io.kojan.mbici.tasks;
 import io.kojan.mbici.cache.CacheManager;
 import io.kojan.workflow.TaskHandler;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public abstract class AbstractTaskHandler implements TaskHandler {
     private CacheManager cacheManager;
 

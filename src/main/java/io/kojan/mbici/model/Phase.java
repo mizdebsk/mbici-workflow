@@ -21,9 +21,7 @@ import io.kojan.xml.Relationship;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Phase {
     private final String name;
     private final List<String> components;

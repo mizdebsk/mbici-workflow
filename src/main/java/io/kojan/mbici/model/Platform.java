@@ -24,9 +24,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Platform {
     private final List<Repo> repos;
     private final List<String> packages;

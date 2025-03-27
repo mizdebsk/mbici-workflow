@@ -22,12 +22,10 @@ import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
 import java.time.Duration;
 
-/**
- * Produces results.yaml file in the <a
- * href="https://tmt.readthedocs.io/en/stable/spec/tests.html#result">format expected by tmt</a>.
- *
- * @author Mikolaj Izdebski
- */
+/// Produces results.yaml file in the [format expected by
+/// tmt](https://tmt.readthedocs.io/en/stable/spec/tests.html#result).
+///
+/// @author Mikolaj Izdebski
 public class TmtResultsReport extends Report {
     private final Workflow workflow;
 

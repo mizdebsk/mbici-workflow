@@ -26,9 +26,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class WebHookDumper extends AbstractDumper {
     private final String url;
     private final String token;

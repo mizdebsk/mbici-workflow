@@ -20,9 +20,7 @@ import io.kojan.workflow.WorkflowExecutionListener;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.Workflow;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 abstract class AbstractDumper extends Thread implements WorkflowExecutionListener {
     private Workflow queue;
     private boolean terminate;

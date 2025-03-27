@@ -18,9 +18,7 @@ package io.kojan.mbici.execute;
 import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 @Command(
         name = "execute",
         description = "Execute Workflow locally and update it in-place.",

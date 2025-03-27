@@ -28,9 +28,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class CheckoutTaskHandler extends AbstractTaskHandler {
     private static final int GIT_TIMEOUT = 300;
 

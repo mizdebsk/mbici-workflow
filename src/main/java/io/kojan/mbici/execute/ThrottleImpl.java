@@ -24,9 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class ThrottleImpl implements TaskThrottle {
     private final Map<String, Semaphore> semaphores = new LinkedHashMap<>();
 

@@ -19,9 +19,7 @@ import io.kojan.xml.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class PhaseBuilder implements Builder<Phase> {
     private String name;
     private final List<String> components = new ArrayList<>();

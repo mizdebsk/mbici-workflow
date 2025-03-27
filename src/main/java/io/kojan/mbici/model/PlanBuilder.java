@@ -19,9 +19,7 @@ import io.kojan.xml.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class PlanBuilder implements Builder<Plan> {
     private final List<Phase> phases = new ArrayList<>();
     private final List<Macro> macros = new ArrayList<>();

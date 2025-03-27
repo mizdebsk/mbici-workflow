@@ -22,9 +22,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Function;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 abstract class Report {
     private final StringBuilder sb = new StringBuilder();
 

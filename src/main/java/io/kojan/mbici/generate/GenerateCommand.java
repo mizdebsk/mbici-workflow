@@ -25,9 +25,7 @@ import java.nio.file.Path;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 @Command(
         name = "generate",
         description = "Generate Workflow from given Plan, Platform and Subject.",

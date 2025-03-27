@@ -26,9 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class Mock {
     private static final int MOCK_TIMEOUT = 1800;
 

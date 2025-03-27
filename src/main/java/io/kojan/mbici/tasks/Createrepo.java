@@ -19,9 +19,7 @@ import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import java.nio.file.Path;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class Createrepo {
     private static final int CREATEREPO_TIMEOUT = 60;
 

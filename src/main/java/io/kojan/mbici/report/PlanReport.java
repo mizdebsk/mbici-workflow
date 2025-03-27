@@ -17,9 +17,7 @@ package io.kojan.mbici.report;
 
 import io.kojan.mbici.model.Plan;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class PlanReport extends Report {
     private final Plan plan;
 

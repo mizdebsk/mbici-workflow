@@ -23,9 +23,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Plan {
     private final List<Phase> phases;
     private final List<Macro> macros;

@@ -26,9 +26,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class RepoTaskHandler extends AbstractTaskHandler {
     public RepoTaskHandler(Task task) {
         if (!task.getParameters().isEmpty()) {

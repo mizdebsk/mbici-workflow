@@ -20,9 +20,7 @@ import io.kojan.mbici.tasks.Kubernetes;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 @Command(
         name = "kube-exec",
         description = "Execute Workflow on Kubernetes cluster.",

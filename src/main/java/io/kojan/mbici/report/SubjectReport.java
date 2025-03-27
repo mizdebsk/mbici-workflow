@@ -17,9 +17,7 @@ package io.kojan.mbici.report;
 
 import io.kojan.mbici.model.Subject;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class SubjectReport extends Report {
     private final Subject subject;
 

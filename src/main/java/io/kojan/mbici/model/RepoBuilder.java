@@ -17,9 +17,7 @@ package io.kojan.mbici.model;
 
 import io.kojan.xml.Builder;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class RepoBuilder implements Builder<Repo> {
     private String name;
     private String url;

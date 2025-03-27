@@ -30,9 +30,7 @@ import io.kojan.workflow.model.TaskBuilder;
 import io.kojan.workflow.model.WorkflowBuilder;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 class TaskFactory {
     private static final String RPM_HANDLER = RpmTaskHandler.class.getName();
     private static final String SRPM_HANDLER = SrpmTaskHandler.class.getName();

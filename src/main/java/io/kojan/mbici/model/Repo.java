@@ -18,9 +18,7 @@ package io.kojan.mbici.model;
 import io.kojan.xml.Attribute;
 import io.kojan.xml.Entity;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Repo {
     private final String name;
     private final String url;

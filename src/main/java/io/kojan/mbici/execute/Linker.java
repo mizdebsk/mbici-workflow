@@ -26,9 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public class Linker implements WorkflowExecutionListener {
     private final Path linkDir;
 

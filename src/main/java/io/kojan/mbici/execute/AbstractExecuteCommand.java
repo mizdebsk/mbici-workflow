@@ -24,9 +24,7 @@ import io.kojan.workflow.model.Workflow;
 import java.nio.file.Path;
 import picocli.CommandLine.Option;
 
-/**
- * @author Mikolaj Izdebski
- */
+/// @author Mikolaj Izdebski
 public abstract class AbstractExecuteCommand extends AbstractCommand {
     @Option(
             names = {"-w", "--workflow"},
