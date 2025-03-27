@@ -85,7 +85,7 @@ public class GatherTaskHandler extends AbstractTaskHandler {
         dnf.addArg("download");
         dnf.addArg("--resolve");
         dnf.addArg("--alldeps");
-        dnf.addArg("--destdir=" + downloadDir.toString());
+        dnf.addArg("--destdir", downloadDir.toString());
         dnf.addArg(packageNames);
         dnf.runRemote(context, GATHER_TIMEOUT);
     }
