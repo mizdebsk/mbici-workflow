@@ -13,6 +13,6 @@ jobs:
       - name: Install dependencies
         run: microdnf -y install git-core maven rpm-libs
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Maven build
         run: mvn -V -B -Prelease -Dgpg.skip clean install
