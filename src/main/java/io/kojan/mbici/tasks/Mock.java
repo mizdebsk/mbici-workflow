@@ -73,6 +73,8 @@ class Mock {
                                 + authorizedSshKey
                                 + "'\n");
             }
+            bw.write("config_opts['macros']['%_source_payload'] = 'w.ufdio'\n");
+            bw.write("config_opts['macros']['%_binary_payload'] = 'w.ufdio'\n");
             for (var macro : macros.entrySet()) {
                 bw.write(
                         "config_opts['macros']['%"
