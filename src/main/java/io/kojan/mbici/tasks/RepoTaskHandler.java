@@ -21,6 +21,7 @@ import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Task;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
@@ -53,24 +54,25 @@ public class RepoTaskHandler extends AbstractTaskHandler {
                 .anyMatch(SrpmTaskHandler.class.getName()::equals)) {
             rpmPaths.addAll(context.getDependencyArtifacts(ArtifactType.SRPM));
         }
+
+        StringBuilder script = new StringBuilder();
+        script.append("set -eux\n");
         for (Path rpmPath : rpmPaths) {
             Path rpmLinkPath = repoPath.resolve(rpmPath.getFileName());
+            script.append("ln ").append(rpmPath).append(" ").append(rpmLinkPath).append("\n");
+        }
+        script.append("exec createrepo_c ").append(repoPath).append("\n");
 
-            try {
-                Files.createLink(rpmLinkPath, rpmPath);
-            } catch (IOException e) {
-                TaskTermination.error(
-                        "I/O error when hardlinking "
-                                + rpmPath
-                                + " to "
-                                + rpmLinkPath
-                                + ": "
-                                + e.getMessage());
-            }
+        Path makerepoPath = context.addArtifact(ArtifactType.SCRIPT, "makerepo.sh");
+        try (Writer writer = Files.newBufferedWriter(makerepoPath)) {
+            writer.write(script.toString());
+        } catch (IOException e) {
+            TaskTermination.error("I/O error when writing " + makerepoPath + ": " + e.getMessage());
         }
 
-        Createrepo createrepo = new Createrepo(context);
-        createrepo.run(repoPath);
+        Command makerepo = new Command("sh", makerepoPath.toString());
+        makerepo.setName("makerepo.sh");
+        makerepo.runRemote(context, 60);
 
         TaskTermination.success("Repo created successfully");
     }
