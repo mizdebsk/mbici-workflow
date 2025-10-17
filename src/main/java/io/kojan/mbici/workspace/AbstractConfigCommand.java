@@ -71,11 +71,6 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
     private Path reportDir;
 
     @Option(
-            names = {"--compose-dir"},
-            description = "An absolute path to directory where RPM compose is created.")
-    private Path composeDir;
-
-    @Option(
             names = {"--test-plan-dir"},
             description = "An absolute path to directory where tmt test plans are stored.")
     private Path testPlanDir;
@@ -155,10 +150,6 @@ public abstract class AbstractConfigCommand extends AbstractCommand {
         }
         if (reportDir != null) {
             config.setReportDir(reportDir);
-            updated = true;
-        }
-        if (composeDir != null) {
-            config.setComposeDir(composeDir);
             updated = true;
         }
         if (testPlanDir != null) {

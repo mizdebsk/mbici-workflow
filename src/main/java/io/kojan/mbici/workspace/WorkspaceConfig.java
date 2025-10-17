@@ -29,7 +29,6 @@ public class WorkspaceConfig {
     private Path workDir;
     private Path linkDir;
     private Path reportDir;
-    private Path composeDir;
     private Path testPlanDir;
     private Path testResultDir;
     private String lookaside;
@@ -130,14 +129,6 @@ public class WorkspaceConfig {
 
     public void setReportDir(Path reportDir) {
         this.reportDir = reportDir;
-    }
-
-    public Path getComposeDir() {
-        return composeDir;
-    }
-
-    public void setComposeDir(Path composeDir) {
-        this.composeDir = composeDir;
     }
 
     public Path getTestPlanDir() {

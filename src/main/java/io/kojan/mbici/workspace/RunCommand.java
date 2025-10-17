@@ -59,17 +59,6 @@ public class RunCommand extends AbstractCommand {
         Files.delete(path);
     }
 
-    private static void copyDir(Path src, Path dest) throws IOException {
-        Files.copy(src, dest);
-        if (Files.isDirectory(src)) {
-            try (DirectoryStream<Path> ds = Files.newDirectoryStream(src)) {
-                for (Path child : ds) {
-                    copyDir(child, dest.resolve(child.getFileName()));
-                }
-            }
-        }
-    }
-
     @Override
     public Integer call() throws Exception {
 
@@ -188,13 +177,6 @@ public class RunCommand extends AbstractCommand {
         report.setReportDir(c.getReportDir());
         report.setFull(true);
         report.setQuiet(true);
-
-        Files.createDirectories(c.getComposeDir());
-        deleteDir(c.getComposeDir());
-        Path composeRepoDir = c.getLinkDir().resolve("compose").resolve("repo");
-        if (Files.isDirectory(composeRepoDir)) {
-            copyDir(composeRepoDir, c.getComposeDir());
-        }
 
         info("Running report command...");
         ret = report.call();
