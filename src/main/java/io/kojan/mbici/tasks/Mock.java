@@ -91,6 +91,7 @@ class Mock {
             bw.write("assumeyes=1\n");
             bw.write("install_weak_deps=" + (installWeakDeps ? 1 : 0) + "\n");
             bw.write("metadata_expire=-1\n");
+            bw.write("best=1\n");
 
             int priority = 0;
             for (Path repoPath : context.getDependencyArtifacts(ArtifactType.REPO)) {
