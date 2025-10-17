@@ -57,10 +57,12 @@ public class RepoTaskHandler extends AbstractTaskHandler {
             Path rpmLinkPath = repoPath.resolve(rpmPath.getFileName());
 
             try {
-                Files.createSymbolicLink(rpmLinkPath, rpmPath);
+                Files.createLink(rpmLinkPath, rpmPath);
             } catch (IOException e) {
                 TaskTermination.error(
-                        "I/O error when creating symbolic link "
+                        "I/O error when hardlinking "
+                                + rpmPath
+                                + " to "
                                 + rpmLinkPath
                                 + ": "
                                 + e.getMessage());
