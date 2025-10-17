@@ -186,7 +186,7 @@ public class RunCommand extends AbstractCommand {
         report.setWorkflowPath(c.getWorkflowPath());
         report.setResultDir(c.getResultDir());
         report.setReportDir(c.getReportDir());
-        report.setFull(true);
+        report.setFull(false);
         report.setQuiet(true);
 
         Files.createDirectories(c.getComposeDir());
