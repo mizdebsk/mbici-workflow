@@ -140,12 +140,6 @@ public class Workspace {
                             Path::toString,
                             Path::of),
                     Attribute.of(
-                            "composeDir",
-                            WorkspaceConfig::getComposeDir,
-                            WorkspaceConfig::setComposeDir,
-                            Path::toString,
-                            Path::of),
-                    Attribute.of(
                             "testResultDir",
                             WorkspaceConfig::getTestResultDir,
                             WorkspaceConfig::setTestResultDir,

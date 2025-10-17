@@ -124,7 +124,6 @@ public class InitCommand extends AbstractConfigCommand {
         c.setWorkDir(Path.of("/tmp"));
         c.setLinkDir(cwd.resolve("result"));
         c.setReportDir(cwd.resolve("report"));
-        c.setComposeDir(cwd.resolve("compose"));
         c.setTestPlanDir(cwd.resolve("plans"));
         c.setTestResultDir(cwd.resolve(".mbi").resolve("tmt"));
 
