@@ -178,7 +178,7 @@ public class InitCommand extends AbstractConfigCommand {
                 w.write("summary: Run javapackages-validator tests\n");
                 w.write("discover:\n");
                 w.write("  how: fmf\n");
-                w.write("  url: https://src.fedoraproject.org/tests/javapackages\n");
+                w.write("  url: https://gitlab.com/redhat/centos-stream/tests/javapackages.git\n");
                 w.write("#  url: " + ws.getWorkspaceDir().resolve("tests") + "/javapackages\n");
                 w.write("  ref: HEAD\n");
                 w.write("execute:\n");
