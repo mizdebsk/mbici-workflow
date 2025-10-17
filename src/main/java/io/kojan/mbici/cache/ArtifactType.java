@@ -22,4 +22,5 @@ public interface ArtifactType {
     String REPO = "REPO";
     String CONFIG = "CONFIG";
     String CHECKOUT = "CHECKOUT";
+    String SCRIPT = "SCRIPT";
 }
