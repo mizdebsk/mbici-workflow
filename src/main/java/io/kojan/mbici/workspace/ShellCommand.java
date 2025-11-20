@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(
         name = "shell",
@@ -38,6 +39,18 @@ import picocli.CommandLine.Command;
         mixinStandardHelpOptions = true,
         versionProvider = Main.class)
 public class ShellCommand extends AbstractCommand {
+    @Option(
+            names = {"-i", "--id"},
+            description = "Unique identifier of this shell run.")
+    private String id = "shell";
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     private Guest getGuest() {
         ProvisionTaskHandler handler = ProvisionTaskHandler.getInstance();
@@ -67,7 +80,7 @@ public class ShellCommand extends AbstractCommand {
         Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
         YamlConf yaml = YamlConf.load(yamlPath);
         WorkflowFactory wff = new WorkflowFactory();
-        Workflow wf = wff.createTestWorkflow(yaml.getTestPlatform(), composeRepoDir);
+        Workflow wf = wff.createTestWorkflow(id, yaml.getTestPlatform(), composeRepoDir);
 
         TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl(null);
         TaskThrottle throttle =

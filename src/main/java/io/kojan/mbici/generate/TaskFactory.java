@@ -136,9 +136,10 @@ class TaskFactory {
         return taskDescriptor;
     }
 
-    public Task createProvisionTask(Task platformRepo, Path composeRepoDir) {
+    public Task createProvisionTask(
+            String provisionTaskId, Task platformRepo, Path composeRepoDir) {
         TaskBuilder task = new TaskBuilder();
-        task.setId("provision");
+        task.setId("provision-" + provisionTaskId);
         task.setHandler(PROVISION_HANDLER);
         task.addDependency(platformRepo.getId());
         task.addParameter("compose", composeRepoDir.toString());

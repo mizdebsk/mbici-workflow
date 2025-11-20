@@ -44,6 +44,7 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         ShellCommand shell = null;
         if (requiresGuest()) {
             shell = new ShellCommand();
+            shell.setId("test-" + getTestPlan());
             Integer ret = shell.provision();
             if (ret != 0) {
                 return ret;
