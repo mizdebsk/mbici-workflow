@@ -25,13 +25,19 @@ import io.kojan.workflow.TaskHandlerFactory;
 import io.kojan.workflow.TaskStorage;
 import io.kojan.workflow.TaskThrottle;
 import io.kojan.workflow.WorkflowExecutor;
+import io.kojan.workflow.model.Parameter;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.Workflow;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @Command(
         name = "shell",
@@ -40,9 +46,14 @@ import picocli.CommandLine.Option;
         versionProvider = Main.class)
 public class ShellCommand extends AbstractCommand {
     @Option(
-            names = {"-i", "--id"},
-            description = "Unique identifier of this shell run.")
+            names = {"-p", "--provision"},
+            description = "Provision mock container before runinng shell.")
+    private boolean provision;
+
+    @Parameters(index = "0", arity = "0..1", description = "Unique identifier of this shell run.")
     private String id = "shell";
+
+    private Guest guest;
 
     public String getId() {
         return id;
@@ -52,12 +63,30 @@ public class ShellCommand extends AbstractCommand {
         this.id = id;
     }
 
-    private Guest getGuest() {
-        ProvisionTaskHandler handler = ProvisionTaskHandler.getInstance();
-        if (handler != null) {
-            return handler.getGuest();
+    private String guessResultId(Task task, String dependencyResultId) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(task.getHandler().getBytes());
+            md.update(Byte.MIN_VALUE);
+            for (Parameter param : task.getParameters()) {
+                md.update(param.getName().getBytes());
+                md.update(Byte.MIN_VALUE);
+                md.update(param.getValue().getBytes());
+                md.update(Byte.MIN_VALUE);
+            }
+            if (dependencyResultId != null) {
+                md.update(dependencyResultId.getBytes());
+                md.update(Byte.MIN_VALUE);
+            }
+            byte[] digest = md.digest();
+            return new BigInteger(1, digest)
+                    .setBit(digest.length << 3)
+                    .toString(16)
+                    .substring(1)
+                    .toUpperCase();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
         }
-        return null;
     }
 
     public Integer provision() throws Exception {
@@ -109,10 +138,13 @@ public class ShellCommand extends AbstractCommand {
         thread.start();
 
         while (true) {
-            Guest guest = getGuest();
-            if (guest != null && guest.isSshInitialized()) {
-                System.err.println("\r======================================================");
-                break;
+            ProvisionTaskHandler handler = ProvisionTaskHandler.getInstance();
+            if (handler != null) {
+                guest = handler.getGuest();
+                if (guest != null && guest.isSshInitialized()) {
+                    System.err.println("\r======================================================");
+                    break;
+                }
             }
             Thread.sleep(Duration.ofMillis(100));
         }
@@ -121,25 +153,64 @@ public class ShellCommand extends AbstractCommand {
     }
 
     public void connect() throws Exception {
-        getGuest().runSshClient();
+        guest.runSshClient();
     }
 
     public void terminate() throws Exception {
-        getGuest().runSshClient("kill $(cat /tmp/sshd.pid)");
+        guest.runSshClient("kill $(cat /tmp/sshd.pid)");
     }
 
-    public Path getSocketPath() {
-        return getGuest().getSocketPath();
+    public Path getSocketPath() throws IOException {
+        return guest.getSocketPath();
     }
 
     @Override
     public Integer call() throws Exception {
-        Integer ret = provision();
-        if (ret != 0) {
-            return ret;
+        if (provision) {
+            Integer ret = provision();
+            if (ret != 0) {
+                return ret;
+            }
+        } else {
+            Workspace ws = Workspace.findOrAbort();
+            Path composeRepoDir = AbstractTmtCommand.findComposeOrAbort(ws);
+            Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
+            YamlConf yaml = YamlConf.load(yamlPath);
+            WorkflowFactory wff = new WorkflowFactory();
+            Workflow wf = wff.createTestWorkflow(id, yaml.getTestPlatform(), composeRepoDir);
+            Task testPlatformTask = null;
+            Task testRepoTask = null;
+            Task provisionTask = null;
+            for (Task task : wf.getTasks()) {
+                if (task.getId().equals("test-platform")) {
+                    testPlatformTask = task;
+                }
+                if (task.getId().equals("test-platform-repo")) {
+                    testRepoTask = task;
+                }
+                if (task.getId().equals("provision-" + id)) {
+                    provisionTask = task;
+                }
+            }
+            if (testPlatformTask == null || testRepoTask == null || provisionTask == null) {
+                error("Unable to find expected tasks in test workflow");
+                return 1;
+            }
+            String testPlatformResultId = guessResultId(testPlatformTask, null);
+            String testRepoResultId = guessResultId(testRepoTask, testPlatformResultId);
+            String provisionId = guessResultId(provisionTask, testRepoResultId);
+            Path provisionWorkDir =
+                    ws.getConfig().getWorkDir().resolve(provisionTask.getId()).resolve(provisionId);
+            guest = new Guest(provisionWorkDir);
+            if (!guest.isSshInitialized()) {
+                error("Provision " + provisionTask.getId() + " is not active");
+                return 1;
+            }
         }
         connect();
-        terminate();
+        if (provision) {
+            terminate();
+        }
         return 0;
     }
 }
