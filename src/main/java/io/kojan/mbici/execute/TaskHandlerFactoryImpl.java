@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-class TaskHandlerFactoryImpl implements TaskHandlerFactory {
+public class TaskHandlerFactoryImpl implements TaskHandlerFactory {
     private final Map<String, Function<Task, ? extends AbstractTaskHandler>> registry =
             new LinkedHashMap<>();
     private final CacheManager cacheManager;

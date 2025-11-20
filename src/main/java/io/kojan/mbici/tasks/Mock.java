@@ -24,7 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /// @author Mikolaj Izdebski
 class Mock {
@@ -34,8 +36,9 @@ class Mock {
     String chrootSetupCmd = "install rpm-build";
     int timeout = MOCK_TIMEOUT;
     boolean installWeakDeps = false;
-    Path bindMount;
-    String authorizedSshKey;
+    Set<Path> bindMounts = new LinkedHashSet<>();
+    Set<String> authorizedSshKeys = new LinkedHashSet<>();
+    final Map<String, Path> repos = new LinkedHashMap<>();
 
     public void run(TaskExecutionContext context, String... mockArgs) throws TaskTermination {
         Path mockConfPath = context.addArtifact(ArtifactType.CONFIG, "mock.cfg");
@@ -59,7 +62,7 @@ class Mock {
             bw.write("config_opts['target_arch'] = 'x86_64'\n");
             bw.write("config_opts['chroot_setup_cmd'] = '" + chrootSetupCmd + "'\n");
             bw.write("\n");
-            if (bindMount != null) {
+            for (Path bindMount : bindMounts) {
                 bw.write(
                         "config_opts['plugin_conf']['bind_mount_opts']['dirs'].append(('"
                                 + bindMount
@@ -67,7 +70,7 @@ class Mock {
                                 + bindMount
                                 + "'))\n");
             }
-            if (authorizedSshKey != null) {
+            for (String authorizedSshKey : authorizedSshKeys) {
                 bw.write(
                         "config_opts['files']['root/.ssh/authorized_keys'] = '"
                                 + authorizedSshKey
@@ -96,10 +99,16 @@ class Mock {
             bw.write("best=1\n");
             bw.write("protected_packages=rpm-build\n");
 
-            int priority = 0;
+            Map<String, Path> repos = new LinkedHashMap<>(this.repos);
             for (Path repoPath : context.getDependencyArtifacts(ArtifactType.REPO)) {
                 // FIXME find a better way to determine repo name
-                Path repoName = repoPath.getParent().getParent().getFileName();
+                String repoName = repoPath.getParent().getParent().getFileName().toString();
+                repos.put(repoName, repoPath);
+            }
+            int priority = 0;
+            for (var entry : repos.entrySet()) {
+                String repoName = entry.getKey();
+                Path repoPath = entry.getValue();
                 bw.write("\n");
                 bw.write("[" + repoName + "]\n");
                 bw.write("name=" + repoName + "\n");
