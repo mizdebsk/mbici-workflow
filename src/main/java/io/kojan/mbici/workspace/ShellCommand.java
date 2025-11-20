@@ -66,13 +66,7 @@ public class ShellCommand extends AbstractCommand {
         WorkspaceConfig c = ws.getConfig();
         info("Using workspace at " + ws.getWorkspaceDir());
 
-        Path composeRepoDir =
-                Files.readSymbolicLink(c.getLinkDir().resolve("compose")).resolve("repo");
-        if (!Files.isDirectory(composeRepoDir)) {
-            error("Compose is absent");
-            info("You should run the \"mbi run\" command to generate the compose");
-            return 1;
-        }
+        Path composeRepoDir = AbstractTmtCommand.findComposeOrAbort(ws);
 
         Files.createDirectories(c.getTestResultDir());
         Files.createDirectories(c.getWorkDir());
