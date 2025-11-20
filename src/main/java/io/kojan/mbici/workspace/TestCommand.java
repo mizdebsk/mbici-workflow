@@ -17,6 +17,7 @@ package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.Main;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(
@@ -29,6 +30,11 @@ public class TestCommand extends AbstractTmtCommand {
     @Parameters(index = "0", description = "Name of tmt test plan to run.")
     private String testPlan;
 
+    @Option(
+            names = {"-r", "--reserve"},
+            description = "Shell into mock container after testing ends.")
+    private boolean reserve;
+
     @Override
     protected String getTestPlan() {
         return testPlan;
@@ -37,5 +43,10 @@ public class TestCommand extends AbstractTmtCommand {
     @Override
     protected boolean requiresGuest() {
         return true;
+    }
+
+    @Override
+    protected boolean reserveSys() {
+        return reserve;
     }
 }

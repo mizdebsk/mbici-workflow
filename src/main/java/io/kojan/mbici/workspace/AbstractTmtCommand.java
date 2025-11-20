@@ -41,6 +41,8 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
     protected abstract boolean requiresGuest();
 
+    protected abstract boolean reserveSys();
+
     public static Path findComposeOrAbort(Workspace ws) throws IOException, XMLException {
         WorkspaceConfig c = ws.getConfig();
         Workflow wf = Workflow.readFromXML(c.getWorkflowPath());
@@ -141,6 +143,9 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
 
         int ret = new ProcessBuilder(cmd).inheritIO().start().waitFor();
         if (shell != null) {
+            if (reserveSys()) {
+                shell.connect();
+            }
             shell.terminate();
         }
         return ret;
