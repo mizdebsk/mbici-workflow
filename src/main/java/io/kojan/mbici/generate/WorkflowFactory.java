@@ -88,14 +88,15 @@ public class WorkflowFactory {
         return workflowBuilder.build();
     }
 
-    public Workflow createTestWorkflow(Platform testPlatform, Path composeRepoDir) {
+    public Workflow createTestWorkflow(
+            String provisionTaskId, Platform testPlatform, Path composeRepoDir) {
         WorkflowBuilder workflowBuilder = new WorkflowBuilder();
         TaskFactory taskFactory = new TaskFactory(workflowBuilder);
         Task gatherTest = taskFactory.createGatherTask("test-platform", testPlatform);
         Task gatherTestRepo =
                 taskFactory.createRepoTask(
                         "test-platform-repo", Collections.singletonList(gatherTest));
-        taskFactory.createProvisionTask(gatherTestRepo, composeRepoDir);
+        taskFactory.createProvisionTask(provisionTaskId, gatherTestRepo, composeRepoDir);
         return workflowBuilder.build();
     }
 }
