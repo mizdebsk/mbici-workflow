@@ -27,32 +27,32 @@ import java.util.List;
 
 public class Guest {
 
-    private final Path socketDir;
     private final Path socketPath;
 
     public Guest(Path workDir) throws IOException {
-        socketDir = Files.createTempDirectory(Path.of("/tmp"), "sock");
-        socketPath = socketDir.resolve("sock");
+        socketPath = workDir.resolve("mock-chroot/root/tmp/sshd.sock");
     }
 
     public boolean isSshInitialized() {
         return Files.exists(socketPath);
     }
 
-    public Path getSocketPath() {
-        return socketPath;
+    public Path getSocketPath() throws IOException {
+        return Files.readSymbolicLink(socketPath);
     }
 
     public void runSshServer(TaskExecutionContext context) throws TaskTermination, IOException {
+        Path socketDir = Files.createTempDirectory(Path.of("/tmp"), "sock");
         List<String> script = new ArrayList<>();
         script.add("set -euxo pipefail");
         script.add("passwd -d root");
         script.add("ssh-keygen -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key");
         script.add("echo $$ >/tmp/sshd.pid");
+        script.add("ln -s " + socketDir + "/sock /tmp/sshd.sock");
         script.add(
                 "exec socat UNIX-LISTEN:"
-                        + socketPath
-                        + ",mode=0777,fork EXEC:'/usr/sbin/sshd -i -e -oPermitRootLogin=yes -oPermitEmptyPasswords=yes -oPasswordAuthentication=yes -oUsePAM=no -oKbdInteractiveAuthentication=no -oPubkeyAuthentication=no -oGSSAPIAuthentication=no -oUseDNS=no -oX11Forwarding=no'");
+                        + socketDir
+                        + "/sock,mode=0777,fork EXEC:'/usr/sbin/sshd -i -e -oPermitRootLogin=yes -oPermitEmptyPasswords=yes -oPasswordAuthentication=yes -oUsePAM=no -oKbdInteractiveAuthentication=no -oPubkeyAuthentication=no -oGSSAPIAuthentication=no -oUseDNS=no -oX11Forwarding=no'");
         List<Parameter> parameters = context.getTask().getParameters();
         if (parameters.size() != 1 || !parameters.getFirst().getName().equals("compose")) {
             throw new IllegalArgumentException(
@@ -75,7 +75,7 @@ public class Guest {
         List<String> baseCmd =
                 List.of(
                         "ssh",
-                        "-o ProxyCommand=socat - UNIX-CONNECT:" + socketPath,
+                        "-o ProxyCommand=socat - UNIX-CONNECT:" + getSocketPath(),
                         "-o UserKnownHostsFile=/dev/null",
                         "-o StrictHostKeyChecking=no",
                         "-o PreferredAuthentications=password",
