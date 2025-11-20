@@ -34,4 +34,9 @@ public class ValidateCommand extends AbstractTmtCommand {
     protected boolean requiresGuest() {
         return false;
     }
+
+    @Override
+    protected boolean reserveSys() {
+        return false;
+    }
 }
