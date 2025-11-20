@@ -17,12 +17,16 @@ package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.Main;
-import io.kojan.mbici.execute.AbstractExecuteCommand;
-import io.kojan.mbici.execute.LocalExecuteCommand;
-import io.kojan.mbici.generate.GenerateCommand;
-import io.kojan.mbici.subject.LocalSubjectCommand;
+import io.kojan.mbici.execute.TaskHandlerFactoryImpl;
+import io.kojan.mbici.generate.WorkflowFactory;
 import io.kojan.mbici.tasks.Guest;
 import io.kojan.mbici.tasks.ProvisionTaskHandler;
+import io.kojan.workflow.TaskHandlerFactory;
+import io.kojan.workflow.TaskStorage;
+import io.kojan.workflow.TaskThrottle;
+import io.kojan.workflow.WorkflowExecutor;
+import io.kojan.workflow.model.Task;
+import io.kojan.workflow.model.Workflow;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -49,65 +53,47 @@ public class ShellCommand extends AbstractCommand {
         WorkspaceConfig c = ws.getConfig();
         info("Using workspace at " + ws.getWorkspaceDir());
 
-        Files.createDirectories(c.getCacheDir());
-        Files.createDirectories(c.getResultDir());
+        Path composeRepoDir =
+                Files.readSymbolicLink(c.getLinkDir().resolve("compose")).resolve("repo");
+        if (!Files.isDirectory(composeRepoDir)) {
+            error("Compose is absent");
+            info("You should run the \"mbi run\" command to generate the compose");
+            return 1;
+        }
+
+        Files.createDirectories(c.getTestResultDir());
         Files.createDirectories(c.getWorkDir());
-        Files.createDirectories(c.getLinkDir());
 
         Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
         YamlConf yaml = YamlConf.load(yamlPath);
-        yaml.getPlan().writeToXML(c.getPlanPath());
-        yaml.getPlatform().writeToXML(c.getPlatformPath());
-        yaml.getTestPlatform().writeToXML(c.getTestPlatformPath());
+        WorkflowFactory wff = new WorkflowFactory();
+        Workflow wf = wff.createTestWorkflow(yaml.getTestPlatform(), composeRepoDir);
 
-        LocalSubjectCommand subject = new LocalSubjectCommand();
-        subject.setSubjectPath(c.getSubjectPath());
-        subject.setPlanPath(c.getPlanPath());
-        subject.setLookaside(c.getLookaside());
-        subject.setScmPath(c.getScmDir());
-        subject.setRef(c.getScmRef());
+        TaskHandlerFactory handlerFactory = new TaskHandlerFactoryImpl(null);
+        TaskThrottle throttle =
+                new TaskThrottle() {
+                    public void releaseCapacity(Task task) {}
 
-        info("Running local-subject command...");
-        int ret = subject.call();
-        if (ret != 0) {
-            error("The local-subject command failed");
-            return ret;
-        }
-        GenerateCommand generate = new GenerateCommand();
-        generate.setPlanPath(c.getPlanPath());
-        generate.setPlatformPath(c.getPlatformPath());
-        generate.setTestPlatformPath(c.getTestPlatformPath());
-        generate.setSubjectPath(c.getSubjectPath());
-        generate.setWorkflowPath(c.getWorkflowPath());
+                    public void acquireCapacity(Task task) {}
+                };
+        TaskStorage storage =
+                new TaskStorage() {
 
-        info("Running generate command...");
-        ret = generate.call();
-        if (ret != 0) {
-            error("The generate command failed");
-            return ret;
-        }
+                    public Path getResultDir(Task task, String resultId) {
+                        return c.getTestResultDir().resolve(task.getId()).resolve(resultId);
+                    }
 
-        AbstractExecuteCommand execute = new LocalExecuteCommand();
-        execute.setWorkflowPath(c.getWorkflowPath());
-        execute.setResultDir(c.getResultDir());
-        execute.setCacheDir(c.getCacheDir());
-        execute.setWorkDir(c.getWorkDir());
-        execute.setLinkerDir(c.getLinkDir());
-        execute.setMaxCheckoutTasks(c.getMaxCheckoutTasks());
-        execute.setMaxSrpmTasks(c.getMaxSrpmTasks());
-        execute.setMaxRpmTasks(c.getMaxRpmTasks());
-        execute.setBatchMode(false);
+                    public Path getWorkDir(Task task, String resultId) {
+                        return c.getWorkDir().resolve(task.getId()).resolve(resultId);
+                    }
+                };
+        WorkflowExecutor wfe = new WorkflowExecutor(wf, handlerFactory, storage, throttle, false);
 
         Thread thread =
                 new Thread(
                         () -> {
                             try {
-                                info("Running execute command...");
-                                int retCode = execute.call();
-                                if (retCode != 0) {
-                                    error("The execute command failed");
-                                    return;
-                                }
+                                wfe.execute();
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }

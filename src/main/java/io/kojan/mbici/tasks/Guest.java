@@ -17,6 +17,7 @@ package io.kojan.mbici.tasks;
 
 import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
+import io.kojan.workflow.model.Parameter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -56,13 +57,21 @@ public class Guest {
         script.add("chmod 600 /root/.ssh/authorized_keys");
         script.add("echo $$ >" + pidFilePathChrooted);
         script.add("exec /usr/sbin/sshd -D -p " + SSH_PORT);
+        List<Parameter> parameters = context.getTask().getParameters();
+        if (parameters.size() != 1 || !parameters.getFirst().getName().equals("compose")) {
+            throw new IllegalArgumentException(
+                    getClass().getName() + " takes exactly one parameter called \"compose\"");
+        }
+        Path composePath = Path.of(parameters.getFirst().getValue());
         Mock mock = new Mock();
+        mock.repos.put("compose", composePath);
         mock.timeout = Integer.MAX_VALUE;
         mock.installWeakDeps = true;
         mock.chrootSetupCmd = "install bash openssh-server dnf util-linux-core rsync beakerlib";
-        mock.authorizedSshKey =
-                Files.readString(Path.of(SSH_PUB_KEY), StandardCharsets.UTF_8).trim();
-        mock.bindMount = context.getResultDir().getParent().getParent();
+        mock.authorizedSshKeys.add(
+                Files.readString(Path.of(SSH_PUB_KEY), StandardCharsets.UTF_8).trim());
+        mock.bindMounts.add(context.getResultDir().getParent().getParent());
+        mock.bindMounts.add(composePath);
         mock.run(context, "--enable-network", "--shell", String.join("\n", script));
     }
 

@@ -28,6 +28,7 @@ import io.kojan.mbici.tasks.SrpmTaskHandler;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.TaskBuilder;
 import io.kojan.workflow.model.WorkflowBuilder;
+import java.nio.file.Path;
 import java.util.List;
 
 /// @author Mikolaj Izdebski
@@ -135,12 +136,12 @@ class TaskFactory {
         return taskDescriptor;
     }
 
-    public Task createProvisionTask(Task platformRepo, Task composeRepo) {
+    public Task createProvisionTask(Task platformRepo, Path composeRepoDir) {
         TaskBuilder task = new TaskBuilder();
         task.setId("provision");
         task.setHandler(PROVISION_HANDLER);
-        task.addDependency(composeRepo.getId());
         task.addDependency(platformRepo.getId());
+        task.addParameter("compose", composeRepoDir.toString());
         Task taskDescriptor = task.build();
         workflowBuilder.addTask(taskDescriptor);
         return taskDescriptor;

@@ -23,6 +23,7 @@ import io.kojan.mbici.model.SubjectComponent;
 import io.kojan.workflow.model.Task;
 import io.kojan.workflow.model.Workflow;
 import io.kojan.workflow.model.WorkflowBuilder;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -32,13 +33,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /// @author Mikolaj Izdebski
-class WorkflowFactory {
-    public Workflow createFromPlan(
-            Platform platform,
-            Platform testPlatform,
-            Plan plan,
-            Subject subject,
-            boolean includeProvision) {
+public class WorkflowFactory {
+    public Workflow createFromPlan(Platform platform, Plan plan, Subject subject) {
         WorkflowBuilder workflowBuilder = new WorkflowBuilder();
         TaskFactory taskFactory = new TaskFactory(workflowBuilder);
         Map<String, Task> srpms = new LinkedHashMap<>();
@@ -85,20 +81,21 @@ class WorkflowFactory {
             repos.addFirst(repo);
         }
 
-        Task compose =
+        taskFactory.createRepoTask(
+                "compose",
+                Stream.concat(srpms.values().stream(), rpmsByName.values().stream()).toList());
+
+        return workflowBuilder.build();
+    }
+
+    public Workflow createTestWorkflow(Platform testPlatform, Path composeRepoDir) {
+        WorkflowBuilder workflowBuilder = new WorkflowBuilder();
+        TaskFactory taskFactory = new TaskFactory(workflowBuilder);
+        Task gatherTest = taskFactory.createGatherTask("test-platform", testPlatform);
+        Task gatherTestRepo =
                 taskFactory.createRepoTask(
-                        "compose",
-                        Stream.concat(srpms.values().stream(), rpmsByName.values().stream())
-                                .toList());
-
-        if (includeProvision) {
-            Task gatherTest = taskFactory.createGatherTask("test-platform", testPlatform);
-            Task gatherTestRepo =
-                    taskFactory.createRepoTask(
-                            "test-platform-repo", Collections.singletonList(gatherTest));
-            taskFactory.createProvisionTask(gatherTestRepo, compose);
-        }
-
+                        "test-platform-repo", Collections.singletonList(gatherTest));
+        taskFactory.createProvisionTask(gatherTestRepo, composeRepoDir);
         return workflowBuilder.build();
     }
 }
