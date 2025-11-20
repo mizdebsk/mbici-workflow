@@ -22,6 +22,8 @@ import io.kojan.workflow.model.Artifact;
 import io.kojan.workflow.model.Result;
 import io.kojan.workflow.model.TaskOutcome;
 import io.kojan.workflow.model.Workflow;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import picocli.CommandLine.Command;
@@ -70,14 +72,18 @@ public class StatusCommand extends AbstractCommand {
                 info("  - task: " + result.getTaskId());
                 info("    reason: " + result.getOutcomeReason());
                 info("    logs:");
+                Path taskDir = c.getResultDir().resolve(result.getTaskId()).resolve(result.getId());
+                if (c.getLinkDir() != null) {
+                    Path linkPath = c.getLinkDir().resolve(result.getTaskId());
+                    if (Files.isSymbolicLink(linkPath)
+                            && Files.readSymbolicLink(linkPath).equals(taskDir)) {
+                        taskDir = linkPath;
+                    }
+                }
                 for (Artifact artifact : result.getArtifacts()) {
                     if (artifact.getType().equals(ArtifactType.LOG)
                             || artifact.getType().equals(ArtifactType.CONFIG)) {
-                        info(
-                                "      - "
-                                        + c.getLinkDir()
-                                                .resolve(result.getTaskId())
-                                                .resolve(artifact.getName()));
+                        info("      - " + taskDir.resolve(artifact.getName()));
                     }
                 }
             }

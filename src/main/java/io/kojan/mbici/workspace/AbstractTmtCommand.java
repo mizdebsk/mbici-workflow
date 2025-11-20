@@ -16,7 +16,10 @@
 package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
-import java.nio.file.Files;
+import io.kojan.workflow.model.Result;
+import io.kojan.workflow.model.Workflow;
+import io.kojan.xml.XMLException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,17 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
     protected abstract String getTestPlan();
 
     protected abstract boolean requiresGuest();
+
+    public static Path findComposeOrAbort(Workspace ws) throws IOException, XMLException {
+        WorkspaceConfig c = ws.getConfig();
+        Workflow wf = Workflow.readFromXML(c.getWorkflowPath());
+        for (Result result : wf.getResults()) {
+            if (result.getTaskId().equals("compose")) {
+                return c.getResultDir().resolve("compose").resolve(result.getId()).resolve("repo");
+            }
+        }
+        throw new RuntimeException("This command requires a compose");
+    }
 
     @Override
     public Integer call() throws Exception {
@@ -60,12 +74,7 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
         WorkspaceConfig c = ws.getConfig();
         info("Using workspace at " + ws.getWorkspaceDir());
 
-        Path composeRepoDir = c.getLinkDir().resolve("compose").resolve("repo");
-        if (!Files.isDirectory(composeRepoDir)) {
-            error("Compose is absent");
-            info("You should run the \"mbi run\" command to generate the compose");
-            return 1;
-        }
+        Path composeRepoDir = findComposeOrAbort(ws);
 
         List<String> cmd = new ArrayList<>();
         cmd.add("tmt");

@@ -69,7 +69,9 @@ public class RunCommand extends AbstractCommand {
         Files.createDirectories(c.getCacheDir());
         Files.createDirectories(c.getResultDir());
         Files.createDirectories(c.getWorkDir());
-        Files.createDirectories(c.getLinkDir());
+        if (c.getLinkDir() != null) {
+            Files.createDirectories(c.getLinkDir());
+        }
 
         Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
         YamlConf yaml = YamlConf.load(yamlPath);

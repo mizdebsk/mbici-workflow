@@ -19,6 +19,8 @@ import io.kojan.mbici.AbstractCommand;
 import io.kojan.mbici.Main;
 import io.kojan.mbici.model.Phase;
 import io.kojan.mbici.model.Plan;
+import io.kojan.workflow.model.Result;
+import io.kojan.workflow.model.Workflow;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -74,6 +76,7 @@ public class LogCommand extends AbstractCommand {
 
         Workspace ws = Workspace.findOrAbort();
         WorkspaceConfig c = ws.getConfig();
+        Workflow wf = Workflow.readFromXML(c.getWorkflowPath());
 
         Path cwd = Path.of(".").toAbsolutePath();
         if (component == null) {
@@ -109,8 +112,26 @@ public class LogCommand extends AbstractCommand {
             phase = phases.getFirst();
         }
 
-        Path resDir = c.getLinkDir();
-        Path taskDir = resDir.resolve(component + (srpm ? "-srpm" : "-" + phase + "-rpm"));
+        String taskId = component + (srpm ? "-srpm" : "-" + phase + "-rpm");
+        Result result = null;
+        for (Result res : wf.getResults()) {
+            if (res.getTaskId().equals(taskId)) {
+                result = res;
+            }
+        }
+        if (result == null) {
+            error("There is no result for task " + taskId);
+            return 1;
+        }
+
+        Path taskDir = c.getResultDir().resolve(result.getTaskId()).resolve(result.getId());
+        if (c.getLinkDir() != null) {
+            Path linkPath = c.getLinkDir().resolve(result.getTaskId());
+            if (Files.isSymbolicLink(linkPath)
+                    && Files.readSymbolicLink(linkPath).equals(taskDir)) {
+                taskDir = linkPath;
+            }
+        }
         Path logPath =
                 taskDir.resolve(artifact != null ? artifact : rootLog ? "root.log" : "build.log");
 

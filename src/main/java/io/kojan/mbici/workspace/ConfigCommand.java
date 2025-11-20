@@ -37,7 +37,9 @@ public class ConfigCommand extends AbstractConfigCommand {
     private boolean env;
 
     private void printEnv(String key, Object value) {
-        System.out.println(key + "=\"" + value + "\"");
+        if (value != null) {
+            System.out.println(key + "=\"" + value + "\"");
+        }
     }
 
     private void printHuman(int n, String key, Object value) {

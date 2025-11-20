@@ -127,7 +127,7 @@ public class Workspace {
                             WorkspaceConfig::setWorkDir,
                             Path::toString,
                             Path::of),
-                    Attribute.of(
+                    Attribute.ofOptional(
                             "linkDir",
                             WorkspaceConfig::getLinkDir,
                             WorkspaceConfig::setLinkDir,
