@@ -37,7 +37,6 @@ class Mock {
     int timeout = MOCK_TIMEOUT;
     boolean installWeakDeps = false;
     Set<Path> bindMounts = new LinkedHashSet<>();
-    Set<String> authorizedSshKeys = new LinkedHashSet<>();
     final Map<String, Path> repos = new LinkedHashMap<>();
 
     public void run(TaskExecutionContext context, String... mockArgs) throws TaskTermination {
@@ -69,12 +68,6 @@ class Mock {
                                 + "', '"
                                 + bindMount
                                 + "'))\n");
-            }
-            for (String authorizedSshKey : authorizedSshKeys) {
-                bw.write(
-                        "config_opts['files']['root/.ssh/authorized_keys'] = '"
-                                + authorizedSshKey
-                                + "'\n");
             }
             bw.write("config_opts['macros']['%_source_payload'] = 'w.ufdio'\n");
             bw.write("config_opts['macros']['%_binary_payload'] = 'w.ufdio'\n");
