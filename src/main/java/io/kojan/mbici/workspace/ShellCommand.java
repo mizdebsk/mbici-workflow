@@ -152,6 +152,44 @@ public class ShellCommand extends AbstractCommand {
         return 0;
     }
 
+    public Integer lookupExistingProvision() throws Exception {
+        Workspace ws = Workspace.findOrAbort();
+        Path composeRepoDir = AbstractTmtCommand.findComposeOrAbort(ws);
+        Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
+        YamlConf yaml = YamlConf.load(yamlPath);
+        WorkflowFactory wff = new WorkflowFactory();
+        Workflow wf = wff.createTestWorkflow(id, yaml.getTestPlatform(), composeRepoDir);
+        Task testPlatformTask = null;
+        Task testRepoTask = null;
+        Task provisionTask = null;
+        for (Task task : wf.getTasks()) {
+            if (task.getId().equals("test-platform")) {
+                testPlatformTask = task;
+            }
+            if (task.getId().equals("test-platform-repo")) {
+                testRepoTask = task;
+            }
+            if (task.getId().equals("provision-" + id)) {
+                provisionTask = task;
+            }
+        }
+        if (testPlatformTask == null || testRepoTask == null || provisionTask == null) {
+            error("Unable to find expected tasks in test workflow");
+            return 1;
+        }
+        String testPlatformResultId = guessResultId(testPlatformTask, null);
+        String testRepoResultId = guessResultId(testRepoTask, testPlatformResultId);
+        String provisionId = guessResultId(provisionTask, testRepoResultId);
+        Path provisionWorkDir =
+                ws.getConfig().getWorkDir().resolve(provisionTask.getId()).resolve(provisionId);
+        guest = new Guest(provisionWorkDir);
+        if (!guest.isSshInitialized()) {
+            error("Provision " + provisionTask.getId() + " is not active");
+            return 1;
+        }
+        return 0;
+    }
+
     public void connect() throws Exception {
         guest.runSshClient();
     }
@@ -166,46 +204,9 @@ public class ShellCommand extends AbstractCommand {
 
     @Override
     public Integer call() throws Exception {
-        if (provision) {
-            Integer ret = provision();
-            if (ret != 0) {
-                return ret;
-            }
-        } else {
-            Workspace ws = Workspace.findOrAbort();
-            Path composeRepoDir = AbstractTmtCommand.findComposeOrAbort(ws);
-            Path yamlPath = ws.getWorkspaceDir().resolve("mbi.yaml");
-            YamlConf yaml = YamlConf.load(yamlPath);
-            WorkflowFactory wff = new WorkflowFactory();
-            Workflow wf = wff.createTestWorkflow(id, yaml.getTestPlatform(), composeRepoDir);
-            Task testPlatformTask = null;
-            Task testRepoTask = null;
-            Task provisionTask = null;
-            for (Task task : wf.getTasks()) {
-                if (task.getId().equals("test-platform")) {
-                    testPlatformTask = task;
-                }
-                if (task.getId().equals("test-platform-repo")) {
-                    testRepoTask = task;
-                }
-                if (task.getId().equals("provision-" + id)) {
-                    provisionTask = task;
-                }
-            }
-            if (testPlatformTask == null || testRepoTask == null || provisionTask == null) {
-                error("Unable to find expected tasks in test workflow");
-                return 1;
-            }
-            String testPlatformResultId = guessResultId(testPlatformTask, null);
-            String testRepoResultId = guessResultId(testRepoTask, testPlatformResultId);
-            String provisionId = guessResultId(provisionTask, testRepoResultId);
-            Path provisionWorkDir =
-                    ws.getConfig().getWorkDir().resolve(provisionTask.getId()).resolve(provisionId);
-            guest = new Guest(provisionWorkDir);
-            if (!guest.isSshInitialized()) {
-                error("Provision " + provisionTask.getId() + " is not active");
-                return 1;
-            }
+        Integer ret = provision ? provision() : lookupExistingProvision();
+        if (ret != 0) {
+            return ret;
         }
         connect();
         if (provision) {

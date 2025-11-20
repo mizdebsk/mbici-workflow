@@ -38,12 +38,17 @@ public class TestCommand extends AbstractTmtCommand {
             description = "Shell into mock container after testing ends.")
     private boolean reserve;
 
+    @Option(
+            names = {"--no-provision"},
+            description = "Connect to existing mock container without provisioning a new one.")
+    private boolean noProvision;
+
     @Override
     public Integer call() throws Exception {
 
         ShellCommand shell = new ShellCommand();
         shell.setId("test-" + testPlan);
-        Integer ret = shell.provision();
+        Integer ret = noProvision ? shell.lookupExistingProvision() : shell.provision();
         if (ret != 0) {
             return ret;
         }
@@ -116,7 +121,9 @@ public class TestCommand extends AbstractTmtCommand {
         if (reserve) {
             shell.connect();
         }
-        shell.terminate();
+        if (!noProvision) {
+            shell.terminate();
+        }
         return tmtRet;
     }
 }
