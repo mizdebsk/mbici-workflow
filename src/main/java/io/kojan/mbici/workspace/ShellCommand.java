@@ -121,6 +121,10 @@ public class ShellCommand extends AbstractCommand {
         getGuest().runSshClient("kill $(cat /tmp/sshd.pid)");
     }
 
+    public Path getSocketPath() {
+        return getGuest().getSocketPath();
+    }
+
     @Override
     public Integer call() throws Exception {
         Integer ret = provision();

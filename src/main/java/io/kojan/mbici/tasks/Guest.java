@@ -19,7 +19,6 @@ import io.kojan.workflow.TaskExecutionContext;
 import io.kojan.workflow.TaskTermination;
 import io.kojan.workflow.model.Parameter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,35 +27,32 @@ import java.util.List;
 
 public class Guest {
 
-    public static final String SSH_HOST = "localhost";
-    public static final String SSH_PORT = "17593";
-    public static final String SSH_USER = "root";
-    public static final String SSH_PUB_KEY = System.getProperty("user.home") + "/.ssh/id_rsa.pub";
-    public static final String SSH_PRIV_KEY = System.getProperty("user.home") + "/.ssh/id_rsa";
+    private final Path socketDir;
+    private final Path socketPath;
 
-    private final Path pidFilePathChrooted;
-    private final Path pidFilePath;
-
-    public Guest(Path workDir) {
-        pidFilePathChrooted = Path.of("/tmp/sshd.pid");
-        pidFilePath =
-                workDir.resolve("mock-chroot")
-                        .resolve("root")
-                        .resolve(Path.of("/").relativize(pidFilePathChrooted));
+    public Guest(Path workDir) throws IOException {
+        socketDir = Files.createTempDirectory(Path.of("/tmp"), "sock");
+        socketPath = socketDir.resolve("sock");
     }
 
     public boolean isSshInitialized() {
-        return Files.isRegularFile(pidFilePath);
+        return Files.exists(socketPath);
+    }
+
+    public Path getSocketPath() {
+        return socketPath;
     }
 
     public void runSshServer(TaskExecutionContext context) throws TaskTermination, IOException {
         List<String> script = new ArrayList<>();
         script.add("set -euxo pipefail");
-        script.add("ssh-keygen -A");
-        script.add("chmod 700 /root/.ssh");
-        script.add("chmod 600 /root/.ssh/authorized_keys");
-        script.add("echo $$ >" + pidFilePathChrooted);
-        script.add("exec /usr/sbin/sshd -D -p " + SSH_PORT);
+        script.add("passwd -d root");
+        script.add("ssh-keygen -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key");
+        script.add("echo $$ >/tmp/sshd.pid");
+        script.add(
+                "exec socat UNIX-LISTEN:"
+                        + socketPath
+                        + ",mode=0777,fork EXEC:'/usr/sbin/sshd -i -e -oPermitRootLogin=yes -oPermitEmptyPasswords=yes -oPasswordAuthentication=yes -oUsePAM=no -oKbdInteractiveAuthentication=no -oPubkeyAuthentication=no -oGSSAPIAuthentication=no -oUseDNS=no -oX11Forwarding=no'");
         List<Parameter> parameters = context.getTask().getParameters();
         if (parameters.size() != 1 || !parameters.getFirst().getName().equals("compose")) {
             throw new IllegalArgumentException(
@@ -67,9 +63,9 @@ public class Guest {
         mock.repos.put("compose", composePath);
         mock.timeout = Integer.MAX_VALUE;
         mock.installWeakDeps = true;
-        mock.chrootSetupCmd = "install bash openssh-server dnf util-linux-core rsync beakerlib";
-        mock.authorizedSshKeys.add(
-                Files.readString(Path.of(SSH_PUB_KEY), StandardCharsets.UTF_8).trim());
+        mock.chrootSetupCmd =
+                "install bash openssh-server socat dnf util-linux-core rsync beakerlib";
+        mock.bindMounts.add(socketDir);
         mock.bindMounts.add(context.getResultDir().getParent().getParent());
         mock.bindMounts.add(composePath);
         mock.run(context, "--enable-network", "--shell", String.join("\n", script));
@@ -79,22 +75,15 @@ public class Guest {
         List<String> baseCmd =
                 List.of(
                         "ssh",
-                        "-oForwardX11=no",
-                        "-oStrictHostKeyChecking=no",
-                        "-oUserKnownHostsFile=/dev/null",
-                        "-oConnectionAttempts=5",
-                        "-oConnectTimeout=60",
-                        "-oServerAliveInterval=5",
-                        "-oServerAliveCountMax=60",
-                        "-oIdentitiesOnly=yes",
-                        "-oPasswordAuthentication=no",
-                        "-oGSSAPIAuthentication=no",
-                        "-oLogLevel=ERROR",
-                        "-i",
-                        SSH_PRIV_KEY,
-                        "-p",
-                        SSH_PORT,
-                        SSH_USER + "@" + SSH_HOST);
+                        "-o ProxyCommand=socat - UNIX-CONNECT:" + socketPath,
+                        "-o UserKnownHostsFile=/dev/null",
+                        "-o StrictHostKeyChecking=no",
+                        "-o PreferredAuthentications=password",
+                        "-o PubkeyAuthentication=no",
+                        "-o KbdInteractiveAuthentication=no",
+                        "-o GSSAPIAuthentication=no",
+                        "-o LogLevel=ERROR",
+                        "root@dummy");
         List<String> cmd = new ArrayList<String>(baseCmd);
         cmd.addAll(Arrays.asList(args));
         new ProcessBuilder().command(cmd).inheritIO().start().waitFor();

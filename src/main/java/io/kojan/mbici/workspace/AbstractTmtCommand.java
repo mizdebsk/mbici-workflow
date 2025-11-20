@@ -16,7 +16,6 @@
 package io.kojan.mbici.workspace;
 
 import io.kojan.mbici.AbstractCommand;
-import io.kojan.mbici.tasks.Guest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -100,13 +99,23 @@ public abstract class AbstractTmtCommand extends AbstractCommand {
             cmd.add("--how");
             cmd.add("connect");
             cmd.add("--guest");
-            cmd.add(Guest.SSH_HOST);
-            cmd.add("--port");
-            cmd.add(Guest.SSH_PORT);
+            cmd.add("dummy");
             cmd.add("--user");
-            cmd.add(Guest.SSH_USER);
-            cmd.add("--key");
-            cmd.add(Guest.SSH_PRIV_KEY);
+            cmd.add("root");
+            cmd.add("--ssh-option");
+            cmd.add("ProxyCommand=socat - UNIX-CONNECT:" + shell.getSocketPath());
+            cmd.add("--ssh-option");
+            cmd.add("PreferredAuthentications=password");
+            cmd.add("--ssh-option");
+            cmd.add("PubkeyAuthentication=no");
+            cmd.add("--ssh-option");
+            cmd.add("KbdInteractiveAuthentication=no");
+            cmd.add("--ssh-option");
+            cmd.add("GSSAPIAuthentication=no");
+            cmd.add("--ssh-option");
+            cmd.add("UserKnownHostsFile=/dev/null");
+            cmd.add("--ssh-option");
+            cmd.add("StrictHostKeyChecking=no");
             cmd.add("-vvv");
         } else {
             cmd.add("provision");
