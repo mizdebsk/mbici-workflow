@@ -33,6 +33,7 @@ class Mock {
     private static final int MOCK_TIMEOUT = 1800;
 
     private final Map<String, String> macros = new LinkedHashMap<>();
+    String arch = Arch.getJvmArch();
     String chrootSetupCmd = "install rpm-build";
     int timeout = MOCK_TIMEOUT;
     boolean installWeakDeps = false;
@@ -58,7 +59,7 @@ class Mock {
             // bw.write( "config_opts['nosync'] = True\n" );
             // bw.write( "config_opts['nosync_force'] = True\n" );
             bw.write("config_opts['root'] = 'mock-chroot'\n");
-            bw.write("config_opts['target_arch'] = 'x86_64'\n");
+            bw.write("config_opts['target_arch'] = '" + arch + "'\n");
             bw.write("config_opts['chroot_setup_cmd'] = '" + chrootSetupCmd + "'\n");
             bw.write("\n");
             for (Path bindMount : bindMounts) {
